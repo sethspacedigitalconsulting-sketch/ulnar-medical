@@ -34,12 +34,18 @@ const slideIn = {
 };
 
 const springScale = {
-  hidden: { opacity: 0, scale: 0.82 },
-  visible: {
+  hidden: { opacity: 0, scale: 0.82, y: 8 },
+  visible: (i: number) => ({
     opacity: 1,
     scale: 1,
-    transition: { type: "spring", stiffness: 200, damping: 18 },
-  },
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 200,
+      damping: 18,
+      delay: 0.45 + i * 0.12,
+    },
+  }),
 };
 
 /* ── Trust signals ───────────────────────────────────────────── */
@@ -168,20 +174,18 @@ export function BookingHub() {
           />
 
           {/* Contact chips */}
-          <motion.div
-            className="mb-10 flex flex-wrap gap-3"
-            variants={containerVariants}
-          >
-            {CONTACTS.map(({ label, value, href }) => (
+          <div className="mb-10 flex flex-wrap gap-3">
+            {CONTACTS.map(({ label, value, href }, i) => (
               <motion.a
                 key={label}
+                custom={i}
                 variants={springScale}
                 href={href}
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel="noopener noreferrer"
                 className="group flex items-center gap-2.5 rounded-full border border-[#FFD43A]/30 bg-[#FFD43A]/5 px-4 py-2.5 backdrop-blur-sm transition-all duration-300 hover:border-[#FFD43A]/70 hover:bg-[#FFD43A]/10"
               >
-                <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#F4B9B9] shadow-[0_0_6px_#F4B9B9]" />
+                <span className="h-1.5 w-1.5 flex-shrink-0 animate-pulse rounded-full bg-[#F4B9B9] shadow-[0_0_6px_#F4B9B9]" />
                 <span className="font-mono text-[0.65rem] font-bold uppercase tracking-[0.16em] text-white/70 transition-colors group-hover:text-white">
                   {label}
                 </span>
@@ -190,7 +194,7 @@ export function BookingHub() {
                 </span>
               </motion.a>
             ))}
-          </motion.div>
+          </div>
 
           {/* Watermark */}
           <motion.p
