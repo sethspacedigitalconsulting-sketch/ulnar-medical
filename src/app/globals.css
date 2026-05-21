@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap");
+
+:root {
+  --navy: #122954;
+  --navy-deep: #080f1e;
+  --navy-mid: #1a3a6e;
+  --rose: #F4B9B9;
+  --gold: #FFD43A;
+  --off-white: #f8f6f2;
+  --grain-opacity: 0.028;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--navy-deep);
+  color: var(--off-white);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Grain texture overlay (applied via pseudo on root) ── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 180px 180px;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: overlay;
+}
+
+/* ── Typography Scale ── */
+.display-hero {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.display-section {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 600;
+  font-style: italic;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.label-mono {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--navy-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--navy-mid);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ── Floating label inputs ── */
+.floating-label-group {
+  position: relative;
+}
+.floating-label-group input,
+.floating-label-group select,
+.floating-label-group textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 22px 18px 8px;
+  width: 100%;
+  color: var(--off-white);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.25s, background 0.25s;
+  -webkit-appearance: none;
+}
+.floating-label-group input:focus,
+.floating-label-group select:focus,
+.floating-label-group textarea:focus {
+  border-color: var(--gold);
+  background: rgba(255, 212, 58, 0.04);
+}
+.floating-label-group label {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  transform: translateY(-50%);
+  color: rgba(248, 246, 242, 0.4);
+  font-size: 0.9rem;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  font-family: var(--font-dm-sans), sans-serif;
+}
+.floating-label-group input:focus ~ label,
+.floating-label-group input:not(:placeholder-shown) ~ label,
+.floating-label-group select:focus ~ label,
+.floating-label-group select:not([value=""]) ~ label,
+.floating-label-group textarea:focus ~ label,
+.floating-label-group textarea:not(:placeholder-shown) ~ label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.floating-label-group textarea {
+  padding-top: 28px;
+  resize: none;
+}
+.floating-label-group textarea ~ label {
+  top: 20px;
+  transform: none;
+}
+.floating-label-group textarea:focus ~ label,
+.floating-label-group textarea:not(:placeholder-shown) ~ label {
+  top: 8px;
+}
+
+/* ── Date input: label is always in floated position (no :placeholder-shown) ── */
+.floating-label-group input[type="date"] {
+  color-scheme: dark;
+  padding-top: 22px;
+}
+.floating-label-group input[type="date"] ~ label {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* ── Gold underline animation ── */
+.gold-underline {
+  position: relative;
+  display: inline-block;
+}
+.gold-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 0;
+  background: var(--gold);
+  transition: width 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+}
+.gold-underline:hover::after,
+.gold-underline.active::after {
+  width: 100%;
+}
+
+/* ── Utility ── */
+.bg-navy-gradient {
+  background: linear-gradient(160deg, #080f1e 0%, #122954 55%, #0d1f3f 100%);
+}
+
+.clip-diagonal {
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* ── Visme form embed overrides ── */
+.visme-card iframe {
+  background-color: transparent !important;
+  border-radius: 1.5rem !important;
+  transition: all 0.3s ease;
+}
+.visme-card ::placeholder {
+  color: rgba(255, 255, 255, 0.4) !important;
+}
