@@ -1,180 +1,161 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { SocialTooltip } from "@/components/ui/social-media";
+import { AppointmentScheduler } from "@/components/ui/appointment-scheduler";
 
 /* ── Variant system ──────────────────────────────────────────── */
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] },
-  },
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.25, 1, 0.5, 1] } },
 };
 
 const slideIn = {
-  hidden: { opacity: 0, x: -24 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] },
-  },
+  hidden: { opacity: 0, x: -22 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.6, ease: [0.25, 1, 0.5, 1] } },
 };
 
 const springScale = {
   hidden: { opacity: 0, scale: 0.82, y: 8 },
   visible: (i: number) => ({
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 200,
-      damping: 18,
-      delay: 0.45 + i * 0.12,
-    },
+    opacity: 1, scale: 1, y: 0,
+    transition: { type: "spring", stiffness: 200, damping: 18, delay: 0.35 + i * 0.12 },
   }),
 };
 
-/* ── Trust signals ───────────────────────────────────────────── */
+/* ── Data ────────────────────────────────────────────────────── */
 const TRUST = [
-  { stat: "< 2 hrs",   label: "Confirmation via WhatsApp" },
-  { stat: "Same-Day",  label: "Results for most diagnostics" },
-  { stat: "3D / 4D",   label: "High-fidelity obstetric imaging" },
+  { stat: "< 2 hrs",  label: "Confirmation via WhatsApp" },
+  { stat: "Same-Day", label: "Results for most diagnostics" },
+  { stat: "3D / 4D",  label: "High-fidelity obstetric imaging" },
 ];
 
-/* ── Contact shortcuts ───────────────────────────────────────── */
 const CONTACTS = [
   {
-    label: "WhatsApp",
-    value: "+254 724 273 996",
+    label: "WhatsApp", value: "+254 724 273 996",
     href: "https://wa.me/254724273996?text=Hello%20Ulnar%20Medical,%20I%20would%20like%20to%20inquire%20about%20a%20diagnostic%20appointment.",
   },
   {
-    label: "Email",
-    value: "appointments@ulnarmedical.com",
+    label: "Email", value: "appointments@ulnarmedical.com",
     href: "mailto:appointments@ulnarmedical.com?subject=Appointment%20Inquiry",
   },
   {
-    label: "Phone",
-    value: "+254 724 273 996",
+    label: "Phone", value: "+254 724 273 996",
     href: "tel:+254724273996",
   },
 ];
 
-export function BookingHub() {
-  /* Inject Visme embed script once on mount */
-  useEffect(() => {
-    const scriptId = "visme-forms-embed-script";
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.src = "https://static-bundles.visme.co/forms/vismeforms-embed.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
+const AVAILABLE_DATES = [
+  { date: 14, hasSlots: true }, { date: 15, hasSlots: true },
+  { date: 20, hasSlots: true }, { date: 21, hasSlots: true },
+  { date: 22, hasSlots: true }, { date: 23, hasSlots: true },
+  { date: 27, hasSlots: true }, { date: 28, hasSlots: true },
+];
 
+const TIME_SLOTS = [
+  { time: "09:00", available: true }, { time: "09:45", available: true },
+  { time: "10:30", available: true }, { time: "11:15", available: true },
+  { time: "13:30", available: true }, { time: "14:15", available: true },
+  { time: "15:00", available: true }, { time: "15:45", available: true },
+  { time: "16:30", available: true }, { time: "17:15", available: true },
+];
+
+export function BookingHub() {
   return (
     <section
       id="booking"
       className="relative w-full overflow-hidden bg-[#091428] py-24 px-5 sm:px-8"
     >
-      {/* ── Ambient background ──────────────────────────────── */}
+      {/* ── Ambient orbs ─────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#122954]/10 to-black/40" />
-
-      {/* Gold orb — top right */}
       <motion.div
-        className="pointer-events-none absolute -top-40 -right-40 h-[560px] w-[560px] rounded-full bg-[#FFD43A]/6 blur-[140px]"
-        animate={{ scale: [1, 1.18, 1], opacity: [0.5, 0.8, 0.5] }}
+        className="pointer-events-none absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-[#FFD43A]/6 blur-[140px]"
+        animate={{ scale: [1, 1.18, 1], opacity: [0.45, 0.75, 0.45] }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
-
-      {/* Rose orb — bottom left */}
       <motion.div
-        className="pointer-events-none absolute -bottom-40 -left-40 h-[560px] w-[560px] rounded-full bg-[#F4B9B9]/6 blur-[140px]"
-        animate={{ scale: [1, 1.25, 1], opacity: [0.35, 0.65, 0.35] }}
+        className="pointer-events-none absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-[#F4B9B9]/6 blur-[140px]"
+        animate={{ scale: [1, 1.25, 1], opacity: [0.3, 0.6, 0.3] }}
         transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
       />
 
-      {/* ── Content grid ────────────────────────────────────── */}
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+      <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* ════════════════ LEFT PANEL ════════════════ */}
+        {/* ── Section header ───────────────────────────────── */}
         <motion.div
-          className="flex flex-col justify-center"
+          className="mb-14 flex flex-col items-center text-center lg:flex-row lg:items-end lg:justify-between lg:text-left"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
+          viewport={{ once: true, margin: "-60px" }}
         >
-          {/* Eyebrow */}
-          <motion.p
-            variants={fadeUp}
-            className="mb-6 font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[#F4B9B9]"
-          >
-            — Book an Appointment —
-          </motion.p>
+          <div className="max-w-2xl">
+            <motion.p variants={fadeUp} className="mb-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[#F4B9B9]">
+              — Real-Time Scheduling Hub —
+            </motion.p>
+            <motion.h2
+              variants={fadeUp}
+              className="font-serif text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold italic leading-[1.05] tracking-tight text-white"
+              style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
+            >
+              Your diagnostic journey{" "}
+              <em className="not-italic text-[#FFD43A]">starts here.</em>
+            </motion.h2>
+          </div>
 
-          {/* Headline */}
-          <motion.h2
-            variants={fadeUp}
-            className="mb-5 font-serif text-[clamp(2.6rem,5vw,4rem)] font-bold italic leading-[1.05] tracking-tight text-white"
-            style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
+          {/* Trust signals — horizontal on desktop */}
+          <motion.div
+            variants={containerVariants}
+            className="mt-8 flex flex-col gap-3 sm:flex-row lg:mt-0 lg:shrink-0 lg:gap-6"
           >
-            Your diagnostic
-            <br />
-            journey{" "}
-            <em className="not-italic text-[#FFD43A]">starts here.</em>
-          </motion.h2>
-
-          {/* Subtext */}
-          <motion.p
-            variants={fadeUp}
-            className="mb-10 max-w-[42ch] font-sans text-base leading-relaxed text-white/55"
-          >
-            Specialist care in Nairobi — from first scan to results, we guide
-            every step with clinical precision and genuine warmth.
-          </motion.p>
-
-          {/* Trust signals */}
-          <motion.div className="mb-10 space-y-4" variants={containerVariants}>
             {TRUST.map(({ stat, label }) => (
               <motion.div
                 key={stat}
                 variants={slideIn}
-                className="flex items-center gap-5 border-l-2 border-[#FFD43A] pl-5"
+                className="flex items-center gap-3 border-l-2 border-[#FFD43A] pl-3"
               >
-                <span
-                  className="min-w-[80px] font-mono text-xl font-bold text-[#FFD43A]"
-                >
-                  {stat}
-                </span>
-                <span className="font-sans text-sm text-white/60">{label}</span>
+                <span className="font-mono text-lg font-bold text-[#FFD43A]">{stat}</span>
+                <span className="font-sans text-xs text-white/55 leading-tight max-w-[10ch]">{label}</span>
               </motion.div>
             ))}
           </motion.div>
+        </motion.div>
 
-          {/* Divider */}
-          <motion.div
-            variants={fadeUp}
-            className="mb-8 h-px w-full bg-white/8"
+        {/* ── Scheduler (full width) ───────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.85, ease: [0.25, 1, 0.5, 1] }}
+        >
+          <AppointmentScheduler
+            userName="Dr. Elizabeth"
+            userAvatar="https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=150"
+            meetingTitle="Diagnostic 3D/4D Scan & Consult"
+            meetingType="In-Clinic / 4D Ultrasound Suite"
+            duration="45 Minutes"
+            timezone="Africa/Nairobi"
+            availableDates={AVAILABLE_DATES}
+            timeSlots={TIME_SLOTS}
+            brandName="Space AI Automated Scheduling"
           />
+        </motion.div>
 
-          {/* Contact chips */}
-          <div className="mb-10 flex flex-wrap gap-3">
+        {/* ── Contact chips + social ───────────────────────── */}
+        <motion.div
+          className="mt-12 flex flex-col items-center gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {/* Direct contact chips */}
+          <div className="flex flex-wrap justify-center gap-3">
             {CONTACTS.map(({ label, value, href }, i) => (
               <motion.a
                 key={label}
@@ -196,63 +177,28 @@ export function BookingHub() {
             ))}
           </div>
 
-          {/* Watermark */}
-          <motion.p
-            variants={fadeUp}
-            className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.2em] text-white/18"
-          >
-            Ulnar Medical and Diagnostic Centre · Nairobi, Kenya
-          </motion.p>
-        </motion.div>
+          {/* Divider */}
+          <motion.div variants={fadeUp} className="h-px w-full max-w-sm bg-white/8" />
 
-        {/* ════════════════ RIGHT PANEL ════════════════ */}
-        <motion.div
-          className="flex flex-col"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.85, ease: [0.25, 1, 0.5, 1], delay: 0.1 }}
-        >
-          {/* Glass form card */}
-          <div className="visme-card relative overflow-hidden rounded-[2.5rem] border border-white/5 bg-[#0a1628]/75 p-6 shadow-2xl shadow-black/60 backdrop-blur-md md:p-8">
-            {/* Subtle inner glow ring */}
-            <div className="pointer-events-none absolute inset-0 rounded-[2.5rem] shadow-[inset_0_0_60px_rgba(18,41,84,0.4)]" />
-
-            {/* Corner accent — top right */}
-            <div className="pointer-events-none absolute right-8 top-8 h-16 w-16 rounded-full bg-[#FFD43A]/8 blur-2xl" />
-
-            {/* Visme form anchor */}
-            <div
-              className="visme_d"
-              data-title="Booking Contact Form"
-              data-url="4k97gx1z-booking-contact-form?fullPage=true"
-              data-domain="forms"
-              data-full-page="true"
-              data-min-height="620px"
-              data-form-id="181532"
-              style={{ width: "100%", minHeight: "620px" }}
-            />
-          </div>
-
-          {/* Privacy disclaimer */}
-          <p className="mt-5 px-2 text-center font-mono text-[0.6rem] font-bold uppercase leading-relaxed tracking-[0.16em] text-white/28">
+          {/* Privacy */}
+          <motion.p variants={fadeUp} className="px-4 text-center font-mono text-[0.6rem] font-bold uppercase leading-relaxed tracking-[0.16em] text-white/28">
             By submitting, you agree to our{" "}
-            <a
-              href="#privacy"
-              className="underline transition-colors hover:text-[#FFD43A]"
-            >
-              Privacy Policy
-            </a>
-            . Your data is used solely for appointment management.
-          </p>
+            <a href="#privacy" className="underline transition-colors hover:text-[#FFD43A]">Privacy Policy</a>.
+            {" "}Your data is used solely for appointment management.
+          </motion.p>
 
           {/* Social routing */}
-          <div className="mt-7 border-t border-white/5 pt-6">
+          <div className="w-full border-t border-white/5 pt-6">
             <p className="mb-4 text-center font-mono text-[0.58rem] font-bold uppercase tracking-[0.2em] text-[#F4B9B9]/70">
               Direct Clinic Routing
             </p>
             <SocialTooltip />
           </div>
+
+          {/* Watermark */}
+          <motion.p variants={fadeUp} className="font-mono text-[0.58rem] font-bold uppercase tracking-[0.2em] text-white/18">
+            Ulnar Medical and Diagnostic Centre · Nairobi, Kenya
+          </motion.p>
         </motion.div>
 
       </div>
