@@ -36,7 +36,6 @@ export function HeroSection() {
   const textY = useTransform(scrollY, [0, 700], [0, -110]);
   const opacity = useTransform(scrollY, [0, 500], [1, 0]);
 
-  /* Magnetic CTA Elements */
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const springX = useSpring(mx, { stiffness: 200, damping: 18 });
@@ -71,10 +70,10 @@ export function HeroSection() {
   return (
     <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e]">
       
-      {/* ── 🎥 INTEGRATED SCROLL SCRUB ANIMATION SYSTEM ── */}
+      {/* ── 🎥 EXPLICIT HERO-SCRUB FRAME TRANSITION BACKGROUND LAYER ── */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
         <HeroScrub
-          frameCount={120} // Adjusted loop parameter for optimal clinic caching speeds
+          frameCount={120}
           frameUrl={(i) =>
             `https://raw.githubusercontent.com/duthiljean/ferrari-hero-demo/main/${String((i % 300) + 1).padStart(4, "0")}.webp`
           }
@@ -85,7 +84,7 @@ export function HeroSection() {
         />
       </div>
 
-      {/* ── Navigation (Preserved) ── */}
+      {/* ── Navigation Block ── */}
       <motion.nav
         ref={navRef}
         className="relative z-40"
@@ -115,14 +114,14 @@ export function HeroSection() {
         </div>
       </motion.nav>
 
-      {/* ── Hero content area (Preserved with Dual-Clinician Visual Panel Mapping) ── */}
+      {/* ── Hero Presentation Shell ── */}
       <motion.div
         className="relative z-20 px-6 md:px-14 pt-10 md:pt-16 pb-32"
         style={{ y: textY, opacity, willChange: "transform" }}
       >
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
 
-          {/* Left Column Text Block */}
+          {/* Left Layout Text Area */}
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
               <div className="h-px w-10 bg-[#FFD43A]" />
@@ -154,7 +153,7 @@ export function HeroSection() {
               </motion.a>
             </motion.div>
 
-            {/* Stats matrix */}
+            {/* Metrics Breakdown */}
             <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-14 pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
               {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
                 <div key={label}>
@@ -165,7 +164,7 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right Column: Split Dual-Clinician Matrix */}
+          {/* Right Column: Original Dual Clinician Graphics */}
           <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
               <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
