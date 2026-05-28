@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Logo } from "./Logo";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
@@ -54,7 +55,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Email",
-    href: "mailto:appointments@ulnarmedical.com?subject=Appointment%20Inquiry",
+    href: "mailto:lunamedimaging@gmail.com?subject=Appointment%20Inquiry",
     color: "#EA4335",
     live: true,
   },
@@ -250,10 +251,10 @@ export function ContactFooter() {
               +254 724 273 996
             </a>
             <a
-              href="mailto:appointments@ulnarmedical.com"
+              href="mailto:lunamedimaging@gmail.com"
               className="font-body text-[rgba(248,246,242,0.45)] text-sm hover:text-[#F4B9B9] transition-colors duration-300"
             >
-              appointments@ulnarmedical.com
+              lunamedimaging@gmail.com
             </a>
           </div>
         </motion.div>
@@ -267,7 +268,9 @@ export function ContactFooter() {
         >
           {FOOTER_COLS.map((col) => (
             <motion.div key={col.title} variants={colVariants}>
-              <h4 className="label-mono text-[#F4B9B9] mb-5">{col.title}</h4>
+              <h4 className="label-mono text-[#F4B9B9] mb-5">
+                <AnimatedText text={col.title} splitBy="word" delay={0.2} />
+              </h4>
               <ul className="flex flex-col gap-3">
                 {col.links.map((link) => (
                   <li key={link.label}>
@@ -308,8 +311,19 @@ export function ContactFooter() {
                 cursor: "default",
               }}
             >
-              Ulnar Medical
+              <AnimatedText text="Ulnar" splitBy="char" delay={0.5} />{" "}
+              <AnimatedText text="Medical" splitBy="char" delay={0.68} />
             </div>
+            <p
+              className="font-mono uppercase select-none mt-2"
+              style={{
+                fontSize: "clamp(0.5rem, 0.9vw, 0.72rem)",
+                letterSpacing: "0.26em",
+                color: "rgba(248,246,242,0.22)",
+              }}
+            >
+              Diagnostic Centre
+            </p>
             <p className="font-body text-[rgba(248,246,242,0.35)] text-xs mt-3 tracking-wide">
               ©2026 Ulnar Medical and Diagnostic Centre. All rights reserved.<br />
               Ngong Road, Nairobi, Kenya.

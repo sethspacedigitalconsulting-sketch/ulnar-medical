@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
@@ -64,7 +65,7 @@ export function AboutSection() {
           </div>
 
           <h2
-            className="font-display italic font-semibold text-[#F8F6F2] mb-8 text-balance"
+            className="font-display italic font-semibold text-[#F8F6F2] mb-8"
             style={{
               fontFamily: "var(--font-cormorant), serif",
               fontSize: "clamp(2.2rem, 4.5vw, 3.6rem)",
@@ -72,30 +73,34 @@ export function AboutSection() {
               letterSpacing: "-0.02em",
             }}
           >
-            A clinic built on precision, trust,{" "}
-            <span style={{ color: "#F4B9B9" }}>and compassion.</span>
+            <AnimatedText text="A clinic built on precision, trust," />
+            {" "}
+            <AnimatedText text="and compassion." style={{ color: "#F4B9B9" }} delay={0.22} />
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-body text-[rgba(248,246,242,0.55)] text-sm leading-relaxed">
-            <p>
-              Founded in 2021 along Ngong Road, Nairobi, Ulnar Medical and
-              Diagnostic Centre was established with one mission: to deliver
-              world-class obstetric and gynaecological diagnostics in an
-              environment where every woman feels genuinely seen and cared for.
-            </p>
-            <p>
-              We specialize in diagnostic services tailored for women of
-              African descent — combining advanced 3D/4D imaging technology
-              with deeply personalized clinical care. Our multidisciplinary team
-              of radiologists, gynaecologists, and pathologists works under one
-              roof, making your diagnostic journey seamless, clear, and warm.
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm leading-relaxed">
+            <AnimatedText
+              text="Founded in 2021 along Ngong Road, Nairobi, Ulnar Medical and Diagnostic Centre was established with one mission: to deliver world-class obstetric and gynaecological diagnostics in an environment where every woman feels genuinely seen and cared for."
+              as="p"
+              splitBy="word"
+              className="font-body text-[rgba(248,246,242,0.55)]"
+              delay={0.1}
+            />
+            <AnimatedText
+              text="We specialize in diagnostic services tailored for women of African descent — combining advanced 3D/4D imaging technology with deeply personalized clinical care. Our multidisciplinary team works under one roof, making your diagnostic journey seamless, clear, and warm."
+              as="p"
+              splitBy="word"
+              className="font-body text-[rgba(248,246,242,0.55)]"
+              delay={0.15}
+            />
           </div>
-          <p className="mt-5 font-body text-[rgba(248,246,242,0.5)] text-sm leading-relaxed max-w-2xl">
-            Every scan, every result, and every conversation we have is guided
-            by a commitment to accuracy, dignity, and trust. Because great
-            diagnostics is not just science — it is care made visible.
-          </p>
+          <AnimatedText
+            text="Every scan, every result, and every conversation we have is guided by a commitment to accuracy, dignity, and trust. Because great diagnostics is not just science — it is care made visible."
+            as="p"
+            splitBy="word"
+            className="mt-5 font-body text-[rgba(248,246,242,0.5)] text-sm leading-relaxed max-w-2xl"
+            delay={0.2}
+          />
         </motion.div>
 
         {/* ── Specialist cards ── */}
@@ -141,9 +146,11 @@ export function AboutSection() {
                     lineHeight: 1.2,
                   }}
                 >
-                  {doc.name}
+                  <AnimatedText text={doc.name} splitBy="word" delay={0.3 + i * 0.1} />
                 </h3>
-                <p className="label-mono text-[#FFD43A] mb-3">{doc.specialty}</p>
+                <p className="label-mono text-[#FFD43A] mb-3">
+                  <AnimatedText text={doc.specialty} splitBy="word" delay={0.35 + i * 0.1} />
+                </p>
                 <p className="font-body text-[rgba(248,246,242,0.48)] text-xs leading-relaxed">
                   {doc.bio}
                 </p>

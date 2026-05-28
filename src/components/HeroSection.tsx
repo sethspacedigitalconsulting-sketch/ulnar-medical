@@ -13,6 +13,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "./Logo";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -301,18 +302,14 @@ export function HeroSection() {
             </div>
 
             {/* Subtext */}
-            <motion.p
-              variants={fadeUpVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ delay: 0.9 }}
+            <AnimatedText
+              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary — tailored for women of African descent."
+              as="p"
+              splitBy="word"
               className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed"
               style={{ fontSize: "1.05rem" }}
-            >
-              Providing highly accurate ultrasound, compassionate OB/GYN care, and
-              specialized diagnostic imaging in a patient-centered sanctuary —
-              tailored for women of African descent.
-            </motion.p>
+              delay={0.9}
+            />
 
             {/* CTAs */}
             <motion.div

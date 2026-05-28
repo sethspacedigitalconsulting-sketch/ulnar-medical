@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { SocialTooltip } from "@/components/ui/social-media";
 import { AppointmentScheduler } from "@/components/ui/appointment-scheduler";
+import { AnimatedText } from "@/components/ui/animated-text";
+import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
 
 /* ── Variant system ──────────────────────────────────────────── */
 const containerVariants = {
@@ -41,8 +43,8 @@ const CONTACTS = [
     href: "https://wa.me/254724273996?text=Hello%20Ulnar%20Medical,%20I%20would%20like%20to%20inquire%20about%20a%20diagnostic%20appointment.",
   },
   {
-    label: "Email", value: "appointments@ulnarmedical.com",
-    href: "mailto:appointments@ulnarmedical.com?subject=Appointment%20Inquiry",
+    label: "Email", value: "lunamedimaging@gmail.com",
+    href: "mailto:lunamedimaging@gmail.com?subject=Appointment%20Inquiry",
   },
   {
     label: "Phone", value: "+254 724 273 996",
@@ -86,6 +88,33 @@ export function BookingHub() {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
+        {/* ── Fluid morphing display headline ──────────────── */}
+        <motion.div
+          className="mb-10 flex flex-col items-center text-center"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.9, ease: [0.25, 1, 0.5, 1] }}
+        >
+          <FluidTextMorph
+            wordPairs={[
+              ["Maternal Sanctuary", "3D / 4D Precision"],
+              ["Expert Diagnostics", "Same-Day Results"],
+              ["Trusted OB/GYN", "Rapid Triage"],
+              ["Obstetric Care", "Modern Medicine"],
+            ]}
+            animationProps={{
+              initialColor: "#F4B9B9",
+              animateColor: "#FFD43A",
+              exitColor: "#122954",
+            }}
+            autoCycleMs={3400}
+          />
+          <p className="mt-1 font-mono text-[0.55rem] font-bold uppercase tracking-[0.22em] text-white/20">
+            Hover to reveal · Click to cycle
+          </p>
+        </motion.div>
+
         {/* ── Section header ───────────────────────────────── */}
         <motion.div
           className="mb-14 flex flex-col items-center text-center lg:flex-row lg:items-end lg:justify-between lg:text-left"
@@ -96,15 +125,15 @@ export function BookingHub() {
         >
           <div className="max-w-2xl">
             <motion.p variants={fadeUp} className="mb-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[#F4B9B9]">
-              — Real-Time Scheduling Hub —
+              Real-Time Scheduling Hub
             </motion.p>
             <motion.h2
               variants={fadeUp}
               className="font-serif text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold italic leading-[1.05] tracking-tight text-white"
               style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
             >
-              Your diagnostic journey{" "}
-              <em className="not-italic text-[#FFD43A]">starts here.</em>
+              <AnimatedText text="Your diagnostic journey" delay={0.1} />{" "}
+              <AnimatedText text="starts here." style={{ color: "#FFD43A" }} delay={0.32} />
             </motion.h2>
           </div>
 

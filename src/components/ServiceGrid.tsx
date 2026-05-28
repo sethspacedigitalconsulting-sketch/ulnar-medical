@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { AnimatedText } from "@/components/ui/animated-text";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -188,7 +189,7 @@ export function ServiceGrid() {
             </div>
 
             <h2
-              className="font-display italic font-semibold text-[#F8F6F2] text-balance"
+              className="font-display italic font-semibold text-[#F8F6F2]"
               style={{
                 fontFamily: "var(--font-cormorant), serif",
                 fontSize: "clamp(2rem, 4vw, 3.2rem)",
@@ -196,16 +197,21 @@ export function ServiceGrid() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Precision diagnostics,{" "}
-              <span style={{ color: "#F4B9B9" }}>deeply personal</span> care.
+              <AnimatedText text="Precision diagnostics," />{" "}
+              <AnimatedText text="deeply personal" style={{ color: "#F4B9B9" }} delay={0.18} />
+              {" "}
+              <AnimatedText text="care." delay={0.32} />
             </h2>
 
             <ProgressDots count={SERVICES.length} />
 
-            <p className="font-body text-[rgba(248,246,242,0.45)] text-sm leading-relaxed mt-5 max-w-[240px]">
-              Every service at Ulnar Medical is designed to deliver clinical
-              accuracy without sacrificing warmth.
-            </p>
+            <AnimatedText
+              text="Every service at Ulnar Medical is designed to deliver clinical accuracy without sacrificing warmth."
+              as="p"
+              splitBy="word"
+              className="font-body text-[rgba(248,246,242,0.45)] text-sm leading-relaxed mt-5 max-w-[240px]"
+              delay={0.3}
+            />
 
             {/* View all link */}
             <a
@@ -219,14 +225,10 @@ export function ServiceGrid() {
             </a>
           </motion.div>
 
-          {/* ── Right: Card stack ── */}
+          {/* ── Right: Card stack — responsive width for mobile ── */}
           <div
-            className="relative flex-shrink-0"
-            style={{
-              width: "min(500px, 46vw)",
-              height: "min(580px, 68vh)",
-              transformStyle: "preserve-3d",
-            }}
+            className="relative flex-shrink-0 w-[86vw] md:w-[46vw] max-w-[500px] h-[clamp(340px,68vh,580px)]"
+            style={{ transformStyle: "preserve-3d" }}
           >
             {SERVICES.map((service, i) => (
               <div

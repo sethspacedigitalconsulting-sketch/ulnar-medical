@@ -13,9 +13,9 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Email",
-    href: "mailto:appointments@ulnarmedical.com?subject=Appointment%20Inquiry",
+    href: "mailto:lunamedimaging@gmail.com?subject=Appointment%20Inquiry",
     color: "#EA4335",
-    tooltip: "appointments@ulnarmedical.com",
+    tooltip: "lunamedimaging@gmail.com",
     live: true,
   },
   {
@@ -35,7 +35,7 @@ const SOCIAL_LINKS = [
   {
     label: "TikTok",
     href: "#",
-    color: "#ffffff",
+    color: "#69C9D0",
     tooltip: "TikTok — coming soon",
     live: false,
   },

@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 export function MapEmbed() {
   const ref = useRef<HTMLDivElement>(null);
@@ -21,9 +22,11 @@ export function MapEmbed() {
         >
           <div className="flex items-center gap-3 mb-5">
             <div className="h-px w-8 bg-[#FFD43A]" />
-            <span className="label-mono text-[rgba(248,246,242,0.4)]">
-              Find Us — Ngong Road, Nairobi
-            </span>
+            <AnimatedText
+              text="Find Us — Ngong Road, Nairobi"
+              splitBy="word"
+              className="label-mono text-[rgba(248,246,242,0.4)]"
+            />
           </div>
 
           <div
