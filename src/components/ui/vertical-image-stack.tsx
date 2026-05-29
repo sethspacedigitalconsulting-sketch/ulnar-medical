@@ -1,12 +1,5 @@
 "use client";
 
-import React from "react";
-
-export function VerticalImageStack() {
-    return <div className="hidden" />;
-}
-"use client";
-
 import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
@@ -109,8 +102,6 @@ export function VerticalImageStack() {
   const handleWheel = useCallback(
     (e: WheelEvent) => {
       if (Math.abs(e.deltaY) > 20) {
-        // Prevent outer background from scrolling when shifting cards
-        if (e.cancelable) e.preventDefault();
         navigate(e.deltaY > 0 ? 1 : -1);
       }
     },
@@ -120,7 +111,7 @@ export function VerticalImageStack() {
   useEffect(() => {
     const container = document.getElementById("ulnar-stack-container");
     if (!container) return;
-    container.addEventListener("wheel", handleWheel, { passive: false });
+    container.addEventListener("wheel", handleWheel, { passive: true });
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
@@ -161,7 +152,6 @@ export function VerticalImageStack() {
       id="ulnar-stack-container" 
       className="relative flex h-[75vh] w-full items-center justify-center overflow-hidden bg-transparent border border-white/5 rounded-3xl"
     >
-      {/* 🔮 Split Content Framework: Text Info on Left, 3D Core in Center */}
       <div className="w-full max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 items-center gap-10">
         
         {/* Left Synchronized Info Metadata Panel */}
@@ -226,7 +216,6 @@ export function VerticalImageStack() {
                       isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
                     }`}
                   >
-                    {/* Highlight Glow Overlay */}
                     <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
 
                     <Image
@@ -239,7 +228,6 @@ export function VerticalImageStack() {
                       priority={isCurrent}
                     />
 
-                    {/* Dark Premium Base Vignette Overlay */}
                     <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
                   </div>
                 </motion.div>
