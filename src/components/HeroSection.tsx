@@ -8,6 +8,7 @@ import {
   useTransform,
   useMotionValue,
   useSpring,
+  MotionValue,
 } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -47,7 +48,7 @@ const GRADIENT_OVERLAYS = [
   "linear-gradient(135deg, rgba(255,212,58,0.35) 0%, rgba(8,15,30,0.85) 100%)",
 ];
 
-/* 🩻 Individual 3D Leaflet Card Rendering Logic */
+/* 🩻 Individual 3D Leaflet Card Rendering Logic with Strict Motion Types */
 function InteractivePanel({
   index,
   total,
@@ -56,8 +57,8 @@ function InteractivePanel({
 }: {
   index: number;
   total: number;
-  waveY: any;
-  scaleY: any;
+  waveY: MotionValue<number>;
+  scaleY: MotionValue<number>;
 }) {
   const t = index / (total - 1);
   const baseZ = (index - (total - 1)) * Z_SPREAD;
@@ -146,9 +147,9 @@ export function HeroSection() {
   };
   const handleMouseLeaveCTA = () => { mx.set(0); my.set(0); };
 
-  /* 💎 3D Stacked Card Tracking Physics Array */
-  const waveYSprings = Array.from({ length: PANEL_COUNT }, () => useSpring(0, WAVE_SPRING));
-  const scaleYSprings = Array.from({ length: PANEL_COUNT }, () => useSpring(1, WAVE_SPRING));
+  /* 💎 3D Stacked Card Tracking Physics Array mapped via explicit internal layout hook loops */
+  const waveYSprings = useRef(Array.from({ length: PANEL_COUNT }, () => useSpring(0, WAVE_SPRING))).current;
+  const scaleYSprings = useRef(Array.from({ length: PANEL_COUNT }, () => useSpring(1, WAVE_SPRING))).current;
 
   const rotY = useSpring(-42, SCENE_SPRING);
   const rotX = useSpring(18, SCENE_SPRING);
@@ -294,42 +295,4 @@ export function HeroSection() {
               as="p" splitBy="word" className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed" style={{ fontSize: "1.05rem" }} delay={0.9}
             />
 
-            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.05 }}>
-              <motion.button
-                style={{ x: springX, y: springY, willChange: "transform" }} onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseLeaveCTA}
-                onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-                className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
-                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              >
-                <span className="relative z-10 flex items-center gap-2">Book Diagnostic Scan <span>→</span></span>
-              </motion.button>
-
-              <motion.a href="https://wa.me/254724273996?text=Hello" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-6 py-4 rounded-full border border-[rgba(244,185,185,0.3)] text-[#F4B9B9] font-body text-sm hover:border-[#F4B9B9] transition-all group">
-                Chat on WhatsApp ↗
-              </motion.a>
-            </motion.div>
-
-            {/* Metrics Breakdown */}
-            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-14 pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
-              {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
-                <div key={label}>
-                  <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">{value}</div>
-                  <div className="label-mono text-[rgba(248,246,242,0.4)] mt-0.5">{label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right Column: Original Dual Clinician Graphics */}
-          <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-              <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
-                <div style={{ flex: 1, overflow: "hidden" }}>
-                  <img src="/images/clinician-1.jpg" alt="Female Clinician" className="w-full h-full object-cover" />
-                </div>
-                <div style={{ flex: 1, overflow: "hidden" }}>
-                  <img src="/images/clinician-2.jpg" alt="Male Doctor" className="w-full h-full object-cover" />
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-              <div className="absolute
+            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible"
