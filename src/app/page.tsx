@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
@@ -16,24 +16,56 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
       <HeroSection />
-      
-      {/* ── Every Specialty · One Destination ── */}
-      <section className="relative bg-[#080f1e] pt-20 pb-0 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-14 mb-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          >
-            <span className="font-mono text-xs text-[#FFD43A] tracking-widest uppercase">
-              Ulnar Medical Capabilities
-            </span>
-            <h2 className="text-3xl md:text-5xl font-display font-bold mt-2 text-white leading-tight">
-              Every Specialty,{" "}
-              <span className="text-[#F4B9B9] italic">One Destination</span>
+
+      {/* ── Every Specialty · One Destination (Advanced Typography Reveal) ── */}
+      <section className="relative bg-[#080f1e] pt-24 pb-0 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 mb-12">
+          <div className="flex flex-col items-start text-left">
+
+            {/* Tagline Reveal Mask */}
+            <div className="overflow-hidden mb-3">
+              <motion.span
+                initial={{ y: "100%" }}
+                whileInView={{ y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="block font-mono text-xs text-[#FFD43A] tracking-widest uppercase"
+              >
+                Ulnar Medical Capabilities
+              </motion.span>
+            </div>
+
+            {/* Heading Word-by-Word Character Glide */}
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight tracking-tight flex flex-wrap gap-x-2.5 gap-y-1">
+              {["Every", "Specialty,"].map((word, index) => (
+                <span key={index} className="relative inline-flex overflow-hidden">
+                  <motion.span
+                    initial={{ y: "110%" }}
+                    whileInView={{ y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ duration: 0.8, delay: index * 0.06, ease: [0.76, 0, 0.24, 1] }}
+                    className="inline-block"
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+              {["One", "Destination"].map((word, index) => (
+                <span key={index} className="relative inline-flex overflow-hidden">
+                  <motion.span
+                    initial={{ y: "110%" }}
+                    whileInView={{ y: 0 }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{ duration: 0.8, delay: (index + 2) * 0.06, ease: [0.76, 0, 0.24, 1] }}
+                    className="inline-block text-[#F4B9B9] italic font-medium"
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
             </h2>
-          </motion.div>
+
+          </div>
         </div>
         <VerticalImageStack />
       </section>
@@ -96,19 +128,18 @@ function LocalServiceShowcase() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {services.map((svc) => (
-            <div 
+            <div
               key={svc.id}
               onClick={() => setExpandedCard(expandedCard === svc.id ? null : svc.id)}
-              className={`p-8 rounded-2xl border bg-[#080f1e]/40 backdrop-blur-md cursor-pointer transition-all duration-300 select-none text-left ${
-                expandedCard === svc.id ? 'border-[#F4B9B9] shadow-lg shadow-black/40' : 'border-white/5 hover:border-white/10'
-              }`}
+              className={`p-8 rounded-2xl border bg-[#080f1e]/40 backdrop-blur-md cursor-pointer transition-all duration-300 select-none text-left ${expandedCard === svc.id ? 'border-[#F4B9B9] shadow-lg shadow-black/40' : 'border-white/5 hover:border-white/10'
+                }`}
             >
               <span className="font-mono text-[10px] text-[#FFD43A] tracking-wider uppercase bg-[#FFD43A]/5 px-2.5 py-1 rounded-md border border-[#FFD43A]/10">
                 {svc.badge}
               </span>
               <h3 className="text-xl font-semibold text-white mt-4 mb-2">{svc.title}</h3>
               <p className="text-white/60 text-sm leading-relaxed">{svc.desc}</p>
-              
+
               {svc.bullets && expandedCard === svc.id && (
                 <ul className="mt-4 space-y-2 border-t border-white/5 pt-4">
                   {svc.bullets.map((bullet, idx) => (
