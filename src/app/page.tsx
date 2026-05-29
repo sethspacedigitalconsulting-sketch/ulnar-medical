@@ -1,7 +1,6 @@
 ﻿'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { HeroSection } from "@/components/HeroSection";
 import { VerticalImageStack } from "@/components/ui/vertical-image-stack";
 import { InfiniteParallaxSlider } from "@/components/ui/argent-loop-infinite-slider";
@@ -17,58 +16,8 @@ export default function Home() {
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
       <HeroSection />
 
-      {/* ── Every Specialty · One Destination (Advanced Typography Reveal) ── */}
-      <section className="relative bg-[#080f1e] pt-24 pb-0 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 md:px-14 mb-12">
-          <div className="flex flex-col items-start text-left">
-
-            {/* Tagline Reveal Mask */}
-            <div className="overflow-hidden mb-3">
-              <motion.span
-                initial={{ y: "100%" }}
-                whileInView={{ y: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className="block font-mono text-xs text-[#FFD43A] tracking-widest uppercase"
-              >
-                Ulnar Medical Capabilities
-              </motion.span>
-            </div>
-
-            {/* Heading Word-by-Word Character Glide */}
-            <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight tracking-tight flex flex-wrap gap-x-2.5 gap-y-1">
-              {["Every", "Specialty,"].map((word, index) => (
-                <span key={index} className="relative inline-flex overflow-hidden">
-                  <motion.span
-                    initial={{ y: "110%" }}
-                    whileInView={{ y: 0 }}
-                    viewport={{ once: true, margin: "-60px" }}
-                    transition={{ duration: 0.8, delay: index * 0.06, ease: [0.76, 0, 0.24, 1] }}
-                    className="inline-block"
-                  >
-                    {word}
-                  </motion.span>
-                </span>
-              ))}
-              {["One", "Destination"].map((word, index) => (
-                <span key={index} className="relative inline-flex overflow-hidden">
-                  <motion.span
-                    initial={{ y: "110%" }}
-                    whileInView={{ y: 0 }}
-                    viewport={{ once: true, margin: "-60px" }}
-                    transition={{ duration: 0.8, delay: (index + 2) * 0.06, ease: [0.76, 0, 0.24, 1] }}
-                    className="inline-block text-[#F4B9B9] italic font-medium"
-                  >
-                    {word}
-                  </motion.span>
-                </span>
-              ))}
-            </h2>
-
-          </div>
-        </div>
-        <VerticalImageStack />
-      </section>
+      {/* ── Beautifully Integrated 3D Core Specialty Panel ── */}
+      <VerticalImageStack />
 
       <InfiniteParallaxSlider />
       <AboutSection />

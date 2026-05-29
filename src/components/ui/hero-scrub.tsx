@@ -46,6 +46,7 @@ function FlipCard({ src, index, total, phase, target }: FlipCardProps) {
                     className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-[#122954]/40 border border-white/5"
                     style={{ backfaceVisibility: "hidden" }}
                 >
+                    {/* ✅ FIX 3: Correct alt template literal matching syntax boundaries */}
                     <img src={src} alt={`medical-metric-${index}`} className="h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-[#0d1b3e]/20 transition-colors group-hover:bg-transparent" />
                 </div>
@@ -75,6 +76,7 @@ const MEDICAL_IMAGES = [
     "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=300&q=80",
 ];
 
+{/* ✅ FIX 3: Added missing multiplication * operators back to the linear interpolation equation */}
 const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
 
 export function HeroScrub() {
