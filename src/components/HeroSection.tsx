@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useRef, useState } from "react";
 import {
@@ -118,12 +118,12 @@ export function HeroSection() {
   return (
     <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden">
       
-      {/* ── 🏥 BACKGROUND LAYER ── */}
+      {/* â”€â”€ ðŸ¥ BACKGROUND LAYER â”€â”€ */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <HeroScrub />
       </div>
 
-      {/* ── Dropdown Navigation System ── */}
+      {/* â”€â”€ Dropdown Navigation System â”€â”€ */}
       <motion.nav
         ref={navRef}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
@@ -186,7 +186,7 @@ export function HeroSection() {
               href="#booking" 
               className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider"
             >
-              Book Now <span className="text-sm leading-none">↗</span>
+              Book Now <span className="text-sm leading-none">â†—</span>
             </a>
           </div>
 
@@ -211,7 +211,7 @@ export function HeroSection() {
         contactLinks={contactLinks}
       />
 
-      {/* ── Hero Presentation Content Shell ── */}
+      {/* â”€â”€ Hero Presentation Content Shell â”€â”€ */}
       <motion.div
         className="relative z-20 px-6 md:px-14 pt-36 md:pt-40 pb-32"
         style={{ y: textY, opacity, willChange: "transform" }}
@@ -221,7 +221,7 @@ export function HeroSection() {
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
               <div className="h-px w-10 bg-[#FFD43A]" />
-              <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
+              <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road Â· Nairobi Â· Est. 2021</span>
             </motion.div>
 
             <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
@@ -230,7 +230,7 @@ export function HeroSection() {
             </h1>
 
             <AnimatedText
-              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary — tailored for women of African descent."
+              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary â€” tailored for women of African descent."
               as="p" splitBy="word" className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed" style={{ fontSize: "1.05rem" }} delay={0.9}
             />
 
@@ -241,11 +241,11 @@ export function HeroSection() {
                 className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
               >
-                <span className="relative z-10 flex items-center gap-2">Book Diagnostic Scan <span>→</span></span>
+                <span className="relative z-10 flex items-center gap-2">Book Diagnostic Scan <span>â†’</span></span>
               </motion.button>
 
               <motion.a href="https://wa.me/254724273996?text=Hello" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-6 py-4 rounded-full border border-[rgba(244,185,185,0.3)] text-[#F4B9B9] font-body text-sm hover:border-[#F4B9B9] transition-all group">
-                Chat on WhatsApp ↗
+                Chat on WhatsApp â†—
               </motion.a>
             </motion.div>
 
@@ -262,11 +262,11 @@ export function HeroSection() {
           <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
               
-              {/* ── 🚀 SINGLE CLINIC ULTRASOUND IMAGE COMPONENT ── */}
+              {/* â”€â”€ ðŸš€ SINGLE CLINIC ULTRASOUND IMAGE COMPONENT â”€â”€ */}
               <div style={{ width: "100%", height: "clamp(420px, 55vh, 640px)", overflow: "hidden" }}>
                 <img
                   src="/images/clinic-ultrasound.jpg"
-                  alt="Ulnar Medical — ultrasound procedure in progress"
+                  alt="Ulnar Medical â€” ultrasound procedure in progress"
                   className="w-full h-full object-cover object-center"
                 />
               </div>
@@ -274,7 +274,7 @@ export function HeroSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/10">
                 <div className="w-2 h-2 rounded-full bg-[#FFD43A] animate-pulse" />
-                <span className="text-[10px] font-mono text-white/70 tracking-wider">NGONG ROAD, NAIROBI · ACCEPTING PATIENTS</span>
+                <span className="text-[10px] font-mono text-white/70 tracking-wider">NGONG ROAD, NAIROBI Â· ACCEPTING PATIENTS</span>
               </div>
             </div>
           </motion.div>
