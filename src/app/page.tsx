@@ -1,4 +1,5 @@
-﻿'use client';
+import { motion } from 'framer-motion';
+'use client';
 
 import { useState } from 'react';
 import { HeroSection } from "@/components/HeroSection";
@@ -15,7 +16,26 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
       <HeroSection />
-      <VerticalImageStack />
+      {/* ── Every Specialty · One Destination ── */}
+<section className="relative bg-[#080f1e] pt-20 pb-0 overflow-hidden">
+  <div className="max-w-7xl mx-auto px-6 md:px-14 mb-10">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+    >
+      <span className="font-mono text-xs text-[#FFD43A] tracking-widest uppercase">
+        Ulnar Medical Capabilities
+      </span>
+      <h2 className="text-3xl md:text-5xl font-display font-bold mt-2 text-white leading-tight">
+        Every Specialty,{" "}
+        <span className="text-[#F4B9B9] italic">One Destination</span>
+      </h2>
+    </motion.div>
+  </div>
+  <VerticalImageStack />
+</section>
       <InfiniteParallaxSlider />
       <AboutSection />
       <LocalServiceShowcase />
