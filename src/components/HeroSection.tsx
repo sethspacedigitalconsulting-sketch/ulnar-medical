@@ -176,3 +176,137 @@ export function HeroSection() {
                     ))}
                   </div>
                 </NavigationMenuContent>
+              </NavigationMenuItem>
+
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Action CTA Integration */}
+          <div className="hidden items-center gap-4 md:flex">
+            <a 
+              href="#booking" 
+              className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider"
+            >
+              Book Now <span className="text-sm leading-none">↗</span>
+            </a>
+          </div>
+
+          {/* Mobile Controller Handle */}
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden border-white/10 text-white bg-transparent"
+          >
+            <MenuToggleIcon open={mobileMenuOpen} className="size-5" duration={300} />
+          </Button>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Drawer Injection */}
+      <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+
+      {/* ── Hero Presentation Content Shell ── */}
+      <motion.div
+        className="relative z-20 px-6 md:px-14 pt-36 md:pt-40 pb-32"
+        style={{ y: textY, opacity, willChange: "transform" }}
+      >
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
+
+          <div className="flex-1 min-w-0 flex flex-col">
+            <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
+              <div className="h-px w-10 bg-[#FFD43A]" />
+              <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
+            </motion.div>
+
+            <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
+              Modern OB/GYN <br />
+              <span className="text-[#FFD43A] italic">Diagnostics</span>
+            </h1>
+
+            <AnimatedText
+              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary — tailored for women of African descent."
+              as="p" splitBy="word" className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed" style={{ fontSize: "1.05rem" }} delay={0.9}
+            />
+
+            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.05 }}>
+              <motion.button
+                style={{ x: springX, y: springY, willChange: "transform" }} onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseLeaveCTA}
+                onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
+                className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
+                whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              >
+                <span className="relative z-10 flex items-center gap-2">Book Diagnostic Scan <span>→</span></span>
+              </motion.button>
+
+              <motion.a href="https://wa.me/254724273996?text=Hello" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-6 py-4 rounded-full border border-[rgba(244,185,185,0.3)] text-[#F4B9B9] font-body text-sm hover:border-[#F4B9B9] transition-all group">
+                Chat on WhatsApp ↗
+              </motion.a>
+            </motion.div>
+
+            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-14 pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
+              {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
+                <div key={label}>
+                  <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">{value}</div>
+                  <div className="label-mono text-[rgba(248,246,242,0.4)] mt-0.5">{label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+              <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  <img src="/images/clinician-1.jpg" alt="Female Clinician" className="w-full h-full object-cover" />
+                </div>
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  <img src="/images/clinician-2.jpg" alt="Male Doctor" className="w-full h-full object-cover" />
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+              <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/10">
+                <div className="w-2 h-2 rounded-full bg-[#FFD43A] animate-pulse" />
+                <span className="text-[10px] font-mono text-white/70 tracking-wider">NGONG ROAD, NAIROBI · ACCEPTING PATIENTS</span>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
+/* 📥 Inner Core List Rendering Node */
+function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
+  return (
+    <NavigationMenuLink asChild>
+      <a 
+        href={href} 
+        className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group select-none text-left"
+      >
+        <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] group-hover:border-[#F4B9B9]/40 transition-all shadow-sm">
+          <Icon className="size-4" />
+        </div>
+        <div className="flex flex-col items-start justify-center min-w-0">
+          <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{title}</span>
+          <span className="text-white/40 text-xs leading-normal mt-0.5">{description}</span>
+        </div>
+      </a>
+    </NavigationMenuLink>
+  );
+}
+
+/* 📱 Portalized Mobile Overlay Stack Drawer */
+function MobileMenu({ open, setMobileMenuOpen }: { open: boolean; setMobileMenuOpen: (v: boolean) => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
+  if (!open || !mounted || typeof window === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 top-20 bottom-0 left-0 right-0 z-50 flex flex-col bg-[#080f1e]/98 backdrop-blur-xl border-t border-[#F4B9B9]/20 px-6 py-8 md:hidden overflow-y-auto">
+      <div className="flex flex-col gap-y-6 w-full">
+        
+        <div className="flex flex-col gap-y-3">
+          <span className="text-xs font-mono text-
