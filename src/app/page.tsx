@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 import { HeroSection } from "@/components/HeroSection";
 import { VerticalImageStack } from "@/components/ui/vertical-image-stack";
 import { InfiniteParallaxSlider } from "@/components/ui/argent-loop-infinite-slider";
@@ -17,26 +16,28 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
       <HeroSection />
-      {/* â”€â”€ Every Specialty Â· One Destination â”€â”€ */}
-<section className="relative bg-[#080f1e] pt-20 pb-0 overflow-hidden">
-  <div className="max-w-7xl mx-auto px-6 md:px-14 mb-10">
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-    >
-      <span className="font-mono text-xs text-[#FFD43A] tracking-widest uppercase">
-        Ulnar Medical Capabilities
-      </span>
-      <h2 className="text-3xl md:text-5xl font-display font-bold mt-2 text-white leading-tight">
-        Every Specialty,{" "}
-        <span className="text-[#F4B9B9] italic">One Destination</span>
-      </h2>
-    </motion.div>
-  </div>
-  <VerticalImageStack />
-</section>
+      
+      {/* ── Every Specialty · One Destination ── */}
+      <section className="relative bg-[#080f1e] pt-20 pb-0 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 md:px-14 mb-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
+          >
+            <span className="font-mono text-xs text-[#FFD43A] tracking-widest uppercase">
+              Ulnar Medical Capabilities
+            </span>
+            <h2 className="text-3xl md:text-5xl font-display font-bold mt-2 text-white leading-tight">
+              Every Specialty,{" "}
+              <span className="text-[#F4B9B9] italic">One Destination</span>
+            </h2>
+          </motion.div>
+        </div>
+        <VerticalImageStack />
+      </section>
+
       <InfiniteParallaxSlider />
       <AboutSection />
       <LocalServiceShowcase />
@@ -61,7 +62,7 @@ function LocalServiceShowcase() {
       id: 5,
       badge: 'MFM SPECIALIST CARE',
       title: 'Maternal-Fetal Specialist Services',
-      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies â€” delivered with advanced precision.',
+      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies — delivered with advanced precision.',
       bullets: [
         'Pre-conception consultation and structural risk screening',
         'Advanced 2D/3D obstetric ultrasounds for high-risk tracking',
