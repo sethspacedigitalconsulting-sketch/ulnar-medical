@@ -147,7 +147,7 @@ export function HeroSection() {
   };
   const handleMouseLeaveCTA = () => { mx.set(0); my.set(0); };
 
-  /* 💎 3D Stacked Card Tracking Physics Array mapped via explicit internal layout hook loops */
+  /* 💎 3D Stacked Card Tracking Physics Array */
   const waveYSprings = useRef(Array.from({ length: PANEL_COUNT }, () => useSpring(0, WAVE_SPRING))).current;
   const scaleYSprings = useRef(Array.from({ length: PANEL_COUNT }, () => useSpring(1, WAVE_SPRING))).current;
 
@@ -241,58 +241,4 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* ── Navigation Block ── */}
-      <motion.nav
-        ref={navRef}
-        className="relative z-40"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: EASE_LUXURY }}
-        style={{
-          background: "linear-gradient(to bottom, rgba(18,41,84,0.55) 0%, transparent 100%)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-        }}
-      >
-        <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 pt-8 pb-6">
-          <Logo animated size={40} />
-          <ul className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <a href={link.href} className="label-mono text-[rgba(248,246,242,0.5)] hover:text-[#FFD43A] transition-colors duration-300">
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="#booking" className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300">
-            Book Now <span className="text-base leading-none">↗</span>
-          </a>
-        </div>
-      </motion.nav>
-
-      {/* ── Hero Presentation Shell ── */}
-      <motion.div
-        className="relative z-20 px-6 md:px-14 pt-10 md:pt-16 pb-32"
-        style={{ y: textY, opacity, willChange: "transform" }}
-      >
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
-
-          {/* Left Layout Text Area */}
-          <div className="flex-1 min-w-0 flex flex-col">
-            <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
-              <div className="h-px w-10 bg-[#FFD43A]" />
-              <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
-            </motion.div>
-
-            <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
-              Modern OB/GYN <br />
-              <span className="text-[#FFD43A] italic">Diagnostics</span>
-            </h1>
-
-            <AnimatedText
-              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary — tailored for women of African descent."
-              as="p" splitBy="word" className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed" style={{ fontSize: "1.05rem" }} delay={0.9}
-            />
-
-            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible"
+      {/* ── Navigation Block
