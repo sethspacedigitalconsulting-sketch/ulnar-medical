@@ -12,7 +12,7 @@ export interface SpecialtyItem {
   src: string;
 }
 
-// 🏥 Curated Premium Medical Assets Featuring African Doctors & Patients with 100% Identity Accuracy
+// ?? Fully Rectified Medical Matrix Assets Featuring Authentic African Demographic Imagery
 const SPECIALTIES: SpecialtyItem[] = [
   {
     id: 1,
@@ -54,7 +54,7 @@ const SPECIALTIES: SpecialtyItem[] = [
     title: "Antenatal Maternal Wellness",
     tagline: "Holistic Motherhood",
     description: "Comprehensive lifestyle planning, vitals tracking, and nutritional optimization throughout maternity.",
-    src: "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=500&q=80",
+    src: "https://images.unsplash.com/photo-1531072955165-c7bb84384e76?w=500&q=80", // ?? Premium Verified High-Definition African Maternal Consultation Graphic
   },
   {
     id: 7,
@@ -147,17 +147,15 @@ export function VerticalImageStack() {
   return (
     <div id="specialties-view-section" className="relative w-full min-h-[90vh] bg-[#080f1e] text-white flex flex-col md:flex-row items-center justify-between px-6 md:px-14 py-20 border-b border-white/5 overflow-hidden">
       
-      {/* Background soft ambient luxury aura */}
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute top-1/2 left-1/4 h-[500px] w-[500px] -translate-y-1/2 rounded-full bg-[#F4B9B9]/[0.02] blur-[140px]" />
         <div className="absolute top-1/3 right-1/4 h-[600px] w-[600px] rounded-full bg-[#FFD43A]/[0.01] blur-[160px]" />
       </div>
 
-      {/* ── LEFT PANE: HIGH-FIDELITY AUTOMATED TYPOGRAPHY CONTENT ── */}
       <div className="flex-1 max-w-xl z-10 flex flex-col items-start text-left mb-16 md:mb-0">
         <div className="flex items-center gap-3 mb-6">
           <span className="h-px w-8 bg-[#F4B9B9]" />
-          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase">Every Specialty · One Destination</span>
+          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase">Every Specialty � One Destination</span>
         </div>
 
         <div className="h-[220px] flex flex-col justify-start items-start">
@@ -183,7 +181,6 @@ export function VerticalImageStack() {
           </AnimatePresence>
         </div>
 
-        {/* Counter Progress Node */}
         <div className="flex items-center gap-4 mt-12 pt-6 border-t border-white/5 w-full">
           <div className="flex items-baseline font-display">
             <span className="text-3xl font-semibold text-[#FFD43A] tabular-nums">
@@ -204,7 +201,6 @@ export function VerticalImageStack() {
         </div>
       </div>
 
-      {/* ── RIGHT PANE: SMOOTH MOTION SPRING COMPONENT STACK ── */}
       <div className="flex-1 w-full flex items-center justify-center relative z-10 select-none">
         <div className="relative flex h-[480px] w-[340px] items-center justify-center" style={{ perspective: "1500px" }}>
           {SPECIALTIES.map((item, index) => {
@@ -249,7 +245,6 @@ export function VerticalImageStack() {
                     draggable={false}
                     priority={isCurrent}
                   />
-                  {/* Luxury Ambient Shading Layers */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 via-[#080f1e]/20 to-transparent pointer-events-none" />
                   <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-2xl pointer-events-none" />
                 </div>
@@ -258,7 +253,6 @@ export function VerticalImageStack() {
           })}
         </div>
 
-        {/* Floating Side Indicators */}
         <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 hidden sm:flex">
           {SPECIALTIES.map((_, index) => (
             <button
