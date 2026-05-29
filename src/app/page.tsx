@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { HeroSection } from "@/components/HeroSection";
@@ -14,37 +14,16 @@ import { FloatingCTA } from "@/components/ui/floating-cta";
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
-      
-      {/* -- ?? HERO LAYER -- */}
       <HeroSection />
-
-      {/* -- ?? 3D SPECIALTY VERTICAL CARD DECK LAYER -- */}
       <VerticalImageStack />
-
-      {/* -- ? INFINITE BRAND PARALLAX SLIDER -- */}
       <InfiniteParallaxSlider />
-
-      {/* -- ?? ABOUT SECTION CLINICAL PORTFOLIO -- */}
       <AboutSection />
-
-      {/* -- ?? INLINE HIGH-PERFORMANCE DIAGNOSTIC SERVICES MATRIX -- */}
       <LocalServiceShowcase />
-
-      {/* -- ?? CIRCULAR PATIENT TESTIMONIALS SLIDER -- */}
       <CircularTestimonials />
-
-      {/* -- ?? INTEGRATED BOOKING ENGINE HUB -- */}
       <BookingHub />
-
-      {/* -- ?? NAIROBI NGONG ROAD GEOLOCATION MAP -- */}
       <MapEmbed />
-
-      {/* -- ?? CONTACT FOOTER BLOCKS -- */}
       <ContactFooter />
-
-      {/* -- ??? FLOATING ACTION SHORTCUT CTA -- */}
       <FloatingCTA />
-
     </main>
   );
 }
@@ -61,7 +40,7 @@ function LocalServiceShowcase() {
       id: 5,
       badge: 'MFM SPECIALIST CARE',
       title: 'Maternal-Fetal Specialist Services',
-      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies � delivered with advanced precision.',
+      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies — delivered with advanced precision.',
       bullets: [
         'Pre-conception consultation and structural risk screening',
         'Advanced 2D/3D obstetric ultrasounds for high-risk tracking',
