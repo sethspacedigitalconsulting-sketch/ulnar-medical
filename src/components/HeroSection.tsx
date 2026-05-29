@@ -135,7 +135,7 @@ export function HeroSection() {
           background: "linear-gradient(to bottom, rgba(8,15,30,0.8) 0%, rgba(8,15,30,0.4) 100%)",
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          borderBottom: "1px solid rgba(244, 185, 185, 0.15)", // 🌸 Soft Brand Pink Horizontal Separation Line
         }}
       >
         <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
@@ -146,9 +146,9 @@ export function HeroSection() {
             <NavigationMenuList className="gap-2">
               
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Services</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[580px] grid-cols-2 gap-3 p-4 bg-[#080f1e] border border-white/10 rounded-xl">
+                  <div className="grid w-[580px] grid-cols-2 gap-3 p-4 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {serviceLinks.map((item) => (
                       <ListItem key={item.title} {...item} />
                     ))}
@@ -157,9 +157,9 @@ export function HeroSection() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">About</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e] border border-white/10 rounded-xl">
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {aboutLinks.map((item) => (
                       <ListItem key={item.title} {...item} />
                     ))}
@@ -168,9 +168,9 @@ export function HeroSection() {
               </NavigationMenuItem>
 
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Contact</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Contact</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e] border border-white/10 rounded-xl">
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {contactLinks.map((item) => (
                       <ListItem key={item.title} {...item} />
                     ))}
@@ -286,11 +286,11 @@ function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
         href={href} 
         className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group select-none text-left"
       >
-        <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#FFD43A] group-hover:border-[#FFD43A]/30 transition-all shadow-sm">
+        <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] group-hover:border-[#F4B9B9]/40 transition-all shadow-sm">
           <Icon className="size-4" />
         </div>
         <div className="flex flex-col items-start justify-center min-w-0">
-          <span className="font-medium text-sm text-white/90 group-hover:text-[#FFD43A] transition-colors">{title}</span>
+          <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{title}</span>
           <span className="text-white/40 text-xs leading-normal mt-0.5">{description}</span>
         </div>
       </a>
@@ -305,35 +305,22 @@ function MobileMenu({ open, setMobileMenuOpen }: { open: boolean; setMobileMenuO
   if (!open || !mounted || typeof window === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 top-20 bottom-0 left-0 right-0 z-50 flex flex-col bg-[#080f1e]/98 backdrop-blur-xl border-t border-white/5 px-6 py-8 md:hidden overflow-y-auto">
+    <div className="fixed inset-0 top-20 bottom-0 left-0 right-0 z-50 flex flex-col bg-[#080f1e]/98 backdrop-blur-xl border-t border-[#F4B9B9]/20 px-6 py-8 md:hidden overflow-y-auto">
       <div className="flex flex-col gap-y-6 w-full">
         
         <div className="flex flex-col gap-y-3">
-          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Clinic Services</span>
+          <span className="text-xs font-mono text-[#F4B9B9] tracking-widest uppercase">Clinic Services</span>
           {serviceLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80 hover:text-[#F4B9B9] transition-colors">{link.title}</a>
           ))}
         </div>
 
         <div className="flex flex-col gap-y-3">
-          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">About Us</span>
+          <span className="text-xs font-mono text-[#F4B9B9] tracking-widest uppercase">About Us</span>
           {aboutLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80 hover:text-[#F4B9B9] transition-colors">{link.title}</a>
           ))}
         </div>
 
         <div className="flex flex-col gap-y-3">
-          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Contact Channels</span>
-          {contactLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
-          ))}
-        </div>
-
-        <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
-          <Button onClick={() => { setMobileMenuOpen(false); document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" }); }} className="w-full h-12">Book Appointment</Button>
-        </div>
-      </div>
-    </div>,
-    document.body
-  );
-}
+          <span className="text-xs font-mono text
