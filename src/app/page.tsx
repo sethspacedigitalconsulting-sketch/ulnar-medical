@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion';
 'use client';
 
+import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { HeroSection } from "@/components/HeroSection";
 import { VerticalImageStack } from "@/components/ui/vertical-image-stack";
@@ -16,7 +17,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
       <HeroSection />
-      {/* ── Every Specialty · One Destination ── */}
+      {/* â”€â”€ Every Specialty Â· One Destination â”€â”€ */}
 <section className="relative bg-[#080f1e] pt-20 pb-0 overflow-hidden">
   <div className="max-w-7xl mx-auto px-6 md:px-14 mb-10">
     <motion.div
@@ -60,7 +61,7 @@ function LocalServiceShowcase() {
       id: 5,
       badge: 'MFM SPECIALIST CARE',
       title: 'Maternal-Fetal Specialist Services',
-      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies — delivered with advanced precision.',
+      desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies â€” delivered with advanced precision.',
       bullets: [
         'Pre-conception consultation and structural risk screening',
         'Advanced 2D/3D obstetric ultrasounds for high-risk tracking',
