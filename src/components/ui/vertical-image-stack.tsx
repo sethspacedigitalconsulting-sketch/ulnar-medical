@@ -59,7 +59,7 @@ const specialties = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&q=80",
+    src: "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=500&q=80",
     alt: "Pelvic tissue structure scanning array",
   },
   {
@@ -221,45 +221,3 @@ export function VerticalImageStack() {
                         isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
                     }`}
                   >
-                    <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
-
-                    <Image
-                      src={spec.src}
-                      alt={spec.alt}
-                      fill
-                      className="object-cover w-full h-full"
-                      draggable={false}
-                      sizes="250px"
-                      priority={isCurrent}
-                    />
-
-                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
-            {specialties.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "h-6 bg-[#FFD43A] w-1.5" : "bg-white/10 w-1.5 hover:bg-white/30"
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-
-      </div>
-
-      <div className="absolute left-14 bottom-4 pointer-events-none select-none font-mono text-xs text-white/20">
-        <span className="text-white/60 text-lg font-bold">{String(currentIndex + 1).padStart(2, "0")}</span>
-        <span className="mx-1">/</span>
-        <span>{String(specialties.length).padStart(2, "0")}</span>
-      </div>
-    </section>
-  );
-}
