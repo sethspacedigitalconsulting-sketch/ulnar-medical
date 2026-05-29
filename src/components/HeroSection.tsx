@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   motion,
   AnimatePresence,
@@ -15,21 +16,64 @@ import { useGSAP } from "@gsap/react";
 import { Logo } from "./Logo";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { HeroScrub } from "@/components/ui/hero-scrub";
+import { Button } from "@/components/ui/button";
+import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import {
+  Activity,
+  Heart,
+  Eye,
+  Sparkles,
+  ShieldAlert,
+  MapPin,
+  Calendar,
+  Clock,
+  Phone,
+  MessageSquare,
+  FileText,
+} from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
-const NAV_LINKS = [
-  { label: "Services", href: "#services" },
-  { label: "About", href: "#about" },
-  { label: "Contact", href: "#contact" },
+interface MenuLinkItem {
+  title: string;
+  href: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+// 🩺 Categorized Feature Tree Mapping for Ulnar Medical
+const serviceLinks: MenuLinkItem[] = [
+  { title: "Obstetric Ultrasound", href: "#services", description: "Advanced high-fidelity 3D/4D obstetric imaging tracking fetus health cycles.", icon: Activity },
+  { title: "Gynecological Scans", href: "#services", description: "Deep anatomical screenings diagnosing structural health and cysts accurately.", icon: Heart },
+  { title: "Fertility Evaluation", href: "#services", description: "Comprehensive follicle diagnostic tracking and pelvic blood flow mapping.", icon: Sparkles },
+  { title: "Early Screening", href: "#services", description: "First-trimester structural anomaly checking and anomaly risk assessment.", icon: ShieldAlert },
+];
+
+const aboutLinks: MenuLinkItem[] = [
+  { title: "Clinical Sanctuary", href: "#about", description: "Explore our premium patient care destination engineered for ultimate relaxation.", icon: Eye },
+  { title: "Expert Clinicians", href: "#about", description: "Meet our board-certified radiologists specializing in complex diagnostic execution.", icon: FileText },
+];
+
+const contactLinks: MenuLinkItem[] = [
+  { title: "Ngong Road Office", href: "#contact", description: "Find our physical branch footprint at premium medical suites in Nairobi.", icon: MapPin },
+  { title: "Operating Metrics", href: "#contact", description: "Mon - Sat: 8:00 AM - 6:00 PM. Same-day diagnostics generation window.", icon: Clock },
 ];
 
 export function HeroSection() {
   const containerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const navInnerRef = useRef<HTMLDivElement>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { scrollY } = useScroll();
   const textY = useTransform(scrollY, [0, 700], [0, -110]);
@@ -46,6 +90,15 @@ export function HeroSection() {
     my.set((e.clientY - (rect.top + rect.height / 2)) * 0.3);
   };
   const handleMouseLeaveCTA = () => { mx.set(0); my.set(0); };
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileMenuOpen]);
 
   useGSAP(
     () => {
@@ -69,49 +122,100 @@ export function HeroSection() {
   return (
     <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden">
       
-      {/* ── 🏥 INTEGRATED SCROLL-MORPH VIRTUAL PHOTO MATRIX BACKGROUND LAYER ── */}
-      <div className="absolute inset-0 z-0 opacity-30 pointer-events-auto">
+      {/* ── 🏥 BACKGROUND LAYER ── */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
         <HeroScrub />
       </div>
 
-      {/* ── Navigation Block ── */}
+      {/* ── Dropdown Navigation System ── */}
       <motion.nav
         ref={navRef}
-        className="relative z-40"
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: EASE_LUXURY }}
         style={{
-          background: "linear-gradient(to bottom, rgba(18,41,84,0.55) 0%, transparent 100%)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
+          background: "linear-gradient(to bottom, rgba(8,15,30,0.8) 0%, rgba(8,15,30,0.4) 100%)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}
       >
-        <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 pt-8 pb-6">
-          <Logo animated size={40} />
-          <ul className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <li key={link.label}>
-                <a href={link.href} className="label-mono text-[rgba(248,246,242,0.5)] hover:text-[#FFD43A] transition-colors duration-300">
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-          <a href="#booking" className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300">
-            Book Now <span className="text-base leading-none">↗</span>
-          </a>
+        <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
+          <Logo animated size={42} />
+          
+          {/* Desktop Matrix Submenu Drops */}
+          <NavigationMenu className="hidden md:flex">
+            <NavigationMenuList className="gap-2">
+              
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Services</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[580px] grid-cols-2 gap-3 p-4 bg-[#080f1e] border border-white/10 rounded-xl">
+                    {serviceLinks.map((item) => (
+                      <ListItem key={item.title} {...item} />
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>About</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e] border border-white/10 rounded-xl">
+                    {aboutLinks.map((item) => (
+                      <ListItem key={item.title} {...item} />
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Contact</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e] border border-white/10 rounded-xl">
+                    {contactLinks.map((item) => (
+                      <ListItem key={item.title} {...item} />
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+            </NavigationMenuList>
+          </NavigationMenu>
+
+          {/* Action CTA Integration */}
+          <div className="hidden items-center gap-4 md:flex">
+            <a 
+              href="#booking" 
+              className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider"
+            >
+              Book Now <span className="text-sm leading-none">↗</span>
+            </a>
+          </div>
+
+          {/* Mobile Controller Handle */}
+          <Button
+            size="icon"
+            variant="outline"
+            onClick={() => setOpenMobile(!mobileMenuOpen)}
+            className="md:hidden border-white/10 text-white"
+          >
+            <MenuToggleIcon open={mobileMenuOpen} className="size-5" duration={300} />
+          </Button>
         </div>
       </motion.nav>
 
-      {/* ── Hero Presentation Shell ── */}
+      {/* Mobile Drawer Injection */}
+      <MobileMenu open={mobileMenuOpen} setOpen={setMobileMenuOpen} />
+
+      {/* ── Hero Presentation Content Shell ── */}
       <motion.div
-        className="relative z-20 px-6 md:px-14 pt-10 md:pt-16 pb-32"
+        className="relative z-20 px-6 md:px-14 pt-36 md:pt-40 pb-32"
         style={{ y: textY, opacity, willChange: "transform" }}
       >
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
 
-          {/* Left Layout Text Area */}
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
               <div className="h-px w-10 bg-[#FFD43A]" />
@@ -143,7 +247,6 @@ export function HeroSection() {
               </motion.a>
             </motion.div>
 
-            {/* Metrics Breakdown */}
             <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-14 pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
               {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
                 <div key={label}>
@@ -154,7 +257,6 @@ export function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right Column: Original Dual Clinician Graphics */}
           <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
               <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
@@ -176,5 +278,65 @@ export function HeroSection() {
         </div>
       </motion.div>
     </section>
+  );
+}
+
+/* 📥 Inner Core List Rendering Node */
+function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
+  return (
+    <NavigationMenuLink asChild>
+      <a 
+        href={href} 
+        className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group select-none text-left"
+      >
+        <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#FFD43A] group-hover:border-[#FFD43A]/30 transition-all shadow-sm">
+          <Icon className="size-4" />
+        </div>
+        <div className="flex flex-col items-start justify-center min-w-0">
+          <span className="font-medium text-sm text-white/90 group-hover:text-[#FFD43A] transition-colors">{title}</span>
+          <span className="text-white/40 text-xs leading-normal mt-0.5">{description}</span>
+        </div>
+      </a>
+    </NavigationMenuLink>
+  );
+}
+
+/* 📱 Portalized Mobile Overlay Stack Drawer */
+function MobileMenu({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
+  if (!open || !mounted || typeof window === "undefined") return null;
+
+  return createPortal(
+    <div className="fixed inset-0 top-20 bottom-0 left-0 right-0 z-50 flex flex-col bg-[#080f1e]/98 backdrop-blur-xl border-t border-white/5 px-6 py-8 md:hidden overflow-y-auto">
+      <div className="flex flex-col gap-y-6 w-full">
+        
+        <div className="flex flex-col gap-y-3">
+          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Clinic Services</span>
+          {serviceLinks.map((link) => (
+            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-y-3">
+          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">About Us</span>
+          {aboutLinks.map((link) => (
+            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-y-3">
+          <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Contact Channels</span>
+          {contactLinks.map((link) => (
+            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+          ))}
+        </div>
+
+        <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
+          <Button onClick={() => { setOpen(false); document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" }); }} className="w-full h-12">Book Appointment</Button>
+        </div>
+      </div>
+    </div>,
+    document.body
   );
 }
