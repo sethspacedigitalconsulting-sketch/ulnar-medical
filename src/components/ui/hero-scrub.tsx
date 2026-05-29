@@ -100,7 +100,6 @@ export function HeroScrub() {
     const virtualScroll = useMotionValue(0);
     const scrollRef = useRef(0);
 
-    /* ?? Dual-Channel Event Interface Configuration (Wheel + Mobile Touch Tracker) */
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;

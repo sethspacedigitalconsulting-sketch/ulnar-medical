@@ -261,14 +261,16 @@ export function HeroSection() {
 
           <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-              <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
-                <div style={{ flex: 1, overflow: "hidden" }}>
-                  <img src="/images/clinician-1.jpg" alt="Female Clinician" className="w-full h-full object-cover" />
-                </div>
-                <div style={{ flex: 1, overflow: "hidden" }}>
-                  <img src="/images/clinician-2.jpg" alt="Male Doctor" className="w-full h-full object-cover" />
-                </div>
+              
+              {/* ── 🚀 SINGLE CLINIC ULTRASOUND IMAGE COMPONENT ── */}
+              <div style={{ width: "100%", height: "clamp(420px, 55vh, 640px)", overflow: "hidden" }}>
+                <img
+                  src="/images/clinic-ultrasound.jpg"
+                  alt="Ulnar Medical — ultrasound procedure in progress"
+                  className="w-full h-full object-cover object-center"
+                />
               </div>
+
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/10">
                 <div className="w-2 h-2 rounded-full bg-[#FFD43A] animate-pulse" />
