@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-// 🏥 Curated Medical Specialties with Authentic African Clinician Asset Streams
 const specialties = [
   {
     id: 1,
@@ -90,7 +89,7 @@ export function VerticalImageStack() {
     });
   }, []);
 
-  const handleDragEnd = (_: any, info: PanInfo) => {
+  const handleDragEnd = (_, info) => {
     const threshold = 40;
     if (info.offset.y < -threshold) {
       navigate(1);
@@ -100,7 +99,7 @@ export function VerticalImageStack() {
   };
 
   const handleWheel = useCallback(
-    (e: WheelEvent) => {
+    (e) => {
       if (Math.abs(e.deltaY) > 20) {
         navigate(e.deltaY > 0 ? 1 : -1);
       }
@@ -115,7 +114,7 @@ export function VerticalImageStack() {
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
-  const getCardStyle = (index: number) => {
+  const getCardStyle = (index) => {
     const total = specialties.length;
     let diff = index - currentIndex;
     
@@ -137,7 +136,7 @@ export function VerticalImageStack() {
     }
   };
 
-  const isVisible = (index: number) => {
+  const isVisible = (index) => {
     const total = specialties.length;
     let diff = index - currentIndex;
     if (diff > total / 2) diff -= total;
@@ -193,4 +192,73 @@ export function VerticalImageStack() {
                 return (
                   <motion.div
                     key={spec.id}
-                    className="absolute cursor-grab active:cursor-grabbing origin-center
+                    className="absolute cursor-grab active:cursor-grabbing origin-center select-none"
+                    animate={{
+                      y: style.y,
+                      scale: style.scale,
+                      opacity: style.opacity,
+                      rotateX: style.rotateX,
+                      rotateZ: style.rotateZ,
+                      zIndex: style.zIndex,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 28,
+                      mass: 0.9,
+                    }}
+                    drag={isCurrent ? "y" : false}
+                    dragConstraints={{ top: 0, bottom: 0 }}
+                    dragElastic={0.15}
+                    onDragEnd={handleDragEnd}
+                    style={{
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
+                    <div
+                      className={`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 ${
+                        isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
+                    }`}
+                  >
+                    <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
+
+                    <Image
+                      src={spec.src}
+                      alt={spec.alt}
+                      fill
+                      className="object-cover w-full h-full"
+                      draggable={false}
+                      sizes="250px"
+                      priority={isCurrent}
+                    />
+
+                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
+            {specialties.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  index === currentIndex ? "h-6 bg-[#FFD43A] w-1.5" : "bg-white/10 w-1.5 hover:bg-white/30"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+      </div>
+
+      <div className="absolute left-14 bottom-4 pointer-events-none select-none font-mono text-xs text-white/20">
+        <span className="text-white/60 text-lg font-bold">{String(currentIndex + 1).padStart(2, "0")}</span>
+        <span className="mx-1">/</span>
+        <span>{String(specialties.length).padStart(2, "0")}</span>
+      </div>
+    </section>
+  );
+}
