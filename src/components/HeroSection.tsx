@@ -56,8 +56,8 @@ function InteractivePanel({
 }: {
   index: number;
   total: number;
-  waveY: ReturnType<typeof useSpring>;
-  scaleY: ReturnType<typeof useSpring>;
+  waveY: any;
+  scaleY: any;
 }) {
   const t = index / (total - 1);
   const baseZ = (index - (total - 1)) * Z_SPREAD;
@@ -325,4 +325,11 @@ export function HeroSection() {
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
               <div style={{ display: "flex", width: "100%", height: "clamp(420px, 55vh, 640px)", gap: "4px" }}>
                 <div style={{ flex: 1, overflow: "hidden" }}>
-                  <img src="/images/clinician-1.
+                  <img src="/images/clinician-1.jpg" alt="Female Clinician" className="w-full h-full object-cover" />
+                </div>
+                <div style={{ flex: 1, overflow: "hidden" }}>
+                  <img src="/images/clinician-2.jpg" alt="Male Doctor" className="w-full h-full object-cover" />
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
+              <div className="absolute
