@@ -4,7 +4,16 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-const specialties = [
+interface SpecialtyItem {
+  id: number;
+  title: string;
+  badge: string;
+  desc: string;
+  src: string;
+  alt: string;
+}
+
+const specialties: SpecialtyItem[] = [
   {
     id: 1,
     title: "Wellness Patient Package",
@@ -72,8 +81,8 @@ const specialties = [
 ];
 
 export function VerticalImageStack() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const lastNavigationTime = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const lastNavigationTime = useRef<number>(0);
   const navigationCooldown = 450;
 
   const navigate = useCallback((newDirection: number) => {
@@ -89,7 +98,7 @@ export function VerticalImageStack() {
     });
   }, []);
 
-  const handleDragEnd = (_, info) => {
+  const handleDragEnd = (_e: any, info: PanInfo) => {
     const threshold = 40;
     if (info.offset.y < -threshold) {
       navigate(1);
@@ -99,7 +108,7 @@ export function VerticalImageStack() {
   };
 
   const handleWheel = useCallback(
-    (e) => {
+    (e: any) => {
       if (Math.abs(e.deltaY) > 20) {
         navigate(e.deltaY > 0 ? 1 : -1);
       }
@@ -114,7 +123,7 @@ export function VerticalImageStack() {
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
-  const getCardStyle = (index) => {
+  const getCardStyle = (index: number) => {
     const total = specialties.length;
     let diff = index - currentIndex;
     
@@ -136,7 +145,7 @@ export function VerticalImageStack() {
     }
   };
 
-  const isVisible = (index) => {
+  const isVisible = (index: number) => {
     const total = specialties.length;
     let diff = index - currentIndex;
     if (diff > total / 2) diff -= total;
