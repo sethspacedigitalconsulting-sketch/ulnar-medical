@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { motion, useTransform, useSpring, useMotionValue, MotionValue } from "framer-motion";
+import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
 
 export type AnimationPhase = "scatter" | "line" | "circle" | "bottom-strip";
 
@@ -16,13 +16,7 @@ interface FlipCardProps {
 const IMG_WIDTH = 60;  
 const IMG_HEIGHT = 85; 
 
-function FlipCard({
-    src,
-    index,
-    total,
-    phase,
-    target,
-}: FlipCardProps) {
+function FlipCard({ src, index, total, phase, target }: FlipCardProps) {
     return (
         <motion.div
             animate={{
@@ -32,11 +26,7 @@ function FlipCard({
                 scale: target.scale,
                 opacity: target.opacity,
             }}
-            transition={{
-                type: "spring",
-                stiffness: 40,
-                damping: 15,
-            }}
+            transition={{ type: "spring", stiffness: 40, damping: 15 }}
             style={{
                 position: "absolute",
                 width: IMG_WIDTH,
@@ -52,20 +42,13 @@ function FlipCard({
                 transition={{ duration: 0.6, type: "spring", stiffness: 260, damping: 20 }}
                 whileHover={{ rotateY: 180 }}
             >
-                {/* Front Face */}
                 <div
                     className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-[#122954]/40 border border-white/5"
                     style={{ backfaceVisibility: "hidden" }}
                 >
-                    <img
-                        src={src}
-                        alt={`medical-metric-${index}`}
-                        className="h-full w-full object-cover"
-                    />
+                    <img src={src} alt={`medical-metric-${index}`} className="h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-[#0d1b3e]/20 transition-colors group-hover:bg-transparent" />
                 </div>
-
-                {/* Back Face */}
                 <div
                     className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-[#080f1e] flex flex-col items-center justify-center p-2 border border-[#FFD43A]/30"
                     style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
@@ -83,7 +66,6 @@ function FlipCard({
 const TOTAL_IMAGES = 20;
 const MAX_SCROLL = 2000; 
 
-// ?? Specialized Premium Medical & Clinical Diagnostic Matrix Images
 const MEDICAL_IMAGES = [
     "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&q=80",
     "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=300&q=80",
@@ -118,6 +100,7 @@ export function HeroScrub() {
     const virtualScroll = useMotionValue(0);
     const scrollRef = useRef(0);
 
+    /* ?? Dual-Channel Event Interface Configuration (Wheel + Mobile Touch Tracker) */
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
@@ -129,8 +112,30 @@ export function HeroScrub() {
             virtualScroll.set(newScroll);
         };
 
+        let touchStartY = 0;
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            const touchY = e.touches[0].clientY;
+            const deltaY = (touchStartY - touchY) * 1.5; 
+            touchStartY = touchY;
+
+            const newScroll = Math.min(Math.max(scrollRef.current + deltaY, 0), MAX_SCROLL);
+            scrollRef.current = newScroll;
+            virtualScroll.set(newScroll);
+        };
+
         container.addEventListener("wheel", handleWheel, { passive: false });
-        return () => container.removeEventListener("wheel", handleWheel);
+        window.addEventListener("touchstart", handleTouchStart, { passive: true });
+        window.addEventListener("touchmove", handleTouchMove, { passive: true });
+
+        return () => {
+            container.removeEventListener("wheel", handleWheel);
+            window.removeEventListener("touchstart", handleTouchStart);
+            window.removeEventListener("touchmove", handleTouchMove);
+        };
     }, [virtualScroll]);
 
     const morphProgress = useTransform(virtualScroll, [0, 500], [0, 1]);
@@ -241,14 +246,7 @@ export function HeroScrub() {
                     }
 
                     return (
-                        <FlipCard
-                            key={i}
-                            src={src}
-                            index={i}
-                            total={TOTAL_IMAGES}
-                            phase={introPhase}
-                            target={target}
-                        />
+                        <FlipCard key={i} src={src} index={i} total={TOTAL_IMAGES} phase={introPhase} target={target} />
                     );
                 })}
             </div>
