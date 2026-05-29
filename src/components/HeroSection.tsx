@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import React, { useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -18,13 +17,14 @@ import { AnimatedText } from "@/components/ui/animated-text";
 import { HeroScrub } from "@/components/ui/hero-scrub";
 import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
+import { MobileMenu } from "@/components/ui/mobile-menu";
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuList,
   NavigationMenuTrigger,
+  NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import {
   Activity,
@@ -48,7 +48,6 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// 🩺 Categorized Feature Tree Mapping for Ulnar Medical
 const serviceLinks: MenuLinkItem[] = [
   { title: "Obstetric Ultrasound", href: "#services", description: "Advanced high-fidelity 3D/4D obstetric imaging tracking fetus health cycles.", icon: Activity },
   { title: "Gynecological Scans", href: "#services", description: "Deep anatomical screenings diagnosing structural health and cysts accurately.", icon: Heart },
@@ -88,7 +87,7 @@ export function HeroSection() {
   };
   const handleMouseLeaveCTA = () => { mx.set(0); my.set(0); };
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -204,7 +203,13 @@ export function HeroSection() {
       </motion.nav>
 
       {/* Mobile Drawer Injection */}
-      <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
+      <MobileMenu 
+        open={mobileMenuOpen} 
+        setMobileMenuOpen={setMobileMenuOpen} 
+        serviceLinks={serviceLinks}
+        aboutLinks={aboutLinks}
+        contactLinks={contactLinks}
+      />
 
       {/* ── Hero Presentation Content Shell ── */}
       <motion.div
@@ -278,8 +283,7 @@ export function HeroSection() {
   );
 }
 
-/* 📥 Inner Core List Rendering Node */
-function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
+function ListItem({ title, description, icon: Icon, href }: { title: string; description: string; icon: React.ComponentType<{ className?: string }>; href: string }) {
   return (
     <NavigationMenuLink asChild>
       <a 
@@ -297,16 +301,3 @@ function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
     </NavigationMenuLink>
   );
 }
-
-/* 📱 Portalized Mobile Overlay Stack Drawer */
-function MobileMenu({ open, setMobileMenuOpen }: { open: boolean; setMobileMenuOpen: (v: boolean) => void }) {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
-  if (!open || !mounted || typeof window === "undefined") return null;
-
-  return createPortal(
-    <div className="fixed inset-0 top-20 bottom-0 left-0 right-0 z-50 flex flex-col bg-[#080f1e]/98 backdrop-blur-xl border-t border-[#F4B9B9]/20 px-6 py-8 md:hidden overflow-y-auto">
-      <div className="flex flex-col gap-y-6 w-full">
-        
-        <div className="flex flex-col gap-y-3">
-          <span className="text-xs font-mono text-
