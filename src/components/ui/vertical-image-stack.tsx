@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect, useRef } from "react"
-import { motion, type PanInfo } from "framer-motion"
+import { motion, AnimatePresence, type PanInfo } from "framer-motion"
 import Image from "next/image"
 
 export interface SpecialtyItem {
@@ -12,7 +12,7 @@ export interface SpecialtyItem {
   src: string;
 }
 
-// ?? Curated Premium Medical Assets Featuring African Doctors & Patients with 100% Identity Accuracy
+// 🏥 Curated Premium Medical Assets Featuring African Doctors & Patients with 100% Identity Accuracy
 const SPECIALTIES: SpecialtyItem[] = [
   {
     id: 1,
@@ -153,11 +153,11 @@ export function VerticalImageStack() {
         <div className="absolute top-1/3 right-1/4 h-[600px] w-[600px] rounded-full bg-[#FFD43A]/[0.01] blur-[160px]" />
       </div>
 
-      {/* -- LEFT PANE: HIGH-FIDELITY AUTOMATED TYPOGRAPHY CONTENT -- */}
+      {/* ── LEFT PANE: HIGH-FIDELITY AUTOMATED TYPOGRAPHY CONTENT ── */}
       <div className="flex-1 max-w-xl z-10 flex flex-col items-start text-left mb-16 md:mb-0">
         <div className="flex items-center gap-3 mb-6">
           <span className="h-px w-8 bg-[#F4B9B9]" />
-          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase">Every Specialty � One Destination</span>
+          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase">Every Specialty · One Destination</span>
         </div>
 
         <div className="h-[220px] flex flex-col justify-start items-start">
@@ -204,7 +204,7 @@ export function VerticalImageStack() {
         </div>
       </div>
 
-      {/* -- RIGHT PANE: SMOOTH MOTION SPRING COMPONENT STACK -- */}
+      {/* ── RIGHT PANE: SMOOTH MOTION SPRING COMPONENT STACK ── */}
       <div className="flex-1 w-full flex items-center justify-center relative z-10 select-none">
         <div className="relative flex h-[480px] w-[340px] items-center justify-center" style={{ perspective: "1500px" }}>
           {SPECIALTIES.map((item, index) => {
