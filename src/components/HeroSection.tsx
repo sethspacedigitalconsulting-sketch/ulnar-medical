@@ -33,10 +33,7 @@ import {
   Sparkles,
   ShieldAlert,
   MapPin,
-  Calendar,
   Clock,
-  Phone,
-  MessageSquare,
   FileText,
 } from "lucide-react";
 
@@ -198,8 +195,8 @@ export function HeroSection() {
           <Button
             size="icon"
             variant="outline"
-            onClick={() => setOpenMobile(!mobileMenuOpen)}
-            className="md:hidden border-white/10 text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden border-white/10 text-white bg-transparent"
           >
             <MenuToggleIcon open={mobileMenuOpen} className="size-5" duration={300} />
           </Button>
@@ -207,7 +204,7 @@ export function HeroSection() {
       </motion.nav>
 
       {/* Mobile Drawer Injection */}
-      <MobileMenu open={mobileMenuOpen} setOpen={setMobileMenuOpen} />
+      <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} />
 
       {/* ── Hero Presentation Content Shell ── */}
       <motion.div
@@ -302,7 +299,7 @@ function ListItem({ title, description, icon: Icon, href }: MenuLinkItem) {
 }
 
 /* 📱 Portalized Mobile Overlay Stack Drawer */
-function MobileMenu({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
+function MobileMenu({ open, setMobileMenuOpen }: { open: boolean; setMobileMenuOpen: (v: boolean) => void }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => { setMounted(true); return () => setMounted(false); }, []);
   if (!open || !mounted || typeof window === "undefined") return null;
@@ -314,26 +311,26 @@ function MobileMenu({ open, setOpen }: { open: boolean; setOpen: (v: boolean) =>
         <div className="flex flex-col gap-y-3">
           <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Clinic Services</span>
           {serviceLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
           ))}
         </div>
 
         <div className="flex flex-col gap-y-3">
           <span className="text-xs font-mono text-white/40 tracking-widest uppercase">About Us</span>
           {aboutLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
           ))}
         </div>
 
         <div className="flex flex-col gap-y-3">
           <span className="text-xs font-mono text-white/40 tracking-widest uppercase">Contact Channels</span>
           {contactLinks.map((link) => (
-            <a key={link.title} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
+            <a key={link.title} href={link.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/5 text-sm text-white/80">{link.title}</a>
           ))}
         </div>
 
         <div className="pt-4 border-t border-white/5 flex flex-col gap-3">
-          <Button onClick={() => { setOpen(false); document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" }); }} className="w-full h-12">Book Appointment</Button>
+          <Button onClick={() => { setMobileMenuOpen(false); document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" }); }} className="w-full h-12">Book Appointment</Button>
         </div>
       </div>
     </div>,
