@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
+// 🏥 Curated Medical Specialties with Authentic African Clinician Asset Streams
 const specialties = [
   {
     id: 1,
@@ -65,9 +66,9 @@ const specialties = [
     id: 8,
     title: "Lab Triage Same-Day Results",
     badge: "RAPID RECOVERY DISPATCH",
-    desc: "Accelerated local laboratory diagnostic profiles dispatched within hours of sample processing to eliminate stress.",
-    src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=80",
-    alt: "African laboratory specialist checking medical records",
+    desc: "Eliminates painful tracking delays. Critical pathology profiles are accelerated and dispatched via rapid channels to provide definitive answers within hours of your visit.",
+    src: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500&q=80",
+    alt: "African medical specialist verifying rapid lab triage diagnostic metrics",
   },
 ];
 
@@ -148,8 +149,6 @@ export function VerticalImageStack() {
 
   return (
     <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
-      
-      {/* ── Fixed Static Header Mounted Securely inside Container Wrapper ── */}
       <div className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
         <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight">
           Every Speciality - <span className="text-[#F4B9B9] italic">One destination</span>
@@ -162,7 +161,6 @@ export function VerticalImageStack() {
       >
         <div className="w-full grid grid-cols-1 md:grid-cols-12 items-center gap-10">
           
-          {/* Left Metadata Panel */}
           <div className="md:col-span-5 flex flex-col justify-center text-left min-h-[250px] pointer-events-none z-20">
             <AnimatePresence mode="wait">
               <motion.div
@@ -185,7 +183,6 @@ export function VerticalImageStack() {
             </AnimatePresence>
           </div>
 
-          {/* Center 3D Stack Layer */}
           <div className="md:col-span-7 flex items-center justify-center relative min-h-[480px]">
             <div className="relative flex h-[450px] w-[280px] items-center justify-center" style={{ perspective: "1500px" }}>
               {specialties.map((spec, index) => {
@@ -204,24 +201,24 @@ export function VerticalImageStack() {
                       rotateX: style.rotateX,
                       rotateZ: style.rotateZ,
                       zIndex: style.zIndex,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 28,
-                    mass: 0.9,
-                  }}
-                  drag={isCurrent ? "y" : false}
-                  dragConstraints={{ top: 0, bottom: 0 }}
-                  dragElastic={0.15}
-                  onDragEnd={handleDragEnd}
-                  style={{
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  <div
-                    className={`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 ${
-                      isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 28,
+                      mass: 0.9,
+                    }}
+                    drag={isCurrent ? "y" : false}
+                    dragConstraints={{ top: 0, bottom: 0 }}
+                    dragElastic={0.15}
+                    onDragEnd={handleDragEnd}
+                    style={{
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
+                    <div
+                      className={`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 ${
+                        isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
                     }`}
                   >
                     <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
@@ -243,7 +240,6 @@ export function VerticalImageStack() {
             })}
           </div>
 
-          {/* Right Navigation Dot Track */}
           <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
             {specialties.map((_, index) => (
               <button
@@ -259,13 +255,11 @@ export function VerticalImageStack() {
 
       </div>
 
-      {/* Progress Footer Ticker */}
       <div className="absolute left-14 bottom-4 pointer-events-none select-none font-mono text-xs text-white/20">
         <span className="text-white/60 text-lg font-bold">{String(currentIndex + 1).padStart(2, "0")}</span>
         <span className="mx-1">/</span>
         <span>{String(specialties.length).padStart(2, "0")}</span>
       </div>
-    </div>
-  </section>
+    </section>
   );
 }
