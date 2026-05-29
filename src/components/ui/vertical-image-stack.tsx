@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
@@ -193,31 +193,4 @@ export function VerticalImageStack() {
                 return (
                   <motion.div
                     key={spec.id}
-                    className="absolute cursor-grab active:cursor-grabbing origin-center select-none"
-                    animate={{
-                      y: style.y,
-                      scale: style.scale,
-                      opacity: style.opacity,
-                      rotateX: style.rotateX,
-                      rotateZ: style.rotateZ,
-                      zIndex: style.zIndex,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 28,
-                      mass: 0.9,
-                    }}
-                    drag={isCurrent ? "y" : false}
-                    dragConstraints={{ top: 0, bottom: 0 }}
-                    dragElastic={0.15}
-                    onDragEnd={handleDragEnd}
-                    style={{
-                      transformStyle: "preserve-3d",
-                    }}
-                  >
-                    <div
-                      className={`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 ${
-                        isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
-                    }`}
-                  >
+                    className="absolute cursor-grab active:cursor-grabbing origin-center
