@@ -68,7 +68,7 @@ const specialties: SpecialtyItem[] = [
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
     src: "/images/psfm.jpg",
-    alt: "Black female doctor performing abdominal ultrasound scan on patient"
+    alt: "Pelvic scan full mapping diagnostic procedure"
   },
   {
     id: 8,
