@@ -67,7 +67,7 @@ const specialties: SpecialtyItem[] = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "https://images.pexels.com/photos/7089401/pexels-photo-7089401.jpeg",
+    src: "/images/psfm.jpg",
     alt: "Black female doctor performing abdominal ultrasound scan on patient"
   },
   {
@@ -75,7 +75,7 @@ const specialties: SpecialtyItem[] = [
     title: "Lab Triage Same-Day Results",
     badge: "RAPID RECOVERY DISPATCH",
     desc: "Eliminates painful tracking delays. Critical pathology profiles are accelerated and dispatched via rapid channels to provide definitive answers within hours of your visit.",
-    src: "https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg",
+    src: "/images/ltsdr.jpg",
     alt: "Black female nurse or doctor in a diagnostic laboratory verifying rapid triage results"
   }
 ];
