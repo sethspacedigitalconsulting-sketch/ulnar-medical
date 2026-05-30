@@ -67,8 +67,8 @@ const specialties: SpecialtyItem[] = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=500&q=80",
-    alt: "Pelvic tissue structure scanning array"
+    src: "https://images.pexels.com/photos/7089401/pexels-photo-7089401.jpeg",
+    alt: "Black female doctor performing abdominal ultrasound scan on patient"
   },
   {
     id: 8,
