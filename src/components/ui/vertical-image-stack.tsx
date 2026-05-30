@@ -67,7 +67,7 @@ const specialties: SpecialtyItem[] = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "/images/psfm.jpg",
+    src: "data:image/jpeg;base64,HIGHLIGHT_THIS_TEXT_AND_PASTE_HERE", 
     alt: "Pelvic scan full mapping diagnostic procedure"
   },
   {
