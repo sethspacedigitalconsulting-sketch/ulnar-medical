@@ -20,7 +20,7 @@ const specialties: SpecialtyItem[] = [
     badge: "MATERNAL WELLNESS",
     desc: "Comprehensive proactive health monitoring regimens designed around your active cycles.",
     src: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80",
-    alt: "African clinician reviewing antenatal wellness trends",
+    alt: "African clinician reviewing antenatal wellness trends"
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const specialties: SpecialtyItem[] = [
     badge: "24/7 CLINICAL CARE",
     desc: "Immediate clinical staging workflows engineered for rapid diagnostic response.",
     src: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=500&q=80",
-    alt: "Rapid medical assessment at Ulnar sanctuary",
+    alt: "Rapid medical assessment at Ulnar sanctuary"
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const specialties: SpecialtyItem[] = [
     badge: "ADVANCED IMAGING",
     desc: "High-fidelity cinematic renderings capturing real-time developmental progression.",
     src: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&q=80",
-    alt: "High-precision obstetric ultrasound session in progress",
+    alt: "High-precision obstetric ultrasound session in progress"
   },
   {
     id: 4,
@@ -44,7 +44,7 @@ const specialties: SpecialtyItem[] = [
     badge: "REPRODUCTIVE HEALTH",
     desc: "Elite care parameters and structural screening sequences delivered by senior experts.",
     src: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=500&q=80",
-    alt: "African medical expert consulting with family member",
+    alt: "African medical expert consulting with family member"
   },
   {
     id: 5,
@@ -52,7 +52,7 @@ const specialties: SpecialtyItem[] = [
     badge: "LABORATORY SYSTEMS",
     desc: "Meticulous verification mechanics generating deep data insight arrays.",
     src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=80",
-    alt: "Pathology testing array at Ulnar Medical labs",
+    alt: "Pathology testing array at Ulnar Medical labs"
   },
   {
     id: 6,
@@ -60,7 +60,7 @@ const specialties: SpecialtyItem[] = [
     badge: "OBSTETRIC TRIAD",
     desc: "Compassionate clinical steps keeping both mother and fetus shielded safely.",
     src: "https://images.unsplash.com/photo-1531123414780-f74242c2b052?w=500&q=80",
-    alt: "African expectant mother smile during wellness assessment",
+    alt: "African expectant mother smile during wellness assessment"
   },
   {
     id: 7,
@@ -68,16 +68,16 @@ const specialties: SpecialtyItem[] = [
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
     src: "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=500&q=80",
-    alt: "Pelvic tissue structure scanning array",
+    alt: "Pelvic tissue structure scanning array"
   },
   {
     id: 8,
     title: "Lab Triage Same-Day Results",
     badge: "RAPID RECOVERY DISPATCH",
     desc: "Eliminates painful tracking delays. Critical pathology profiles are accelerated and dispatched via rapid channels to provide definitive answers within hours of your visit.",
-    src: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=500&q=80",
-    alt: "African medical specialist verifying rapid lab triage diagnostic metrics",
-  },
+    src: "https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg",
+    alt: "Black female nurse or doctor in a diagnostic laboratory verifying rapid triage results"
+  }
 ];
 
 export function VerticalImageStack() {
@@ -227,40 +227,41 @@ export function VerticalImageStack() {
                     <div
                       className={`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 ${
                         isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
-                    }`}
-                  >
-                    <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
+                      }`}
+                    >
+                      <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
 
-                    <Image
-                      src={spec.src}
-                      alt={spec.alt}
-                      fill
-                      className="object-cover w-full h-full"
-                      draggable={false}
-                      sizes="250px"
-                      priority={isCurrent}
-                    />
+                      <Image
+                        src={spec.src}
+                        alt={spec.alt}
+                        fill
+                        className="object-cover w-full h-full"
+                        draggable={false}
+                        sizes="250px"
+                        priority={isCurrent}
+                      />
 
-                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
-                  </div>
-                </motion.div>
-              );
-            })}
+                      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+
+            <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
+              {specialties.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    index === currentIndex ? "h-6 bg-[#FFD43A] w-1.5" : "bg-white/10 w-1.5 hover:bg-white/30"
+                  }`}
+                />
+              ))}
+            </div>
           </div>
 
-          <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
-            {specialties.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  index === currentIndex ? "h-6 bg-[#FFD43A] w-1.5" : "bg-white/10 w-1.5 hover:bg-white/30"
-                }`}
-              />
-            ))}
-          </div>
         </div>
-
       </div>
 
       <div className="absolute left-14 bottom-4 pointer-events-none select-none font-mono text-xs text-white/20">
