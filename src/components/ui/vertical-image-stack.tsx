@@ -55,7 +55,7 @@ const specialties: SpecialtyItem[] = [
     alt: "Pathology testing array at Ulnar Medical labs"
   },
   {
-    id: 4,
+    id: 6, // ✅ Fixed duplicate ID from 4 to 6
     title: "Antenatal Maternal Wellness",
     badge: "OBSTETRIC TRIAD",
     desc: "Compassionate clinical steps keeping both mother and fetus shielded safely.",
