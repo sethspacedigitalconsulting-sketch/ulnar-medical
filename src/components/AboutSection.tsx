@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -65,7 +65,7 @@ export function AboutSection() {
               delay={0.1}
             />
             <AnimatedText
-              text="We specialize in diagnostic services tailored for women of African descent — combining advanced 3D/4D imaging technology with deeply personalized clinical care. Our multidisciplinary team works under one roof, making your diagnostic journey seamless, clear, and warm."
+              text="We specialize in diagnostic services tailored for women of African descent - combining advanced 3D/4D imaging technology with deeply personalized clinical care. Our multidisciplinary team works under one roof, making your diagnostic journey seamless, clear, and warm."
               as="p"
               splitBy="word"
               className="font-body text-[rgba(248,246,242,0.55)]"
@@ -74,7 +74,7 @@ export function AboutSection() {
           </div>
 
           <AnimatedText
-            text="Every scan, every result, and every conversation we have is guided by a commitment to accuracy, dignity, and trust. Because great diagnostics is not just science — it is care made visible."
+            text="Every scan, every result, and every conversation we have is guided by a commitment to accuracy, dignity, and trust. Because great diagnostics is not just science - it is care made visible."
             as="p"
             splitBy="word"
             className="mt-5 font-body text-[rgba(248,246,242,0.5)] text-sm leading-relaxed max-w-2xl"
@@ -104,7 +104,7 @@ export function AboutSection() {
           <div>
             <p className="label-mono text-[#FFD43A] mb-0.5">Registered &amp; Accredited</p>
             <p className="font-body text-[rgba(248,246,242,0.5)] text-sm">
-              Kenya Medical Practitioners &amp; Dentists Council (KMPDC) — Certified Diagnostic Centre
+              Kenya Medical Practitioners &amp; Dentists Council (KMPDC) - Certified Diagnostic Centre
             </p>
           </div>
         </motion.div>
