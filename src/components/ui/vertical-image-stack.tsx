@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
@@ -67,7 +67,7 @@ const specialties: SpecialtyItem[] = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "/images/psfmmmmmmm.jpg",
+    src: "/images/psfffffffffmmmmmmmm.jpg",
     alt: "Black female doctor performing abdominal ultrasound scan on patient"
   },
   {
