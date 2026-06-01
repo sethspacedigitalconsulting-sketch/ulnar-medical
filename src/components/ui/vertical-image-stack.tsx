@@ -55,7 +55,7 @@ const specialties: SpecialtyItem[] = [
     alt: "Pathology testing array at Ulnar Medical labs"
   },
   {
-    id: 6, // ✅ Fixed duplicate ID from 4 to 6
+    id: 6,
     title: "Antenatal Maternal Wellness",
     badge: "OBSTETRIC TRIAD",
     desc: "Compassionate clinical steps keeping both mother and fetus shielded safely.",
@@ -67,7 +67,7 @@ const specialties: SpecialtyItem[] = [
     title: "Pelvic Scan Full Mapping",
     badge: "DIAGNOSTIC ANATOMY",
     desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "/images/psfm.jpg",
+    src: "/images/psfmmmmmmm.jpg",
     alt: "Black female doctor performing abdominal ultrasound scan on patient"
   },
   {
