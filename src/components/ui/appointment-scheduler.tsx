@@ -115,7 +115,7 @@ export function AppointmentScheduler({
 
   return (
     <div className="flex w-full max-w-4xl mx-auto flex-col">
-      {/* ── Main card ──────────────────────────────────────── */}
+      {/* ── Main card ── */}
       <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-[#0a1628]/90 shadow-2xl shadow-black/50 backdrop-blur-md lg:flex-row">
 
         {/* Left — meeting info */}
@@ -266,16 +266,16 @@ export function AppointmentScheduler({
         </div>
       </div>
 
-      {/* WhatsApp fallback */}
+      {/* WhatsApp fallback — English only */}
       <div className="mt-4 text-center">
         <a
-          href="https://wa.me/254724273996?text=Sasa%20Ulnar%20Medical,%20ningependa%20kuuliza%20kuhusu%20booking%20ya%20diagnostic%20scan%20au%20consultation."
+          href="https://wa.me/254724273996?text=Hello%20Ulnar%20Medical%2C%20I%20would%20like%20to%20inquire%20about%20booking%20a%20diagnostic%20scan%20or%20consultation."
           target="_blank"
           rel="noopener noreferrer"
           className="group inline-flex items-center gap-2 font-mono text-xs tracking-wide text-[#F4B9B9] transition-colors duration-300 hover:text-[#FFD43A]"
         >
           <MessageSquare className="h-3.5 w-3.5 transition-transform group-hover:scale-110" />
-          <span>Hupati slot ya haraka? Ongea na AI Specialist wetu hapa hapa WhatsApp</span>
+          <span>Can't find a quick slot? Chat with our specialist directly on WhatsApp</span>
         </a>
       </div>
     </div>
