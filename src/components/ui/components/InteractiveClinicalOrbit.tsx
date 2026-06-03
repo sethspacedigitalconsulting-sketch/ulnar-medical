@@ -18,19 +18,20 @@ const specialistsList = [
     name: "Dr. Cyprian Michieka",
     role: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine. 5+ years experience in high-risk obstetric care and advanced fetal diagnostics.",
     badge: "MATERNAL-FETAL MEDICINE",
-    src: "/images/DrCyprian.jpg",
+    src: "/images/clinician-2.jpg", // ← updated to full-face photo
   },
 ];
 
+/* ── Trail images — 4 sources cycling for density ── */
 const TRAIL_IMAGES = [
   "/images/DrElizabeth.jpg",
   "/images/DrCyprian.jpg",
+  "/images/clinician-1.jpg",
+  "/images/clinician-2.jpg",
   "/images/DrElizabeth.jpg",
   "/images/DrCyprian.jpg",
-  "/images/DrElizabeth.jpg",
-  "/images/DrCyprian.jpg",
-  "/images/DrElizabeth.jpg",
-  "/images/DrCyprian.jpg",
+  "/images/clinician-1.jpg",
+  "/images/clinician-2.jpg",
 ];
 
 function ImageCursorTrail({
@@ -94,14 +95,11 @@ function ImageCursorTrail({
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    // Don't prevent default — allow page scroll
-    // But still trail on touch drag within the container
     const touch = e.touches[0];
     if (touch) handleMove(touch.clientX, touch.clientY);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
-    // Seed the last position on touch start so first move registers
     const touch = e.touches[0];
     if (touch) lastRef.current = { x: touch.clientX, y: touch.clientY };
   };
@@ -203,7 +201,7 @@ export function InteractiveClinicalOrbit() {
               <img
                 src={doctor.src}
                 alt={doctor.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover object-top"
               />
             </div>
 
