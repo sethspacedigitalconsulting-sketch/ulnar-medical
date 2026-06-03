@@ -128,7 +128,7 @@ export function InteractiveClinicalOrbit() {
             rotate: rotation,
           }}
         >
-          {specialtiesList.map((doctor, i) => {
+          {specialistsList.map((doctor, i) => {
             const angleDeg = (i / specialistsList.length) * 360;
             const angleRad = (angleDeg * Math.PI) / 180;
             const x = radius + Math.cos(angleRad - Math.PI / 2) * radius - 120;
