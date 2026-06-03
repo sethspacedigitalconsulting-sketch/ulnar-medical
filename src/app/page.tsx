@@ -104,12 +104,24 @@ const services: Service[] = [
 
 function LocalServiceShowcase() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null); // mobile tap state
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
+  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
+  // Detect mobile
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Lerp animation loop
   useEffect(() => {
     const lerp = (start: number, end: number, factor: number) =>
       start + (end - start) * factor;
@@ -128,28 +140,7 @@ function LocalServiceShowcase() {
     };
   }, [mousePosition]);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      });
-    }
-  };
-
-  const handleMouseEnter = (index: number) => {
-    setHoveredIndex(index);
-    setIsVisible(true);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredIndex(null);
-    setIsVisible(false);
-  };
-
-  // Container rect for floating preview positioning
-  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
+  // Track container rect for fixed preview positioning
   useEffect(() => {
     const updateRect = () => {
       if (containerRef.current) {
@@ -164,6 +155,40 @@ function LocalServiceShowcase() {
       window.removeEventListener('scroll', updateRect);
     };
   }, []);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    }
+  };
+
+  const handleMouseEnter = (index: number) => {
+    if (!isMobile) {
+      setHoveredIndex(index);
+      setIsVisible(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setHoveredIndex(null);
+      setIsVisible(false);
+    }
+  };
+
+  const handleTap = (index: number) => {
+    if (isMobile) {
+      setActiveIndex((prev) => (prev === index ? null : index));
+    }
+  };
+
+  // Active index for rendering — desktop uses hover, mobile uses tap
+  const activeDesktop = hoveredIndex;
+  const activeMobile = activeIndex;
 
   return (
     <section
@@ -180,15 +205,18 @@ function LocalServiceShowcase() {
           <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">
             Specialized Diagnostic Services
           </h2>
+          {/* Mobile hint */}
+          <p className="md:hidden font-mono text-[10px] text-white/25 tracking-widest uppercase mt-3">
+            Tap a service to reveal
+          </p>
         </div>
 
-        {/* Service list with hover image preview */}
         <div
           ref={containerRef}
           onMouseMove={handleMouseMove}
           className="relative"
         >
-          {/* Floating image preview — desktop only */}
+          {/* ── Desktop floating image preview ── */}
           <div
             className="pointer-events-none fixed z-50 overflow-hidden rounded-2xl shadow-2xl hidden md:block"
             style={{
@@ -208,110 +236,134 @@ function LocalServiceShowcase() {
                   alt={service.title}
                   className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
                   style={{
-                    opacity: hoveredIndex === index ? 1 : 0,
-                    transform: hoveredIndex === index ? 'scale(1)' : 'scale(1.08)',
-                    filter: hoveredIndex === index ? 'none' : 'blur(8px)',
+                    opacity: activeDesktop === index ? 1 : 0,
+                    transform: activeDesktop === index ? 'scale(1)' : 'scale(1.08)',
+                    filter: activeDesktop === index ? 'none' : 'blur(8px)',
                   }}
                 />
               ))}
-              {/* Overlay with service badge */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 to-transparent" />
-              {hoveredIndex !== null && (
+              {activeDesktop !== null && (
                 <div className="absolute bottom-3 left-4">
                   <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
-                    {services[hoveredIndex]?.badge}
+                    {services[activeDesktop]?.badge}
                   </span>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Service rows */}
+          {/* ── Service rows ── */}
           <div className="space-y-0">
-            {services.map((service, index) => (
-              <div
-                key={service.id}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                className="group relative"
-              >
-                <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
+            {services.map((service, index) => {
+              const isActiveRow = isMobile ? activeMobile === index : activeDesktop === index;
 
-                  {/* Row hover bg */}
-                  <div
-                    className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${hoveredIndex === index ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                      }`}
-                  />
+              return (
+                <div
+                  key={service.id}
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => handleTap(index)}
+                  className="group relative cursor-pointer"
+                >
+                  <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
 
-                  <div className="relative flex items-start justify-between gap-4">
+                    {/* Row hover/active bg */}
+                    <div
+                      className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                        }`}
+                    />
 
-                    {/* Left: badge + title + desc */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2 py-0.5 rounded border border-[#FFD43A]/15">
-                          {service.badge}
+                    <div className="relative flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+
+                        {/* Badge */}
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2 py-0.5 rounded border border-[#FFD43A]/15">
+                            {service.badge}
+                          </span>
+                        </div>
+
+                        {/* Title + arrow */}
+                        <div className="inline-flex items-center gap-2">
+                          <h3 className="text-white font-display font-semibold text-xl md:text-2xl tracking-tight relative">
+                            <span className="relative">
+                              {service.title}
+                              <span
+                                className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow ? 'w-full' : 'w-0'
+                                  }`}
+                              />
+                            </span>
+                          </h3>
+                          <ArrowUpRight
+                            className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow
+                              ? 'opacity-100 translate-x-0 translate-y-0'
+                              : 'opacity-0 -translate-x-2 translate-y-2'
+                              }`}
+                          />
+                        </div>
+
+                        {/* Description */}
+                        <p
+                          className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${isActiveRow ? 'text-white/70' : 'text-white/40'
+                            }`}
+                        >
+                          {service.desc}
+                        </p>
+
+                        {/* ── Mobile inline image reveal ── */}
+                        <div
+                          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+                            }`}
+                        >
+                          <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
+                            <img
+                              src={service.image}
+                              alt={service.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/70 to-transparent" />
+                            <div className="absolute bottom-3 left-4">
+                              <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
+                                {service.badge}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bullets */}
+                        {service.bullets && isActiveRow && (
+                          <ul className="mt-3 space-y-1.5 border-t border-white/5 pt-3">
+                            {service.bullets.map((bullet, idx) => (
+                              <li key={idx} className="text-xs text-white/50 flex items-center gap-2">
+                                <span className="w-1 h-1 rounded-full bg-[#F4B9B9] flex-shrink-0" />
+                                {bullet}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* Right: number + tag */}
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span
+                          className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
+                            }`}
+                        >
+                          0{service.id}
+                        </span>
+                        <span
+                          className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
+                            }`}
+                        >
+                          {service.tag}
                         </span>
                       </div>
-
-                      <div className="inline-flex items-center gap-2">
-                        <h3 className="text-white font-display font-semibold text-xl md:text-2xl tracking-tight relative">
-                          <span className="relative">
-                            {service.title}
-                            {/* Animated underline */}
-                            <span
-                              className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${hoveredIndex === index ? 'w-full' : 'w-0'
-                                }`}
-                            />
-                          </span>
-                        </h3>
-                        <ArrowUpRight
-                          className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${hoveredIndex === index
-                            ? 'opacity-100 translate-x-0 translate-y-0'
-                            : 'opacity-0 -translate-x-2 translate-y-2'
-                            }`}
-                        />
-                      </div>
-
-                      <p
-                        className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${hoveredIndex === index ? 'text-white/70' : 'text-white/40'
-                          }`}
-                      >
-                        {service.desc}
-                      </p>
-
-                      {/* Expandable bullets on hover */}
-                      {service.bullets && hoveredIndex === index && (
-                        <ul className="mt-3 space-y-1.5 border-t border-white/5 pt-3">
-                          {service.bullets.map((bullet, idx) => (
-                            <li key={idx} className="text-xs text-white/50 flex items-center gap-2">
-                              <span className="w-1 h-1 rounded-full bg-[#F4B9B9] flex-shrink-0" />
-                              {bullet}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-
-                    {/* Right: tag + number */}
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                      <span
-                        className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${hoveredIndex === index ? 'text-[#FFD43A]' : 'text-white/20'
-                          }`}
-                      >
-                        0{service.id}
-                      </span>
-                      <span
-                        className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${hoveredIndex === index ? 'text-[#F4B9B9]/70' : 'text-white/20'
-                          }`}
-                      >
-                        {service.tag}
-                      </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            {/* Bottom border */}
+              );
+            })}
             <div className="border-t border-white/6" />
           </div>
         </div>
