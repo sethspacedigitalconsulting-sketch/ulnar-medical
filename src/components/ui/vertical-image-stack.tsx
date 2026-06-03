@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { motion, type PanInfo, AnimatePresence } from "framer-motion";
@@ -19,7 +19,7 @@ const specialties: SpecialtyItem[] = [
     title: "Wellness Patient Package",
     badge: "MATERNAL WELLNESS",
     desc: "Comprehensive proactive health monitoring regimens designed around your active cycles.",
-    src: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=500&q=80",
+    src: "/images/wellnessp.jpg",
     alt: "African clinician reviewing antenatal wellness trends"
   },
   {
@@ -27,7 +27,7 @@ const specialties: SpecialtyItem[] = [
     title: "Priority Emergency Triage",
     badge: "24/7 CLINICAL CARE",
     desc: "Immediate clinical staging workflows engineered for rapid diagnostic response.",
-    src: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=500&q=80",
+    src: "/images/priorityET.jpg",
     alt: "Rapid medical assessment at Ulnar sanctuary"
   },
   {
@@ -35,7 +35,7 @@ const specialties: SpecialtyItem[] = [
     title: "Obstetric 3D/4D Ultrasound",
     badge: "ADVANCED IMAGING",
     desc: "High-fidelity cinematic renderings capturing real-time developmental progression.",
-    src: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&q=80",
+    src: "/images/obimageunsplashed.jpg",
     alt: "High-precision obstetric ultrasound session in progress"
   },
   {
@@ -43,7 +43,7 @@ const specialties: SpecialtyItem[] = [
     title: "Gynaecology Specialist Consultant",
     badge: "REPRODUCTIVE HEALTH",
     desc: "Elite care parameters and structural screening sequences delivered by senior experts.",
-    src: "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=500&q=80",
+    src: "/images/GNSunsplashed.jpg",
     alt: "African medical expert consulting with family member"
   },
   {
@@ -51,7 +51,7 @@ const specialties: SpecialtyItem[] = [
     title: "Diagnostic Precision Pathology",
     badge: "LABORATORY SYSTEMS",
     desc: "Meticulous verification mechanics generating deep data insight arrays.",
-    src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&q=80",
+    src: "/images/pathology.jpg",
     alt: "Pathology testing array at Ulnar Medical labs"
   },
   {
@@ -59,7 +59,7 @@ const specialties: SpecialtyItem[] = [
     title: "Antenatal Maternal Wellness",
     badge: "OBSTETRIC TRIAD",
     desc: "Compassionate clinical steps keeping both mother and fetus shielded safely.",
-    src: "https://images.unsplash.com/photo-1531123414780-f74242c2b052?w=500&q=80",
+    src: "/images/maternalwell.jpg",
     alt: "African expectant mother smile during wellness assessment"
   },
   {
@@ -75,7 +75,7 @@ const specialties: SpecialtyItem[] = [
     title: "Lab Triage Same-Day Results",
     badge: "RAPID RECOVERY DISPATCH",
     desc: "Eliminates painful tracking delays. Critical pathology profiles are accelerated and dispatched via rapid channels to provide definitive answers within hours of your visit.",
-    src: "/images/ltsdr.jpg",
+    src: "/images/lab-triage-same-day-results-black-people-63a93e-thumb.jpg",
     alt: "Black female nurse or doctor in a diagnostic laboratory verifying rapid triage results"
   }
 ];
