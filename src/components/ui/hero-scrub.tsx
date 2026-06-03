@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, useTransform, useSpring, useMotionValue } from "framer-motion";
@@ -46,7 +46,7 @@ function FlipCard({ src, index, total, phase, target }: FlipCardProps) {
                     className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-[#122954]/40 border border-white/5"
                     style={{ backfaceVisibility: "hidden" }}
                 >
-                    {/* ✅ FIX 3: Correct alt template literal matching syntax boundaries */}
+                    {/* âœ… FIX 3: Correct alt template literal matching syntax boundaries */}
                     <img src={src} alt={`medical-metric-${index}`} className="h-full w-full object-cover" />
                     <div className="absolute inset-0 bg-[#0d1b3e]/20 transition-colors group-hover:bg-transparent" />
                 </div>
@@ -68,15 +68,15 @@ const TOTAL_IMAGES = 20;
 const MAX_SCROLL = 2000; 
 
 const MEDICAL_IMAGES = [
-    "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=300&q=80",
-    "https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=300&q=80",
-    "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=300&q=80",
-    "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=300&q=80",
-    "https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=300&q=80",
-    "https://images.unsplash.com/photo-1666887360680-77a83db62cc4?w=300&q=80",
+    "/images/clinic-ultrasound.jpg",
+    "/images/DrCyprian.jpg",
+    "/images/obgyn3.jpg",
+    "/images/rapidtriage.jpg",
+    "/images/leadC.jpg",
+    "/images/patientc.jpg",
 ];
 
-{/* ✅ FIX 3: Added missing multiplication * operators back to the linear interpolation equation */}
+{/* âœ… FIX 3: Added missing multiplication * operators back to the linear interpolation equation */}
 const lerp = (start: number, end: number, t: number) => start * (1 - t) + end * t;
 
 export function HeroScrub() {
