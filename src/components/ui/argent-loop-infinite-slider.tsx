@@ -63,8 +63,6 @@ const CONFIG = {
   MAX_VELOCITY: 150,
   SNAP_DURATION: 700,
   AUTOPLAY_MS: 3000,
-  // How many slides user must scroll through before escape is allowed
-  SLIDES_BEFORE_ESCAPE: 5,
 };
 
 const lerp = (start: number, end: number, factor: number) =>
@@ -93,9 +91,6 @@ export function InfiniteParallaxSlider() {
   });
 
   const containerRef = React.useRef<HTMLDivElement>(null);
-  const isInView = React.useRef(false); // tracks if section is centered in viewport
-  const hasEngaged = React.useRef(false); // tracks if user has intentionally scrolled inside
-  const slidesSeen = React.useRef(0); // count slides navigated
 
   const prevBtnRef = React.useRef<HTMLButtonElement>(null);
   const nextBtnRef = React.useRef<HTMLButtonElement>(null);
@@ -135,7 +130,6 @@ export function InfiniteParallaxSlider() {
       target: -nextIndex * s.projectHeight,
     };
     s.lastScrollTime = Date.now();
-    slidesSeen.current++;
   }, []);
 
   const startAutoplay = React.useCallback(() => {
@@ -148,8 +142,6 @@ export function InfiniteParallaxSlider() {
   }, [startAutoplay]);
 
   const handleEscapeUp = React.useCallback(() => {
-    hasEngaged.current = false;
-    slidesSeen.current = 0;
     const container = containerRef.current;
     if (!container) return;
     const prev = container.previousElementSibling as HTMLElement | null;
@@ -158,8 +150,6 @@ export function InfiniteParallaxSlider() {
   }, []);
 
   const handleEscapeDown = React.useCallback(() => {
-    hasEngaged.current = false;
-    slidesSeen.current = 0;
     const container = containerRef.current;
     if (!container) return;
     const next = container.nextElementSibling as HTMLElement | null;
@@ -200,12 +190,7 @@ export function InfiniteParallaxSlider() {
 
     projectsRef.current.forEach((el, i) => {
       el.style.transform = `translateY(${i * s.projectHeight + s.currentY}px)`;
-      updateParallax(
-        el.querySelector("img"),
-        s.currentY,
-        i,
-        s.projectHeight
-      );
+      updateParallax(el.querySelector("img"), s.currentY, i, s.projectHeight);
     });
     minimapRef.current.forEach((el, i) => {
       el.style.transform = `translateY(${i * s.minimapHeight + minimapY}px)`;
@@ -268,20 +253,7 @@ export function InfiniteParallaxSlider() {
 
     const el = containerRef.current;
 
-    // ── IntersectionObserver: only engage scroll hijack when section is ≥60% visible ──
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isInView.current = entry.intersectionRatio >= 0.6;
-        if (!isInView.current) {
-          hasEngaged.current = false;
-        }
-      },
-      { threshold: [0, 0.3, 0.6, 1.0] }
-    );
-    if (el) observer.observe(el);
-
     if (el) {
-      el.addEventListener("mouseenter", () => {});
       el.addEventListener("mouseleave", () => {
         btnTargetX.current = 0;
       });
@@ -298,27 +270,10 @@ export function InfiniteParallaxSlider() {
         Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
     };
 
+    // ── KEY FIX: wheel listener on container only, not window ──
     const onWheel = (e: WheelEvent) => {
-      // Only hijack if section is sufficiently in view
-      if (!isInView.current) return;
-
-      const s = state.current;
-
-      // If user hasn't engaged yet, let first scroll engage the section
-      // but only if they're scrolling INTO the section (down)
-      if (!hasEngaged.current) {
-        // Check if we're scrolling toward the section
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) return;
-        const isScrollingDown = e.deltaY > 0;
-        const sectionAboveViewport = rect.top < 0;
-
-        // Engage scroll hijack when section is in view
-        if (sectionAboveViewport && isScrollingDown) return; // let them scroll past bottom
-        hasEngaged.current = true;
-      }
-
       e.preventDefault();
+      const s = state.current;
       s.isSnapping = false;
       s.lastScrollTime = Date.now();
       const delta = Math.max(
@@ -327,7 +282,6 @@ export function InfiniteParallaxSlider() {
       );
       s.targetY -= delta;
       resetAutoplay();
-      slidesSeen.current++;
     };
 
     const onTouchStart = (e: TouchEvent) => {
@@ -338,6 +292,7 @@ export function InfiniteParallaxSlider() {
       s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
       s.lastScrollTime = Date.now();
     };
+
     const onTouchMove = (e: TouchEvent) => {
       const s = state.current;
       if (!s.isDragging) return;
@@ -346,6 +301,7 @@ export function InfiniteParallaxSlider() {
         (e.touches[0].clientY - s.dragStart.y) * 1.5;
       s.lastScrollTime = Date.now();
     };
+
     const onTouchEnd = () => {
       state.current.isDragging = false;
       resetAutoplay();
@@ -356,8 +312,11 @@ export function InfiniteParallaxSlider() {
       if (el) el.style.height = `${window.innerHeight}px`;
     };
 
+    // Attach wheel to container only — page scrolls freely when cursor is outside
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: false });
+    el?.addEventListener("wheel", onWheel, { passive: false });
+
+    // Touch stays on window for mobile swipe
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd);
@@ -367,9 +326,8 @@ export function InfiniteParallaxSlider() {
     requestRef.current = requestAnimationFrame(animationLoop);
 
     return () => {
-      observer.disconnect();
       el?.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("wheel", onWheel);
+      el?.removeEventListener("wheel", onWheel);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
@@ -445,7 +403,7 @@ export function InfiniteParallaxSlider() {
         </div>
       </div>
 
-      {/* ── Escape Up button ── */}
+      {/* ── Escape Up ── */}
       <button
         ref={prevBtnRef}
         onClick={handleEscapeUp}
@@ -473,7 +431,7 @@ export function InfiniteParallaxSlider() {
         </span>
       </button>
 
-      {/* ── Escape Down button ── */}
+      {/* ── Escape Down ── */}
       <button
         ref={nextBtnRef}
         onClick={handleEscapeDown}
