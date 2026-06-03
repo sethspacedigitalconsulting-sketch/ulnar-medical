@@ -13,39 +13,44 @@ interface ProjectData {
 
 const PROJECT_DATA: ProjectData[] = [
   {
-    title: "Dr. Elizabeth",
+    title: "Dr. Elizabeth Odondi",
     category: "Lead Consultant",
     year: "EST. 2026",
     description: "Expert OB/GYN Specialization",
-    image: "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    // Local photo of Dr. Elizabeth
+    image: "/images/DrElizabeth.jpg",
   },
   {
-    title: "Clinical Co-Founder",
+    title: "Diagnostic Imaging Suite",
     category: "Diagnostic Imaging Chief",
     year: "EST. 2026",
     description: "Advanced Radiology Management",
-    image: "https://images.pexels.com/photos/5699504/pexels-photo-5699504.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    // African female radiologist reviewing scan on screen
+    image: "https://images.pexels.com/photos/7089401/pexels-photo-7089401.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
   {
     title: "Obstetric 3D/4D Suite",
     category: "Ultrasonic Workspace",
     year: "High-Fidelity",
     description: "Real-time Fetal Growth Scans",
-    image: "https://images.pexels.com/photos/5699493/pexels-photo-5699493.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    // Black female doctor performing ultrasound on pregnant patient
+    image: "https://images.pexels.com/photos/7108344/pexels-photo-7108344.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
   {
     title: "Reproductive Sanctuary",
     category: "Clinical Consultation",
     year: "Patient-Centered",
     description: "Compassionate Women's Health Mapping",
-    image: "https://images.pexels.com/photos/4226270/pexels-photo-4226270.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    // African female doctor consulting warmly with patient
+    image: "https://images.pexels.com/photos/5215024/pexels-photo-5215024.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
   {
     title: "Triage Pathology Facility",
     category: "Diagnostic Laboratory",
     year: "Same-Day Results",
     description: "Precision Biomarker Screening",
-    image: "https://images.pexels.com/photos/5327574/pexels-photo-5327574.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    // Black lab technician working with diagnostic equipment
+    image: "https://images.pexels.com/photos/3938023/pexels-photo-3938023.jpeg?auto=compress&cs=tinysrgb&w=1200",
   },
 ];
 
@@ -57,7 +62,6 @@ const CLINICAL_WORD_PAIRS: [string, string][] = [
 ];
 
 const AUTOPLAY_MS = 3000;
-const SNAP_DURATION = 700;
 const LERP_FACTOR = 0.12;
 
 const lerp = (start: number, end: number, factor: number) =>
@@ -75,11 +79,14 @@ const getProjectNumber = (index: number) =>
 
 export function InfiniteParallaxSlider() {
   const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [displaySlide, setDisplaySlide] = React.useState(0);
   const autoplayRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  // Simple autoplay — no scroll hijacking at all
+  const displayRef = React.useRef(0);
+  const targetRef = React.useRef(0);
+  const rafRef = React.useRef<number>();
+  const [displaySlide, setDisplaySlide] = React.useState(0);
+
   const startAutoplay = React.useCallback(() => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
     autoplayRef.current = setInterval(() => {
@@ -89,15 +96,8 @@ export function InfiniteParallaxSlider() {
 
   React.useEffect(() => {
     startAutoplay();
-    return () => {
-      if (autoplayRef.current) clearInterval(autoplayRef.current);
-    };
+    return () => { if (autoplayRef.current) clearInterval(autoplayRef.current); };
   }, [startAutoplay]);
-
-  // Smooth lerp display index
-  const displayRef = React.useRef(0);
-  const targetRef = React.useRef(0);
-  const rafRef = React.useRef<number>();
 
   React.useEffect(() => {
     targetRef.current = currentSlide;
@@ -106,15 +106,13 @@ export function InfiniteParallaxSlider() {
   React.useEffect(() => {
     const animate = () => {
       displayRef.current = lerp(displayRef.current, targetRef.current, LERP_FACTOR);
-      const rounded = Math.round(displayRef.current * 100) / 100;
-      setDisplaySlide(rounded);
+      setDisplaySlide(displayRef.current);
       rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
   }, []);
 
-  // Touch swipe support — mobile only
   const touchStartY = React.useRef(0);
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
@@ -122,37 +120,28 @@ export function InfiniteParallaxSlider() {
   const handleTouchEnd = (e: React.TouchEvent) => {
     const delta = touchStartY.current - e.changedTouches[0].clientY;
     if (Math.abs(delta) > 40) {
-      if (delta > 0) {
-        setCurrentSlide(prev => prev + 1);
-      } else {
-        setCurrentSlide(prev => prev - 1);
-      }
+      setCurrentSlide(prev => delta > 0 ? prev + 1 : prev - 1);
       startAutoplay();
     }
   };
 
-  // Arrow navigation
   const goNext = () => { setCurrentSlide(prev => prev + 1); startAutoplay(); };
   const goPrev = () => { setCurrentSlide(prev => prev - 1); startAutoplay(); };
 
-  // Escape to adjacent sections
   const handleEscapeUp = () => {
-    const container = containerRef.current;
-    if (!container) return;
-    const prev = container.previousElementSibling as HTMLElement | null;
+    const prev = containerRef.current?.previousElementSibling as HTMLElement | null;
     if (prev) prev.scrollIntoView({ behavior: "smooth" });
     else window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleEscapeDown = () => {
-    const container = containerRef.current;
-    if (!container) return;
-    const next = container.nextElementSibling as HTMLElement | null;
+    const next = containerRef.current?.nextElementSibling as HTMLElement | null;
     if (next) next.scrollIntoView({ behavior: "smooth" });
   };
 
-  const activeIndex = Math.round(displaySlide);
   const totalSlides = PROJECT_DATA.length;
+  const activeIndex = Math.round(displaySlide);
+  const normalisedActive = ((activeIndex % totalSlides) + totalSlides) % totalSlides;
 
   return (
     <div
@@ -167,11 +156,10 @@ export function InfiniteParallaxSlider() {
 
       {/* Slides */}
       {PROJECT_DATA.map((data, i) => {
-        // Calculate offset from current display position
         const offset = i - (displaySlide % totalSlides);
-        const wrappedOffset = ((offset + totalSlides / 2) % totalSlides) - totalSlides / 2;
+        const wrappedOffset =
+          ((offset + totalSlides / 2) % totalSlides) - totalSlides / 2;
         const translateY = wrappedOffset * 100;
-        const isActive = Math.abs(wrappedOffset) < 0.5;
 
         return (
           <div
@@ -180,21 +168,25 @@ export function InfiniteParallaxSlider() {
             style={{
               transform: `translateY(${translateY}%)`,
               transition: "transform 0.05s linear",
-              zIndex: isActive ? 2 : 1,
+              zIndex: Math.abs(wrappedOffset) < 0.5 ? 2 : 1,
             }}
           >
             <img
               src={data.image}
               alt={data.title}
-              className="w-full h-full object-cover brightness-[0.45] contrast-[1.05]"
+              className="w-full h-full object-cover brightness-[0.5] contrast-[1.05]"
               style={{
                 transform: `translateY(${-wrappedOffset * 25}%) scale(1.4)`,
                 transition: "transform 0.05s linear",
+                objectPosition: "center top",
               }}
             />
             <div
-              className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-24 z-10"
-              style={{ background: "linear-gradient(to top, rgba(8,15,30,0.9) 0%, transparent 55%)" }}
+              className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-28 z-10"
+              style={{
+                background:
+                  "linear-gradient(to top, rgba(8,15,30,0.95) 0%, rgba(8,15,30,0.4) 60%, transparent 100%)",
+              }}
             >
               <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[#F4B9B9] mb-1">
                 {data.category}
@@ -208,7 +200,10 @@ export function InfiniteParallaxSlider() {
       })}
 
       {/* FluidTextMorph overlay */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 22 }}>
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 22 }}
+      >
         <div className="pointer-events-auto cursor-pointer text-center px-6 sm:pr-[280px] md:pr-[360px]">
           <FluidTextMorph
             wordPairs={CLINICAL_WORD_PAIRS}
@@ -220,25 +215,26 @@ export function InfiniteParallaxSlider() {
         </div>
       </div>
 
-      {/* ── Left/Right arrow nav (desktop) ── */}
+      {/* Arrow navigation — desktop */}
       <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-4">
         <button
           onClick={goPrev}
           className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/30 backdrop-blur-md text-white/50 hover:text-[#FFD43A] hover:border-[#FFD43A]/40 transition-colors duration-300 active:scale-95"
+          aria-label="Previous slide"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M9 6H3M3 6l3-3M3 6l3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
 
-        {/* Slide counter */}
         <span className="font-mono text-[0.6rem] text-white/30 tracking-wider tabular-nums">
-          {String((((activeIndex % totalSlides) + totalSlides) % totalSlides) + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
+          {String(normalisedActive + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
         </span>
 
         <button
           onClick={goNext}
           className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/30 backdrop-blur-md text-white/50 hover:text-[#FFD43A] hover:border-[#FFD43A]/40 transition-colors duration-300 active:scale-95"
+          aria-label="Next slide"
         >
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M3 6h6M9 6L6 3M9 6L6 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -246,7 +242,7 @@ export function InfiniteParallaxSlider() {
         </button>
       </div>
 
-      {/* ── Escape Up ── */}
+      {/* Escape Up */}
       <button
         onClick={handleEscapeUp}
         aria-label="Previous section"
@@ -258,7 +254,7 @@ export function InfiniteParallaxSlider() {
         <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
       </button>
 
-      {/* ── Escape Down ── */}
+      {/* Escape Down */}
       <button
         onClick={handleEscapeDown}
         aria-label="Next section"
@@ -272,41 +268,44 @@ export function InfiniteParallaxSlider() {
 
       {/* Minimap — desktop */}
       <div className="hidden sm:flex absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
-        <div className="relative flex w-full h-full overflow-hidden gap-3">
+        <div className="relative flex w-full h-full gap-3">
           <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
             <img
               src={getProjectData(activeIndex).image}
-              alt="minimap"
-              className="w-full h-full object-cover transition-all duration-500"
+              alt="minimap preview"
+              className="w-full h-full object-cover object-top transition-all duration-500"
             />
           </div>
-          <div className="flex-1 flex flex-col justify-between py-1">
+          <div className="flex-1 flex flex-col justify-between py-1 min-w-0">
             <div className="flex justify-between items-baseline border-b border-white/5 pb-1">
-              <p className="font-mono text-xs font-bold text-[#FFD43A]">{getProjectNumber(activeIndex)}</p>
-              <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px]">{getProjectData(activeIndex).title}</p>
+              <p className="font-mono text-xs font-bold text-[#FFD43A] flex-shrink-0">
+                {getProjectNumber(activeIndex)}
+              </p>
+              <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px] ml-2">
+                {getProjectData(activeIndex).title}
+              </p>
             </div>
             <div className="flex justify-between font-mono text-[9px] uppercase text-[#F4B9B9] tracking-wider my-2">
-              <p>{getProjectData(activeIndex).category}</p>
-              <p>{getProjectData(activeIndex).year}</p>
+              <p className="truncate">{getProjectData(activeIndex).category}</p>
+              <p className="flex-shrink-0 ml-1">{getProjectData(activeIndex).year}</p>
             </div>
-            <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">&ldquo;{getProjectData(activeIndex).description}&rdquo;</p>
-
+            <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">
+              &ldquo;{getProjectData(activeIndex).description}&rdquo;
+            </p>
             {/* Dot indicators */}
             <div className="flex gap-1.5 mt-2">
-              {PROJECT_DATA.map((_, i) => {
-                const normalised = ((activeIndex % totalSlides) + totalSlides) % totalSlides;
-                return (
-                  <div
-                    key={i}
-                    className="rounded-full transition-all duration-300"
-                    style={{
-                      width: normalised === i ? 16 : 4,
-                      height: 4,
-                      background: normalised === i ? "#FFD43A" : "rgba(255,255,255,0.2)",
-                    }}
-                  />
-                );
-              })}
+              {PROJECT_DATA.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setCurrentSlide(i); startAutoplay(); }}
+                  className="rounded-full transition-all duration-300"
+                  style={{
+                    width: normalisedActive === i ? 16 : 4,
+                    height: 4,
+                    background: normalisedActive === i ? "#FFD43A" : "rgba(255,255,255,0.2)",
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>
