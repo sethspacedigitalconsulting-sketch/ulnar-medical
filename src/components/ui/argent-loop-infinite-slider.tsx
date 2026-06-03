@@ -56,342 +56,159 @@ const CLINICAL_WORD_PAIRS: [string, string][] = [
   ["Rapid Triage", "Same-Day Results"],
 ];
 
-const CONFIG = {
-  SCROLL_SPEED: 0.75,
-  LERP_FACTOR: 0.12,
-  BUFFER_SIZE: 5,
-  MAX_VELOCITY: 150,
-  SNAP_DURATION: 700,
-  AUTOPLAY_MS: 3000,
-};
+const AUTOPLAY_MS = 3000;
+const SNAP_DURATION = 700;
+const LERP_FACTOR = 0.12;
 
 const lerp = (start: number, end: number, factor: number) =>
   start + (end - start) * factor;
 
 const getProjectData = (index: number) => {
-  const i =
-    ((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) %
-    PROJECT_DATA.length;
+  const i = ((index % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length;
   return PROJECT_DATA[i];
 };
 
 const getProjectNumber = (index: number) =>
-  (
-    ((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) %
-      PROJECT_DATA.length +
-    1
-  )
+  (((index % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length + 1)
     .toString()
     .padStart(2, "0");
 
 export function InfiniteParallaxSlider() {
-  const [visibleRange, setVisibleRange] = React.useState({
-    min: -CONFIG.BUFFER_SIZE,
-    max: CONFIG.BUFFER_SIZE,
-  });
-
+  const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [displaySlide, setDisplaySlide] = React.useState(0);
+  const autoplayRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  const prevBtnRef = React.useRef<HTMLButtonElement>(null);
-  const nextBtnRef = React.useRef<HTMLButtonElement>(null);
-  const btnTargetX = React.useRef(0);
-  const btnCurrentX = React.useRef(0);
-
-  const state = React.useRef({
-    currentY: 0,
-    targetY: 0,
-    isDragging: false,
-    isSnapping: false,
-    snapStart: { time: 0, y: 0, target: 0 },
-    lastScrollTime: Date.now(),
-    dragStart: { y: 0, scrollY: 0 },
-    projectHeight: 0,
-    minimapHeight: 250,
-  });
-
-  const projectsRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
-  const minimapRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
-  const infoRef = React.useRef<Map<number, HTMLDivElement>>(new Map());
-  const requestRef = React.useRef<number>();
-  const autoplayRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-  const renderedRange = React.useRef({
-    min: -CONFIG.BUFFER_SIZE,
-    max: CONFIG.BUFFER_SIZE,
-  });
-
-  const advanceSlide = React.useCallback(() => {
-    const s = state.current;
-    if (s.projectHeight === 0) return;
-    const nextIndex = Math.round(-s.targetY / s.projectHeight) + 1;
-    s.isSnapping = true;
-    s.snapStart = {
-      time: Date.now(),
-      y: s.targetY,
-      target: -nextIndex * s.projectHeight,
-    };
-    s.lastScrollTime = Date.now();
-  }, []);
-
+  // Simple autoplay — no scroll hijacking at all
   const startAutoplay = React.useCallback(() => {
     if (autoplayRef.current) clearInterval(autoplayRef.current);
-    autoplayRef.current = setInterval(advanceSlide, CONFIG.AUTOPLAY_MS);
-  }, [advanceSlide]);
+    autoplayRef.current = setInterval(() => {
+      setCurrentSlide(prev => prev + 1);
+    }, AUTOPLAY_MS);
+  }, []);
 
-  const resetAutoplay = React.useCallback(() => {
+  React.useEffect(() => {
     startAutoplay();
+    return () => {
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+    };
   }, [startAutoplay]);
 
-  const handleEscapeUp = React.useCallback(() => {
+  // Smooth lerp display index
+  const displayRef = React.useRef(0);
+  const targetRef = React.useRef(0);
+  const rafRef = React.useRef<number>();
+
+  React.useEffect(() => {
+    targetRef.current = currentSlide;
+  }, [currentSlide]);
+
+  React.useEffect(() => {
+    const animate = () => {
+      displayRef.current = lerp(displayRef.current, targetRef.current, LERP_FACTOR);
+      const rounded = Math.round(displayRef.current * 100) / 100;
+      setDisplaySlide(rounded);
+      rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, []);
+
+  // Touch swipe support — mobile only
+  const touchStartY = React.useRef(0);
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const delta = touchStartY.current - e.changedTouches[0].clientY;
+    if (Math.abs(delta) > 40) {
+      if (delta > 0) {
+        setCurrentSlide(prev => prev + 1);
+      } else {
+        setCurrentSlide(prev => prev - 1);
+      }
+      startAutoplay();
+    }
+  };
+
+  // Arrow navigation
+  const goNext = () => { setCurrentSlide(prev => prev + 1); startAutoplay(); };
+  const goPrev = () => { setCurrentSlide(prev => prev - 1); startAutoplay(); };
+
+  // Escape to adjacent sections
+  const handleEscapeUp = () => {
     const container = containerRef.current;
     if (!container) return;
     const prev = container.previousElementSibling as HTMLElement | null;
     if (prev) prev.scrollIntoView({ behavior: "smooth" });
     else window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+  };
 
-  const handleEscapeDown = React.useCallback(() => {
+  const handleEscapeDown = () => {
     const container = containerRef.current;
     if (!container) return;
     const next = container.nextElementSibling as HTMLElement | null;
     if (next) next.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  const updateParallax = (
-    img: HTMLImageElement | null,
-    scroll: number,
-    idx: number,
-    height: number
-  ) => {
-    if (!img) return;
-    if (!img.dataset.pc) img.dataset.pc = "0";
-    let cur = parseFloat(img.dataset.pc);
-    const target = (-scroll - idx * height) * 0.25;
-    cur = lerp(cur, target, 0.1);
-    if (Math.abs(cur - target) > 0.01) {
-      img.style.transform = `translateY(${cur}px) scale(1.4)`;
-      img.dataset.pc = cur.toString();
-    }
   };
 
-  const snapToProject = () => {
-    const s = state.current;
-    const cur = Math.round(-s.targetY / s.projectHeight);
-    s.isSnapping = true;
-    s.snapStart = {
-      time: Date.now(),
-      y: s.targetY,
-      target: -cur * s.projectHeight,
-    };
-  };
-
-  const updatePositions = () => {
-    const s = state.current;
-    const minimapY = (s.currentY * s.minimapHeight) / s.projectHeight;
-
-    projectsRef.current.forEach((el, i) => {
-      el.style.transform = `translateY(${i * s.projectHeight + s.currentY}px)`;
-      updateParallax(el.querySelector("img"), s.currentY, i, s.projectHeight);
-    });
-    minimapRef.current.forEach((el, i) => {
-      el.style.transform = `translateY(${i * s.minimapHeight + minimapY}px)`;
-    });
-    infoRef.current.forEach((el, i) => {
-      el.style.transform = `translateY(${i * s.minimapHeight + minimapY}px)`;
-    });
-  };
-
-  const animationLoop = React.useCallback(() => {
-    const s = state.current;
-    const now = Date.now();
-
-    if (s.isSnapping) {
-      const prog = Math.min(
-        (now - s.snapStart.time) / CONFIG.SNAP_DURATION,
-        1
-      );
-      const eased = 1 - Math.pow(1 - prog, 3);
-      s.targetY =
-        s.snapStart.y + (s.snapStart.target - s.snapStart.y) * eased;
-      if (prog >= 1) s.isSnapping = false;
-    } else if (!s.isDragging && now - s.lastScrollTime > 100) {
-      const snap =
-        -Math.round(-s.targetY / s.projectHeight) * s.projectHeight;
-      if (Math.abs(s.targetY - snap) > 1) snapToProject();
-    }
-
-    if (!s.isDragging)
-      s.currentY += (s.targetY - s.currentY) * CONFIG.LERP_FACTOR;
-
-    updatePositions();
-
-    btnCurrentX.current = lerp(btnCurrentX.current, btnTargetX.current, 0.06);
-    const bx = btnCurrentX.current;
-    if (prevBtnRef.current) {
-      prevBtnRef.current.style.transform = `translateX(calc(-50% + ${bx.toFixed(1)}px))`;
-    }
-    if (nextBtnRef.current) {
-      nextBtnRef.current.style.transform = `translateX(calc(-50% + ${(bx * 0.76).toFixed(1)}px))`;
-    }
-
-    const ci = Math.round(-s.targetY / s.projectHeight);
-    const min = ci - CONFIG.BUFFER_SIZE;
-    const max = ci + CONFIG.BUFFER_SIZE;
-    if (
-      min !== renderedRange.current.min ||
-      max !== renderedRange.current.max
-    ) {
-      renderedRange.current = { min, max };
-      setVisibleRange({ min, max });
-    }
-
-    requestRef.current = requestAnimationFrame(animationLoop);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  React.useEffect(() => {
-    state.current.projectHeight = window.innerHeight;
-
-    const el = containerRef.current;
-
-    if (el) {
-      el.addEventListener("mouseleave", () => {
-        btnTargetX.current = 0;
-      });
-    }
-
-    startAutoplay();
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const relX = e.clientX - rect.left - rect.width / 2;
-      const clampX = rect.width * 0.38;
-      btnTargetX.current =
-        Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
-    };
-
-    // ── KEY FIX: wheel listener on container only, not window ──
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      const s = state.current;
-      s.isSnapping = false;
-      s.lastScrollTime = Date.now();
-      const delta = Math.max(
-        Math.min(e.deltaY * CONFIG.SCROLL_SPEED, CONFIG.MAX_VELOCITY),
-        -CONFIG.MAX_VELOCITY
-      );
-      s.targetY -= delta;
-      resetAutoplay();
-    };
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (!el?.contains(e.target as Node)) return;
-      const s = state.current;
-      s.isDragging = true;
-      s.isSnapping = false;
-      s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
-      s.lastScrollTime = Date.now();
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      const s = state.current;
-      if (!s.isDragging) return;
-      s.targetY =
-        s.dragStart.scrollY +
-        (e.touches[0].clientY - s.dragStart.y) * 1.5;
-      s.lastScrollTime = Date.now();
-    };
-
-    const onTouchEnd = () => {
-      state.current.isDragging = false;
-      resetAutoplay();
-    };
-
-    const onResize = () => {
-      state.current.projectHeight = window.innerHeight;
-      if (el) el.style.height = `${window.innerHeight}px`;
-    };
-
-    // Attach wheel to container only — page scrolls freely when cursor is outside
-    el?.addEventListener("mousemove", onMouseMove, { passive: true });
-    el?.addEventListener("wheel", onWheel, { passive: false });
-
-    // Touch stays on window for mobile swipe
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd);
-    window.addEventListener("resize", onResize);
-    onResize();
-
-    requestRef.current = requestAnimationFrame(animationLoop);
-
-    return () => {
-      el?.removeEventListener("mousemove", onMouseMove);
-      el?.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("resize", onResize);
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-      if (autoplayRef.current) clearInterval(autoplayRef.current);
-    };
-  }, [animationLoop, startAutoplay, resetAutoplay]);
-
-  const indices: number[] = [];
-  for (let i = visibleRange.min; i <= visibleRange.max; i++) indices.push(i);
+  const activeIndex = Math.round(displaySlide);
+  const totalSlides = PROJECT_DATA.length;
 
   return (
     <div
       ref={containerRef}
-      className="parallax-container relative w-full overflow-hidden bg-[#091428] cursor-grab active:cursor-grabbing"
+      className="relative w-full overflow-hidden bg-[#091428]"
       style={{ height: "100vh" }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Side gradient masks */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 z-20 pointer-events-none" />
 
-      {/* Project slides */}
-      <ul className="m-0 p-0 list-none w-full h-full relative">
-        {indices.map((i) => {
-          const data = getProjectData(i);
-          return (
-            <div
-              key={i}
-              className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
-              ref={(el) => {
-                if (el) projectsRef.current.set(i, el);
-                else projectsRef.current.delete(i);
+      {/* Slides */}
+      {PROJECT_DATA.map((data, i) => {
+        // Calculate offset from current display position
+        const offset = i - (displaySlide % totalSlides);
+        const wrappedOffset = ((offset + totalSlides / 2) % totalSlides) - totalSlides / 2;
+        const translateY = wrappedOffset * 100;
+        const isActive = Math.abs(wrappedOffset) < 0.5;
+
+        return (
+          <div
+            key={i}
+            className="absolute top-0 left-0 w-full h-full overflow-hidden"
+            style={{
+              transform: `translateY(${translateY}%)`,
+              transition: "transform 0.05s linear",
+              zIndex: isActive ? 2 : 1,
+            }}
+          >
+            <img
+              src={data.image}
+              alt={data.title}
+              className="w-full h-full object-cover brightness-[0.45] contrast-[1.05]"
+              style={{
+                transform: `translateY(${-wrappedOffset * 25}%) scale(1.4)`,
+                transition: "transform 0.05s linear",
               }}
+            />
+            <div
+              className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-24 z-10"
+              style={{ background: "linear-gradient(to top, rgba(8,15,30,0.9) 0%, transparent 55%)" }}
             >
-              <img
-                src={data.image}
-                alt={data.title}
-                className="w-full h-full object-cover brightness-[0.45] contrast-[1.05] will-change-transform"
-                style={{ transformOrigin: "center center" }}
-              />
-              <div
-                className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-24 z-10"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(8,15,30,0.9) 0%, transparent 55%)",
-                }}
-              >
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[#F4B9B9] mb-1">
-                  {data.category}
-                </p>
-                <p className="font-mono text-[0.58rem] tracking-wider text-[#FFD43A]/70">
-                  {data.year}
-                </p>
-              </div>
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[#F4B9B9] mb-1">
+                {data.category}
+              </p>
+              <p className="font-mono text-[0.58rem] tracking-wider text-[#FFD43A]/70">
+                {data.year}
+              </p>
             </div>
-          );
-        })}
-      </ul>
+          </div>
+        );
+      })}
 
       {/* FluidTextMorph overlay */}
-      <div
-        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-        style={{ zIndex: 22 }}
-      >
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 22 }}>
         <div className="pointer-events-auto cursor-pointer text-center px-6 sm:pr-[280px] md:pr-[360px]">
           <FluidTextMorph
             wordPairs={CLINICAL_WORD_PAIRS}
@@ -403,116 +220,94 @@ export function InfiniteParallaxSlider() {
         </div>
       </div>
 
+      {/* ── Left/Right arrow nav (desktop) ── */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-40 hidden md:flex items-center gap-4">
+        <button
+          onClick={goPrev}
+          className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/30 backdrop-blur-md text-white/50 hover:text-[#FFD43A] hover:border-[#FFD43A]/40 transition-colors duration-300 active:scale-95"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M9 6H3M3 6l3-3M3 6l3 3" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+
+        {/* Slide counter */}
+        <span className="font-mono text-[0.6rem] text-white/30 tracking-wider tabular-nums">
+          {String((((activeIndex % totalSlides) + totalSlides) % totalSlides) + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
+        </span>
+
+        <button
+          onClick={goNext}
+          className="flex items-center justify-center w-10 h-10 rounded-full border border-white/15 bg-black/30 backdrop-blur-md text-white/50 hover:text-[#FFD43A] hover:border-[#FFD43A]/40 transition-colors duration-300 active:scale-95"
+        >
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+            <path d="M3 6h6M9 6L6 3M9 6L6 9" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+
       {/* ── Escape Up ── */}
       <button
-        ref={prevBtnRef}
         onClick={handleEscapeUp}
         aria-label="Previous section"
-        className="group absolute top-5 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
-        style={{ left: "50%" }}
+        className="group absolute top-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
       >
-        <svg
-          width="11"
-          height="11"
-          viewBox="0 0 11 11"
-          fill="none"
-          className="transition-transform duration-300 group-hover:-translate-y-0.5"
-        >
-          <path
-            d="M5.5 9.5V1.5M1.5 5.5l4-4 4 4"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="transition-transform duration-300 group-hover:-translate-y-0.5">
+          <path d="M5.5 9.5V1.5M1.5 5.5l4-4 4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">
-          Previous Section
-        </span>
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
       </button>
 
       {/* ── Escape Down ── */}
       <button
-        ref={nextBtnRef}
         onClick={handleEscapeDown}
         aria-label="Next section"
-        className="group absolute bottom-14 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
-        style={{ left: "50%" }}
+        className="group absolute bottom-5 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
       >
-        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">
-          Next Section
-        </span>
-        <svg
-          width="11"
-          height="11"
-          viewBox="0 0 11 11"
-          fill="none"
-          className="transition-transform duration-300 group-hover:translate-y-0.5"
-        >
-          <path
-            d="M5.5 1.5v8M1.5 5.5l4 4 4-4"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Next Section</span>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="transition-transform duration-300 group-hover:translate-y-0.5">
+          <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
-      {/* Minimap */}
-      <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
-        <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
+      {/* Minimap — desktop */}
+      <div className="hidden sm:flex absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
+        <div className="relative flex w-full h-full overflow-hidden gap-3">
           <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
-            {indices.map((i) => {
-              const data = getProjectData(i);
-              return (
-                <div
-                  key={i}
-                  className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
-                  ref={(el) => {
-                    if (el) minimapRef.current.set(i, el);
-                    else minimapRef.current.delete(i);
-                  }}
-                >
-                  <img
-                    src={data.image}
-                    alt={data.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              );
-            })}
+            <img
+              src={getProjectData(activeIndex).image}
+              alt="minimap"
+              className="w-full h-full object-cover transition-all duration-500"
+            />
           </div>
-          <div className="flex-1 relative overflow-hidden h-full">
-            {indices.map((i) => {
-              const data = getProjectData(i);
-              return (
-                <div
-                  key={i}
-                  className="absolute top-0 left-0 w-full h-full flex flex-col justify-between will-change-transform py-1 pl-3"
-                  ref={(el) => {
-                    if (el) infoRef.current.set(i, el);
-                    else infoRef.current.delete(i);
-                  }}
-                >
-                  <div className="flex justify-between items-baseline border-b border-white/5 pb-1">
-                    <p className="font-mono text-xs font-bold text-[#FFD43A]">
-                      {getProjectNumber(i)}
-                    </p>
-                    <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px]">
-                      {data.title}
-                    </p>
-                  </div>
-                  <div className="flex justify-between font-mono text-[9px] uppercase text-[#F4B9B9] tracking-wider my-2">
-                    <p>{data.category}</p>
-                    <p>{data.year}</p>
-                  </div>
-                  <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">
-                    &ldquo;{data.description}&rdquo;
-                  </p>
-                </div>
-              );
-            })}
+          <div className="flex-1 flex flex-col justify-between py-1">
+            <div className="flex justify-between items-baseline border-b border-white/5 pb-1">
+              <p className="font-mono text-xs font-bold text-[#FFD43A]">{getProjectNumber(activeIndex)}</p>
+              <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px]">{getProjectData(activeIndex).title}</p>
+            </div>
+            <div className="flex justify-between font-mono text-[9px] uppercase text-[#F4B9B9] tracking-wider my-2">
+              <p>{getProjectData(activeIndex).category}</p>
+              <p>{getProjectData(activeIndex).year}</p>
+            </div>
+            <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">&ldquo;{getProjectData(activeIndex).description}&rdquo;</p>
+
+            {/* Dot indicators */}
+            <div className="flex gap-1.5 mt-2">
+              {PROJECT_DATA.map((_, i) => {
+                const normalised = ((activeIndex % totalSlides) + totalSlides) % totalSlides;
+                return (
+                  <div
+                    key={i}
+                    className="rounded-full transition-all duration-300"
+                    style={{
+                      width: normalised === i ? 16 : 4,
+                      height: 4,
+                      background: normalised === i ? "#FFD43A" : "rgba(255,255,255,0.2)",
+                    }}
+                  />
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
@@ -520,7 +315,7 @@ export function InfiniteParallaxSlider() {
       {/* Scroll hint */}
       <div className="absolute left-4 md:left-12 bottom-6 z-30 font-mono text-[9px] uppercase text-white/30 tracking-[0.2em] flex items-center gap-2 pointer-events-none">
         <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
-        <span className="hidden sm:inline">Scroll or swipe to navigate</span>
+        <span className="hidden sm:inline">Use arrows to navigate · Swipe on mobile</span>
         <span className="sm:hidden">Swipe to navigate</span>
       </div>
     </div>
