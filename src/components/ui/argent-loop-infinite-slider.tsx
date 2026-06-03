@@ -230,16 +230,7 @@ export function InfiniteParallaxSlider() {
       btnTargetX.current = Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
     };
 
-    const onWheel = (e: WheelEvent) => {
-      if (!isHovered.current) return;
-      e.preventDefault();
-      const s = state.current;
-      s.isSnapping = false;
-      s.lastScrollTime = Date.now();
-      const delta = Math.max(Math.min(e.deltaY * CONFIG.SCROLL_SPEED, CONFIG.MAX_VELOCITY), -CONFIG.MAX_VELOCITY);
-      s.targetY -= delta;
-      resetAutoplay();
-    };
+    const onWheel = (_e: WheelEvent) => { /* disabled */ };
 
     const onTouchStart = (e: TouchEvent) => {
       if (!el?.contains(e.target as Node)) return;
@@ -264,7 +255,7 @@ export function InfiniteParallaxSlider() {
     };
 
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
-    window.addEventListener("wheel", onWheel, { passive: false });
+    // wheel hijack disabled
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchmove", onTouchMove, { passive: true });
     window.addEventListener("touchend", onTouchEnd);
@@ -275,7 +266,7 @@ export function InfiniteParallaxSlider() {
 
     return () => {
       el?.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("wheel", onWheel);
+      // wheel hijack disabled
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
