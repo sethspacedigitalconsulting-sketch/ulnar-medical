@@ -1,4 +1,4 @@
-"use client";
+ï»¿"use client";
 
 import * as React from "react";
 import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
@@ -337,7 +337,7 @@ export function InfiniteParallaxSlider() {
             className="drop-shadow-[0_4px_32px_rgba(0,0,0,0.8)]"
           />
           <p className="font-mono text-[0.52rem] uppercase tracking-[0.25em] text-white/25 mt-3 pointer-events-none">
-            Hover to reveal · Click to cycle
+            Hover to reveal Â· Click to cycle
           </p>
         </div>
       </div>
@@ -372,7 +372,7 @@ export function InfiniteParallaxSlider() {
         </svg>
       </button>
 
-      {/* Minimap — hidden on small mobile */}
+      {/* Minimap â€” hidden on small mobile */}
       <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
         <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
           <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
