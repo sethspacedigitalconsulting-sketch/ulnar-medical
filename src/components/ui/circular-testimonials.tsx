@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
@@ -15,24 +15,24 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     name: "Mercy W.",
-    designation: "Expectant Mother — Antenatal Track",
+    designation: "Expectant Mother â€” Antenatal Track",
     quote:
       "The 3D/4D ultrasound clarity at Ulnar Medical gave us absolute peace of mind. Dr. Elizabeth explained every developmental marker with so much patience and warmth.",
-    src: "https://images.pexels.com/photos/4226270/pexels-photo-4226270.jpeg?auto=compress&cs=tinysrgb&w=600",
+    src: "/images/mercyw.jpg",
   },
   {
     name: "Dr. Faith O.",
     designation: "Referring General Practitioner",
     quote:
       "I route all my complex obstetric and gynaecological scans straight to Ulnar Diagnostic Centre. Their pathology screening is incredibly precise, and results arrive the same day.",
-    src: "https://images.pexels.com/photos/5327585/pexels-photo-5327585.jpeg?auto=compress&cs=tinysrgb&w=600",
+    src: "/images/Drfaitho.jpg",
   },
   {
     name: "Amina K.",
     designation: "Maternal Wellness Patient",
     quote:
       "Transparent packages, zero hidden clinical fees, and compassionate care. Walking into their clinic on Ngong Road feels like stepping into a premium medical sanctuary.",
-    src: "https://images.pexels.com/photos/5699504/pexels-photo-5699504.jpeg?auto=compress&cs=tinysrgb&w=600",
+    src: "/images/aminak.jpg",
   },
 ];
 
@@ -176,7 +176,7 @@ export function CircularTestimonials({ autoplay = true }: { autoplay?: boolean }
               {/* Stars */}
               <div className="flex justify-center gap-1 mb-6">
                 {[...Array(5)].map((_, s) => (
-                  <span key={s} style={{ color: "#FFD43A", fontSize: "1rem" }}>★</span>
+                  <span key={s} style={{ color: "#FFD43A", fontSize: "1rem" }}>â˜…</span>
                 ))}
               </div>
 
@@ -201,7 +201,7 @@ export function CircularTestimonials({ autoplay = true }: { autoplay?: boolean }
           </AnimatePresence>
         </div>
 
-        {/* Navigation arrows — whileHover + whileTap work on both mouse and touch */}
+        {/* Navigation arrows â€” whileHover + whileTap work on both mouse and touch */}
         <div className="flex justify-center gap-4 mt-10">
           {ARROWS.map(({ dir, Icon, label }) => (
             <motion.button
