@@ -15,7 +15,7 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     name: "Mercy W.",
-    designation: "Expectant Mother â€” Antenatal Track",
+    designation: "Expectant Mother — Antenatal Track",
     quote:
       "The 3D/4D ultrasound clarity at Ulnar Medical gave us absolute peace of mind. Dr. Elizabeth explained every developmental marker with so much patience and warmth.",
     src: "/images/mercyw.jpg",
@@ -201,7 +201,7 @@ export function CircularTestimonials({ autoplay = true }: { autoplay?: boolean }
           </AnimatePresence>
         </div>
 
-        {/* Navigation arrows â€” whileHover + whileTap work on both mouse and touch */}
+        {/* Navigation arrows — whileHover + whileTap work on both mouse and touch */}
         <div className="flex justify-center gap-4 mt-10">
           {ARROWS.map(({ dir, Icon, label }) => (
             <motion.button
