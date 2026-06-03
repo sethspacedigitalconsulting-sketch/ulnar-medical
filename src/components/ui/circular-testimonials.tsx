@@ -176,7 +176,7 @@ export function CircularTestimonials({ autoplay = true }: { autoplay?: boolean }
               {/* Stars */}
               <div className="flex justify-center gap-1 mb-6">
                 {[...Array(5)].map((_, s) => (
-                  <span key={s} style={{ color: "#FFD43A", fontSize: "1rem" }}>â˜…</span>
+                  <span key={s} style={{ color: "#FFD43A", fontSize: "1rem" }}>★</span>
                 ))}
               </div>
 
