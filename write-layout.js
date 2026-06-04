@@ -93,6 +93,7 @@ export function InfiniteParallaxSlider() {
   const nextBtnRef    = React.useRef<HTMLButtonElement>(null);
   const btnTargetX    = React.useRef(0);
   const btnCurrentX   = React.useRef(0);
+  const slidesSeen    = React.useRef(new Set<number>());
 
   const state = React.useRef({
     currentY: 0, targetY: 0,
@@ -202,6 +203,10 @@ export function InfiniteParallaxSlider() {
     const ci  = Math.round(-s.targetY / s.projectHeight);
     const min = ci - CONFIG.BUFFER_SIZE;
     const max = ci + CONFIG.BUFFER_SIZE;
+
+    // Track which slides have been seen
+    slidesSeen.current.add(((ci % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length);
+
     if (min !== renderedRange.current.min || max !== renderedRange.current.max) {
       renderedRange.current = { min, max };
       setVisibleRange({ min, max });
@@ -230,6 +235,19 @@ export function InfiniteParallaxSlider() {
     };
     const onWheel = (e: WheelEvent) => {
       if (!isHovered.current) return;
+
+      // If user has seen all slides and is scrolling down, let them escape
+      const allSeen = slidesSeen.current.size >= PROJECT_DATA.length;
+      if (allSeen && e.deltaY > 0) {
+        isHovered.current = false;
+        const container = containerRef.current;
+        if (container) {
+          const next = container.nextElementSibling as HTMLElement | null;
+          if (next) next.scrollIntoView({ behavior: "smooth" });
+        }
+        return;
+      }
+
       e.preventDefault();
       const s = state.current;
       s.isSnapping = false;
@@ -399,4 +417,4 @@ export default InfiniteParallaxSlider;
 `;
 
 fs.writeFileSync(filePath, content, { encoding: 'utf8' });
-console.log('argent-loop-infinite-slider.tsx restored with full InfiniteParallaxSlider animation');
+console.log('argent-loop-infinite-slider.tsx updated - scroll escape after all slides seen');
