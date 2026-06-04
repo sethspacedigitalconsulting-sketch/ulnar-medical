@@ -1,4 +1,12 @@
-"use client";
+const fs = require('fs');
+const path = require('path');
+
+const filePath = path.join(
+  'C:\\Users\\MS29\\OneDrive\\Desktop\\Antigravity IDE projects\\ulnar-medical',
+  'src', 'components', 'ui', 'vertical-image-stack.tsx'
+);
+
+const content = `"use client";
 
 import React, { useRef } from "react";
 import Image from "next/image";
@@ -55,3 +63,7 @@ export function VerticalImageStack({
 }
 
 export default VerticalImageStack;
+`;
+
+fs.writeFileSync(filePath, content, { encoding: 'utf8' });
+console.log('vertical-image-stack.tsx written successfully (UTF-8)');
