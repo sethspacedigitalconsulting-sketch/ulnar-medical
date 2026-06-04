@@ -1,9 +1,9 @@
-﻿"use client";
+"use client";
 
 import React, { useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   motion,
-  AnimatePresence,
   useScroll,
   useTransform,
   useMotionValue,
@@ -14,7 +14,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "./Logo";
 import { AnimatedText } from "@/components/ui/animated-text";
-import { HeroScrub } from "@/components/ui/hero-scrub";
 import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { MobileMenu } from "@/components/ui/mobile-menu";
@@ -37,6 +36,11 @@ import {
   FileText,
 } from "lucide-react";
 
+const HeroScrub = dynamic(
+  () => import("@/components/ui/hero-scrub").then((m) => ({ default: m.HeroScrub })),
+  { ssr: false }
+);
+
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
@@ -50,54 +54,42 @@ interface MenuLinkItem {
 
 const serviceLinks: MenuLinkItem[] = [
   {
-    title: "3D/4D Obstetric Ultrasound",
+    title: "Obstetric Ultrasound",
     href: "#services",
-    description: "High-fidelity real-time fetal viewing and vital developmental milestone tracking.",
+    description: "Advanced high-fidelity 3D/4D obstetric imaging tracking fetus health cycles.",
     icon: Activity,
   },
   {
-    title: "Gynecological Consultations",
+    title: "Gynecological Scans",
     href: "#services",
-    description: "Comprehensive reproductive health checks, pelvic pain investigations, and clinical reviews.",
+    description: "Deep anatomical screenings diagnosing structural health and cysts accurately.",
     icon: Heart,
   },
   {
-    title: "Full Pelvic Diagnostic Scan",
+    title: "Fertility Evaluation",
     href: "#services",
-    description: "Advanced ultrasound imaging for deep uterine and ovarian tissue structural analysis.",
-    icon: Eye,
-  },
-  {
-    title: "Antenatal Wellness Packages",
-    href: "#services",
-    description: "Structured maternal health monitoring sequences tailored specifically per trimester.",
+    description: "Comprehensive follicle diagnostic tracking and pelvic blood flow mapping.",
     icon: Sparkles,
   },
   {
-    title: "Maternal-Fetal Specialist Services",
+    title: "Early Screening",
     href: "#services",
-    description: "Expert MFM consultations and high-fidelity imaging for high-risk pregnancies.",
+    description: "First-trimester structural anomaly checking and anomaly risk assessment.",
     icon: ShieldAlert,
-  },
-  {
-    title: "Advanced Clinical Radiology",
-    href: "#services",
-    description: "High-precision pelvic mapping and diagnostic imaging reporting by senior specialists.",
-    icon: FileText,
   },
 ];
 
 const aboutLinks: MenuLinkItem[] = [
   {
-    title: "Our Clinic",
+    title: "Clinical Sanctuary",
     href: "#about",
-    description: "A premium patient care destination on Ngong Road, engineered for comfort and precision.",
+    description: "Explore our premium patient care destination engineered for ultimate relaxation.",
     icon: Eye,
   },
   {
     title: "Expert Clinicians",
     href: "#about",
-    description: "Meet Dr. Elizabeth Odondi (Radiology Lead) and Dr. Cyprian Michieka (MFM/OB-GYN).",
+    description: "Meet our board-certified radiologists specializing in complex diagnostic execution.",
     icon: FileText,
   },
 ];
@@ -106,13 +98,13 @@ const contactLinks: MenuLinkItem[] = [
   {
     title: "Ngong Road Office",
     href: "#contact",
-    description: "Find our physical branch at premium medical suites on Ngong Road, Nairobi.",
+    description: "Find our physical branch footprint at premium medical suites in Nairobi.",
     icon: MapPin,
   },
   {
-    title: "Operating Hours",
+    title: "Operating Metrics",
     href: "#contact",
-    description: "Mon - Sat: 8:00 AM - 6:00 PM. Same-day diagnostics available.",
+    description: "Mon - Sat: 8:00 AM - 6:00 PM. Same-day diagnostics generation window.",
     icon: Clock,
   },
 ];
@@ -137,7 +129,11 @@ export function HeroSection() {
     mx.set((e.clientX - (rect.left + rect.width / 2)) * 0.3);
     my.set((e.clientY - (rect.top + rect.height / 2)) * 0.3);
   };
-  const handleMouseLeaveCTA = () => { mx.set(0); my.set(0); };
+
+  const handleMouseLeaveCTA = () => {
+    mx.set(0);
+    my.set(0);
+  };
 
   React.useEffect(() => {
     if (mobileMenuOpen) {
@@ -145,7 +141,9 @@ export function HeroSection() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileMenuOpen]);
 
   useGSAP(
@@ -164,18 +162,23 @@ export function HeroSection() {
 
   const fadeUpVariants = {
     hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE_LUXURY } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8, ease: EASE_LUXURY },
+    },
   };
 
   return (
-    <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden">
-
-      {/* ── BACKGROUND LAYER ── */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
+    <section
+      ref={containerRef}
+      className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden"
+    >
+      {/* HeroScrub � desktop only, hidden on mobile to prevent lag */}
+      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hidden md:block">
         <HeroScrub />
       </div>
 
-      {/* ── Navigation ── */}
       <motion.nav
         ref={navRef}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
@@ -192,16 +195,14 @@ export function HeroSection() {
         <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
           <Logo animated size={42} />
 
-          {/* Desktop Navigation */}
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="gap-2">
-
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">
                   Services
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[620px] grid-cols-2 gap-3 p-4 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
+                  <div className="grid w-[580px] grid-cols-2 gap-3 p-4 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {serviceLinks.map((item) => (
                       <ListItem key={item.title} {...item} />
                     ))}
@@ -234,21 +235,18 @@ export function HeroSection() {
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Book Now CTA */}
           <div className="hidden items-center gap-4 md:flex">
             <a
               href="#booking"
               className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider"
             >
-              Book Now <span className="text-sm leading-none">↗</span>
+              Book Now <span className="text-sm leading-none">?</span>
             </a>
           </div>
 
-          {/* Mobile Menu Toggle */}
           <Button
             size="icon"
             variant="outline"
@@ -260,7 +258,6 @@ export function HeroSection() {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu */}
       <MobileMenu
         open={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
@@ -269,13 +266,11 @@ export function HeroSection() {
         contactLinks={contactLinks}
       />
 
-      {/* ── Hero Content ── */}
       <motion.div
         className="relative z-20 px-6 md:px-14 pt-36 md:pt-40 pb-32"
         style={{ y: textY, opacity, willChange: "transform" }}
       >
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
-
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div
               className="flex items-center gap-3 mb-10"
@@ -284,19 +279,14 @@ export function HeroSection() {
               transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}
             >
               <div className="h-px w-10 bg-[#FFD43A]" />
-              <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
+              <span className="label-mono text-[rgba(248,246,242,0.55)]">
+                Ngong Road � Nairobi � Est. 2021
+              </span>
             </motion.div>
 
-            {/* ── Hero Headline: OB/GYN & Diagnostics Centre ── */}
             <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
-              OB/GYN &amp;<br />
-              <span className="text-[#FFD43A] italic">Diagnostics</span><br />
-              <span
-                className="not-italic"
-                style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", color: "#F4B9B9" }}
-              >
-                Centre
-              </span>
+              Detailed <br />
+              <span className="text-[#FFD43A] italic">Diagnostics</span>
             </h1>
 
             <AnimatedText
@@ -319,23 +309,25 @@ export function HeroSection() {
                 style={{ x: springX, y: springY, willChange: "transform" }}
                 onMouseMove={handleMouseMoveCTA}
                 onMouseLeave={handleMouseLeaveCTA}
-                onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
+                onClick={() =>
+                  document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  Book Diagnostic Scan <span>→</span>
+                  Book Diagnostic Scan <span>?</span>
                 </span>
               </motion.button>
 
               <motion.a
-                href="https://wa.me/254724273996?text=Hello%20Ulnar%20Medical%2C%20I%20would%20like%20to%20inquire%20about%20a%20diagnostic%20appointment."
+                href="https://wa.me/254724273996?text=Hello"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 px-6 py-4 rounded-full border border-[rgba(244,185,185,0.3)] text-[#F4B9B9] font-body text-sm hover:border-[#F4B9B9] transition-all group"
               >
-                Chat on WhatsApp ↗
+                Chat on WhatsApp ?
               </motion.a>
             </motion.div>
 
@@ -352,7 +344,9 @@ export function HeroSection() {
                 { value: "Same-Day", label: "Results Available" },
               ].map(({ value, label }) => (
                 <div key={label}>
-                  <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">{value}</div>
+                  <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">
+                    {value}
+                  </div>
                   <div className="label-mono text-[rgba(248,246,242,0.4)] mt-0.5">{label}</div>
                 </div>
               ))}
@@ -370,20 +364,20 @@ export function HeroSection() {
               <div style={{ width: "100%", height: "clamp(420px, 55vh, 640px)", overflow: "hidden" }}>
                 <img
                   src="/images/clinic-ultrasound.jpg"
-                  alt="Ulnar Medical — ultrasound procedure in progress"
+                  alt="Ulnar Medical � ultrasound procedure in progress at Ngong Road Nairobi"
                   className="w-full h-full object-cover object-center"
+                  loading="eager"
                 />
               </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute bottom-5 left-5 right-5 flex items-center gap-3 px-4 py-3 rounded-xl bg-black/75 backdrop-blur-md border border-white/10">
                 <div className="w-2 h-2 rounded-full bg-[#FFD43A] animate-pulse" />
                 <span className="text-[10px] font-mono text-white/70 tracking-wider">
-                  NGONG ROAD · NAIROBI · ACCEPTING PATIENTS
+                  NGONG ROAD � NAIROBI � ACCEPTING PATIENTS
                 </span>
               </div>
             </div>
           </motion.div>
-
         </div>
       </motion.div>
     </section>
