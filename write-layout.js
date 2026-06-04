@@ -3,273 +3,383 @@ const path = require('path');
 
 const filePath = path.join(
   'C:\\Users\\MS29\\OneDrive\\Desktop\\Antigravity IDE projects\\ulnar-medical',
-  'src', 'components', 'ui', 'vertical-image-stack.tsx'
+  'src', 'app', 'page.tsx'
 );
 
-const content = `"use client";
+const content = `'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import { motion, type PanInfo, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { useState, useRef, useEffect } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { HeroSection } from '@/components/HeroSection';
+import { ContactFooter } from '@/components/ContactFooter';
+import { FloatingCTA } from '@/components/ui/floating-cta';
 
-interface SpecialtyItem {
-  id: number;
-  title: string;
-  badge: string;
-  desc: string;
-  src: string;
-  alt: string;
+const VerticalImageStack = dynamic(
+  () => import('@/components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
+  { ssr: false }
+);
+
+const InfiniteParallaxSlider = dynamic(
+  () => import('@/components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
+  { ssr: false }
+);
+
+const AboutSection = dynamic(
+  () => import('@/components/AboutSection').then((m) => ({ default: m.AboutSection })),
+  { ssr: false }
+);
+
+const CircularTestimonials = dynamic(
+  () => import('@/components/ui/circular-testimonials').then((m) => ({ default: m.CircularTestimonials })),
+  { ssr: false }
+);
+
+const BookingHub = dynamic(
+  () => import('@/components/sections/BookingHub').then((m) => ({ default: m.BookingHub })),
+  { ssr: false }
+);
+
+const MapEmbed = dynamic(
+  () => import('@/components/MapEmbed').then((m) => ({ default: m.MapEmbed })),
+  { ssr: false }
+);
+
+export default function Home() {
+  return (
+    <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
+      <HeroSection />
+      <VerticalImageStack />
+      <InfiniteParallaxSlider />
+      <AboutSection />
+      <LocalServiceShowcase />
+      <CircularTestimonials />
+      <BookingHub />
+      <MapEmbed />
+      <ContactFooter />
+      <FloatingCTA />
+    </main>
+  );
 }
 
-const specialties: SpecialtyItem[] = [
+interface Service {
+  id: number;
+  badge: string;
+  title: string;
+  desc: string;
+  tag: string;
+  image: string;
+  bullets?: string[];
+}
+
+const services: Service[] = [
   {
     id: 1,
-    title: "Wellness Patient Package",
-    badge: "MATERNAL WELLNESS",
-    desc: "Comprehensive proactive health monitoring regimens designed around your active cycles.",
-    src: "/images/wellnessp.jpg",
-    alt: "African clinician reviewing antenatal wellness trends"
+    badge: 'OBSTETRIC CARE',
+    title: '3D/4D Obstetric Ultrasound',
+    desc: 'High-definition real-time fetal viewing and vital developmental milestone tracking.',
+    tag: 'OB/GYN',
+    image: '/images/3D4DobUl.jpg',
   },
   {
     id: 2,
-    title: "Priority Emergency Triage",
-    badge: "24/7 CLINICAL CARE",
-    desc: "Immediate clinical staging workflows engineered for rapid diagnostic response.",
-    src: "/images/priorityET.jpg",
-    alt: "Rapid medical assessment at Ulnar sanctuary"
+    badge: 'GYNAECOLOGY',
+    title: 'Gynecological Consultations',
+    desc: 'Comprehensive reproductive health checks, pelvic pain investigations, and clinical reviews.',
+    tag: 'Specialist Care',
+    image: '/images/GandC.jpg',
   },
   {
     id: 3,
-    title: "Obstetric 3D/4D Ultrasound",
-    badge: "ADVANCED IMAGING",
-    desc: "High-fidelity cinematic renderings capturing real-time developmental progression.",
-    src: "/images/obimageunsplashed.jpg",
-    alt: "High-precision obstetric ultrasound session in progress"
+    badge: 'DIAGNOSTICS',
+    title: 'Full Pelvic Diagnostic Scan',
+    desc: 'Advanced ultrasound imaging for deep uterine and ovarian tissue structural analysis.',
+    tag: 'Diagnostic',
+    image: '/images/fpdc.jpg',
   },
   {
     id: 4,
-    title: "Gynaecology Specialist Consultant",
-    badge: "REPRODUCTIVE HEALTH",
-    desc: "Elite care parameters and structural screening sequences delivered by senior experts.",
-    src: "/images/GNSunsplashed.jpg",
-    alt: "African medical expert consulting with family member"
+    badge: 'WELLNESS',
+    title: 'Antenatal Wellness Packages',
+    desc: 'Structured maternal health monitoring sequences tailored specifically per trimester.',
+    tag: 'Maternal Track',
+    image: '/images/awp.jpg',
   },
   {
     id: 5,
-    title: "Diagnostic Precision Pathology",
-    badge: "LABORATORY SYSTEMS",
-    desc: "Meticulous verification mechanics generating deep data insight arrays.",
-    src: "/images/pathology.jpg",
-    alt: "Pathology testing array at Ulnar Medical labs"
+    badge: 'MFM SPECIALIST CARE',
+    title: 'Maternal-Fetal Specialist Services',
+    desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies.',
+    tag: 'MFM',
+    image: '/images/mfss.jpg',
+    bullets: [
+      'Pre-conception consultation and structural risk screening',
+      'Advanced 2D/3D obstetric ultrasounds for high-risk tracking',
+      'Fetal interventional monitoring including amniocentesis',
+      'Detailed fetal anatomical surveys and anomaly scans',
+      'Targeted fetal echocardiography (Fetal Echo)',
+    ],
   },
   {
     id: 6,
-    title: "Antenatal Maternal Wellness",
-    badge: "OBSTETRIC TRIAD",
-    desc: "Compassionate clinical steps keeping both mother and fetus shielded safely.",
-    src: "/images/maternalwell.jpg",
-    alt: "African expectant mother smile during wellness assessment"
+    badge: 'RADIOLOGY & IMAGING',
+    title: 'Advanced Clinical Radiology',
+    desc: 'High-precision pelvic mapping and diagnostic imaging reporting by senior clinical imaging specialists.',
+    tag: 'Radiology',
+    image: '/images/acr.jpg',
+    bullets: [
+      'Comprehensive pelvic floor mapping profile scans',
+      'Transvaginal and follicular monitoring tracking arrays',
+      'Same-day rapid reporting dispatch pathways',
+    ],
   },
-  {
-    id: 7,
-    title: "Pelvic Scan Full Mapping",
-    badge: "DIAGNOSTIC ANATOMY",
-    desc: "Detailed structural tissue mapping sequences providing extreme diagnostic clarity.",
-    src: "/images/psfffffffffmmmmmmmm.jpg",
-    alt: "Black female doctor performing abdominal ultrasound scan on patient"
-  },
-  {
-    id: 8,
-    title: "Lab Triage Same-Day Results",
-    badge: "RAPID RECOVERY DISPATCH",
-    desc: "Eliminates painful tracking delays. Critical pathology profiles are accelerated and dispatched via rapid channels to provide definitive answers within hours of your visit.",
-    src: "/images/lab-triage-same-day-results-black-people-63a93e-thumb.jpg",
-    alt: "Black female nurse or doctor in a diagnostic laboratory verifying rapid triage results"
-  }
 ];
 
-export function VerticalImageStack() {
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const lastNavigationTime = useRef<number>(0);
-  const navigationCooldown = 450;
-
-  const navigate = useCallback((newDirection: number) => {
-    const now = Date.now();
-    if (now - lastNavigationTime.current < navigationCooldown) return;
-    lastNavigationTime.current = now;
-    setCurrentIndex((prev) => {
-      if (newDirection > 0) {
-        return prev === specialties.length - 1 ? 0 : prev + 1;
-      }
-      return prev === 0 ? specialties.length - 1 : prev - 1;
-    });
-  }, []);
-
-  const handleDragEnd = (_e: any, info: PanInfo) => {
-    const threshold = 40;
-    if (info.offset.y < -threshold) {
-      navigate(1);
-    } else if (info.offset.y > threshold) {
-      navigate(-1);
-    }
-  };
-
-  const handleWheel = useCallback(
-    (e: any) => {
-      if (Math.abs(e.deltaY) > 20) {
-        navigate(e.deltaY > 0 ? 1 : -1);
-      }
-    },
-    [navigate]
-  );
+function LocalServiceShowcase() {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
+  const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
+  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
 
   useEffect(() => {
-    const container = document.getElementById("ulnar-stack-container");
-    if (!container) return;
-    container.addEventListener("wheel", handleWheel, { passive: true });
-    return () => container.removeEventListener("wheel", handleWheel);
-  }, [handleWheel]);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check, { passive: true });
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
-  const getCardStyle = (index: number) => {
-    const total = specialties.length;
-    let diff = index - currentIndex;
-    if (diff > total / 2) diff -= total;
-    if (diff < -total / 2) diff += total;
+  useEffect(() => {
+    const lerp = (start: number, end: number, factor: number) =>
+      start + (end - start) * factor;
+    const animate = () => {
+      setSmoothPosition((prev) => ({
+        x: lerp(prev.x, mousePosition.x, 0.15),
+        y: lerp(prev.y, mousePosition.y, 0.15),
+      }));
+      animationRef.current = requestAnimationFrame(animate);
+    };
+    animationRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [mousePosition]);
 
-    if (diff === 0) {
-      return { y: 0, scale: 1, opacity: 1, zIndex: 10, rotateX: 0, rotateZ: 0 };
-    } else if (diff === -1) {
-      return { y: -130, scale: 0.84, opacity: 0.5, zIndex: 8, rotateX: 12, rotateZ: -1 };
-    } else if (diff === -2) {
-      return { y: -230, scale: 0.72, opacity: 0.2, zIndex: 6, rotateX: 22, rotateZ: -2 };
-    } else if (diff === 1) {
-      return { y: 130, scale: 0.84, opacity: 0.5, zIndex: 8, rotateX: -12, rotateZ: 1 };
-    } else if (diff === 2) {
-      return { y: 230, scale: 0.72, opacity: 0.2, zIndex: 6, rotateX: -22, rotateZ: 2 };
-    } else {
-      return { y: diff > 0 ? 350 : -350, scale: 0.6, opacity: 0, zIndex: 0, rotateX: diff > 0 ? -35 : 35, rotateZ: 0 };
+  useEffect(() => {
+    const updateRect = () => {
+      if (containerRef.current) {
+        setContainerRect(containerRef.current.getBoundingClientRect());
+      }
+    };
+    updateRect();
+    window.addEventListener('resize', updateRect, { passive: true });
+    window.addEventListener('scroll', updateRect, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
+    };
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePosition({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
     }
   };
 
-  const isVisible = (index: number) => {
-    const total = specialties.length;
-    let diff = index - currentIndex;
-    if (diff > total / 2) diff -= total;
-    if (diff < -total / 2) diff += total;
-    return Math.abs(diff) <= 2;
+  const handleMouseEnter = (index: number) => {
+    if (!isMobile) {
+      setHoveredIndex(index);
+      setIsVisible(true);
+    }
   };
 
-  const activeData = specialties[currentIndex];
+  const handleMouseLeave = () => {
+    if (!isMobile) {
+      setHoveredIndex(null);
+      setIsVisible(false);
+    }
+  };
+
+  const handleTap = (index: number) => {
+    if (isMobile) {
+      setActiveIndex((prev) => (prev === index ? null : index));
+    }
+  };
+
+  const activeDesktop = hoveredIndex;
+  const activeMobile = activeIndex;
 
   return (
-    <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight">
-          Every Speciality - <span className="text-[#F4B9B9] italic">One destination</span>
-        </h2>
-      </div>
+    <section
+      id="services"
+      className="relative bg-[#0d1b3e] py-24 px-6 md:px-14 border-b border-white/5"
+    >
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col items-start text-left mb-16">
+          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">
+            Clinical Capabilities
+          </span>
+          <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">
+            Specialized Diagnostic Services
+          </h2>
+          <p className="md:hidden font-mono text-[10px] text-white/25 tracking-widest uppercase mt-3">
+            Tap a service to reveal
+          </p>
+        </div>
 
-      <div
-        id="ulnar-stack-container"
-        className="relative flex h-[70vh] w-full items-center justify-center overflow-hidden bg-transparent max-w-7xl mx-auto px-6 md:px-14"
-      >
-        <div className="w-full grid grid-cols-1 md:grid-cols-12 items-center gap-10">
-          <div className="md:col-span-5 flex flex-col justify-center text-left min-h-[250px] pointer-events-none z-20">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeData.id}
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 30 }}
-                transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
-              >
-                <span className="font-mono text-[10px] tracking-widest text-[#FFD43A] uppercase bg-[#FFD43A]/5 px-3 py-1 rounded-full border border-[#FFD43A]/15">
-                  {activeData.badge}
-                </span>
-                <h3 className="text-2xl md:text-4xl font-display font-bold text-white mt-5 mb-4 tracking-tight leading-none">
-                  {activeData.title}
-                </h3>
-                <p className="text-white/60 font-body font-light text-sm md:text-base leading-relaxed max-w-sm">
-                  {activeData.desc}
-                </p>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          <div className="md:col-span-7 flex items-center justify-center relative min-h-[480px]">
-            <div className="relative flex h-[450px] w-[280px] items-center justify-center" style={{ perspective: "1500px" }}>
-              {specialties.map((spec, index) => {
-                if (!isVisible(index)) return null;
-                const style = getCardStyle(index);
-                const isCurrent = index === currentIndex;
-
-                return (
-                  <motion.div
-                    key={spec.id}
-                    className="absolute cursor-grab active:cursor-grabbing origin-center select-none"
-                    animate={{
-                      y: style.y,
-                      scale: style.scale,
-                      opacity: style.opacity,
-                      rotateX: style.rotateX,
-                      rotateZ: style.rotateZ,
-                      zIndex: style.zIndex,
-                    }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 260,
-                      damping: 28,
-                      mass: 0.9,
-                    }}
-                    drag={isCurrent ? "y" : false}
-                    dragConstraints={{ top: 0, bottom: 0 }}
-                    dragElastic={0.15}
-                    onDragEnd={handleDragEnd}
-                    style={{
-                      transformStyle: "preserve-3d",
-                    }}
-                  >
-                    <div
-                      className={\`relative h-[370px] w-[250px] overflow-hidden rounded-[2.5rem] bg-[#0d1b3e] border transition-colors duration-300 \${
-                        isCurrent ? "border-[#F4B9B9]/40 shadow-2xl shadow-black/90" : "border-white/5"
-                      }\`}
-                    >
-                      <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 via-transparent to-transparent z-10 pointer-events-none" />
-                      <Image
-                        src={spec.src}
-                        alt={spec.alt}
-                        fill
-                        className="object-cover w-full h-full"
-                        draggable={false}
-                        sizes="250px"
-                        priority={isCurrent}
-                      />
-                      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/40 to-transparent pointer-events-none" />
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <div className="absolute right-0 top-1/2 flex -translate-y-1/2 flex-col gap-2.5 z-30">
-              {specialties.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={\`h-1.5 rounded-full transition-all duration-300 \${
-                    index === currentIndex ? "h-6 bg-[#FFD43A] w-1.5" : "bg-white/10 w-1.5 hover:bg-white/30"
-                  }\`}
+        <div
+          ref={containerRef}
+          onMouseMove={handleMouseMove}
+          className="relative"
+        >
+          <div
+            className="pointer-events-none fixed z-50 overflow-hidden rounded-2xl shadow-2xl hidden md:block"
+            style={{
+              left: containerRect?.left ?? 0,
+              top: containerRect?.top ?? 0,
+              transform: \`translate3d(\${smoothPosition.x + 24}px, \${smoothPosition.y - 120}px, 0)\`,
+              opacity: isVisible ? 1 : 0,
+              scale: isVisible ? '1' : '0.85',
+              transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            }}
+          >
+            <div className="relative w-[300px] h-[200px] bg-[#0d1b3e] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
+              {services.map((service, index) => (
+                <img
+                  key={service.id}
+                  src={service.image}
+                  alt={service.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
+                  style={{
+                    opacity: activeDesktop === index ? 1 : 0,
+                    transform: activeDesktop === index ? 'scale(1)' : 'scale(1.08)',
+                    filter: activeDesktop === index ? 'none' : 'blur(8px)',
+                  }}
                 />
               ))}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 to-transparent" />
+              {activeDesktop !== null && (
+                <div className="absolute bottom-3 left-4">
+                  <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
+                    {services[activeDesktop]?.badge}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-      </div>
 
-      <div className="absolute left-14 bottom-4 pointer-events-none select-none font-mono text-xs text-white/20">
-        <span className="text-white/60 text-lg font-bold">{String(currentIndex + 1).padStart(2, "0")}</span>
-        <span className="mx-1">/</span>
-        <span>{String(specialties.length).padStart(2, "0")}</span>
+          <div className="space-y-0">
+            {services.map((service, index) => {
+              const isActiveRow = isMobile ? activeMobile === index : activeDesktop === index;
+              return (
+                <div
+                  key={service.id}
+                  onMouseEnter={() => handleMouseEnter(index)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => handleTap(index)}
+                  className="group relative cursor-pointer"
+                >
+                  <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
+                    <div
+                      className={\`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out \${
+                        isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                      }\`}
+                    />
+                    <div className="relative flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2 py-0.5 rounded border border-[#FFD43A]/15">
+                            {service.badge}
+                          </span>
+                        </div>
+                        <div className="inline-flex items-center gap-2">
+                          <h3 className="text-white font-display font-semibold text-xl md:text-2xl tracking-tight relative">
+                            <span className="relative">
+                              {service.title}
+                              <span
+                                className={\`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out \${
+                                  isActiveRow ? 'w-full' : 'w-0'
+                                }\`}
+                              />
+                            </span>
+                          </h3>
+                          <ArrowUpRight
+                            className={\`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out \${
+                              isActiveRow
+                                ? 'opacity-100 translate-x-0 translate-y-0'
+                                : 'opacity-0 -translate-x-2 translate-y-2'
+                            }\`}
+                          />
+                        </div>
+                        <p
+                          className={\`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out \${
+                            isActiveRow ? 'text-white/70' : 'text-white/40'
+                          }\`}
+                        >
+                          {service.desc}
+                        </p>
+                        <div
+                          className={\`md:hidden overflow-hidden transition-all duration-500 ease-out \${
+                            isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+                          }\`}
+                        >
+                          <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
+                            <img
+                              src={service.image}
+                              alt={service.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/70 to-transparent" />
+                            <div className="absolute bottom-3 left-4">
+                              <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
+                                {service.badge}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        {service.bullets && isActiveRow && (
+                          <ul className="mt-3 space-y-1.5 border-t border-white/5 pt-3">
+                            {service.bullets.map((bullet, idx) => (
+                              <li key={idx} className="text-xs text-white/50 flex items-center gap-2">
+                                <span className="w-1 h-1 rounded-full bg-[#F4B9B9] flex-shrink-0" />
+                                {bullet}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <span
+                          className={\`text-xs font-mono tabular-nums transition-all duration-300 ease-out \${
+                            isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
+                          }\`}
+                        >
+                          0{service.id}
+                        </span>
+                        <span
+                          className={\`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out \${
+                            isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
+                          }\`}
+                        >
+                          {service.tag}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="border-t border-white/6" />
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -277,4 +387,4 @@ export function VerticalImageStack() {
 `;
 
 fs.writeFileSync(filePath, content, { encoding: 'utf8' });
-console.log('vertical-image-stack.tsx restored successfully (UTF-8) with all 8 specialties');
+console.log('page.tsx restored successfully with full LocalServiceShowcase and images');
