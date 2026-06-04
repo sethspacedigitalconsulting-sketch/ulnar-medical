@@ -1,0 +1,97 @@
+[33mae7e75c8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m perf+seo: optimize performance and SEO for all 7 files - lazy loading, metadata, reduced will-change, image optimization
+[33ma7f91459[m perf: smart lazy loading on vertical image stack
+[33m5120d47e[m perf: add IntersectionObserver guard and lazy images to slider
+[33m0b0ee9b7[m perf: hide HeroScrub on mobile, dynamic import HeroScrub
+[33m71a7ad62[m perf: lazy load heavy sections with dynamic imports
+[33m14caa5ed[m seo: full metadata overhaul with geo tags and enhanced JSON-LD schema
+[33m73c4af1a[m perf: update globals.css with content-visibility and scoped GPU hints
+[33m8f45e4f6[m fix: add pexels to image remotePatterns
+[33m0258cf9f[m revert: restore all files to pre-optimization state
+[33m449a6556[m perf: lazy load heavy components, fix mobile lag, SEO overhaul
+[33m12e4b1cd[m fix: correct em dash encoding in testimonials designation
+[33m41026d95[m fix: restore corrupted UTF-8 star characters in testimonials
+[33md4f3878e[m feat: replace Unsplash images with local images in VerticalImageStack
+[33m1e1e9b14[m feat: replace stock testimonial images with real patient photos
+[33mf7f3505f[m feat: replace broken Unsplash images with local images in HeroScrub
+[33mbf72886b[m fix: remove wheel hijacking from parallax slider to allow page scroll
+[33mf8f7de8d[m fix: re-save slider file as UTF-8 encoding
+[33mfa3ad0a4[m feat: replace pexels stock images with local clinic images in parallax slider
+[33m928c6768[m feat: replace slide images with precise medical + African representation
+[33m4f042039[m fix: remove all wheel hijacking, use autoplay + arrow buttons for desktop navigation
+[33m2c16a9f9[m fix: scope wheel to container el only — page scrolls freely outside slider
+[33mf44a44e2[m fix: scroll hijack only when section 60% in view, fix escape navigation
+[33mdd32e49d[m feat: mobile inline image reveal for services section
+[33m71dfd226[m feat: replace service cards with hover image preview list animation
+[33m2cd4a63e[m feat: update specialist card photo + add clinician-1 and clinician-2 to trail
+[33mda77e51a[m feat: cursor trail specialists - mobile touch support added
+[33mfefa2e82[m fix: typo specialtiesList -> specialistsList
+[33mcc32f7e6[m fix: update nav dropdowns, hero headline OB/GYN, remove Swahili text
+[33mb468ddeb[m clinical: integrate full bio text for Dr Elizabeth and Dr Cyprian
+[33mdaf89a89[m clinical: update layout configurations
+[33mdfbb459c[m Update AboutSection to use InteractiveClinicalOrbit
+[33m1346c576[m Fix AboutSection path - move to correct location
+[33m0905d273[m Replace specialist cards with InteractiveClinicalOrbit
+[33ma3fdac89[m clinical: map precise filename sequence for pelvic floor mapping slide
+[33m08281fb4[m clinical: update image asset path mapping for pelvic scan full anatomy slide
+[33m03c67199[m clinical: restore single-file layout and resolve state identity tracking bugs
+[33mfdaf4436[m clinical: restore original clean layout configuration and clear split files
+[33meab27d22[m clinical: finalize visual-only slider architecture with direct paths
+[33mcacd77bf[m clinical: decompose image stack to bypass compiler caching anomalies
+[33m899ead04[m clinical: restore absolute paths for slide 7 and 8 with type-safe strings
+[33mc4e4ac34[m clinical: fix placeholder tracking strings and force match paths for slide seven
+[33mde7af637[m clinical: embed absolute data configuration for slide seven visual component layout
+[33ma766da5a[m clinical: bind local paths for slide 7 and 8 directly to root public assets
+[33m41a0f0a5[m clinical: optimize slides 7 and 8 by mapping directly to secure local public assets
+[33mffd6ff1a[m clinical: replace broken unsplash links with working pexels clinical assets for slide 7 and 8
+[33md20cef6c[m clinical: swap slide eight template image for active Pexels portrait 3938023
+[33m662a0200[m fix: manual editor paste to eliminate PowerShell encoding artifacts
+[33m2329eb50[m fix: re-track vertical-image-stack component module inside git trees
+[33m1c6796e6[m fix: explicit manual rewrite of specialty stack to guarantee JSX token resolution
+[33m1277b8d9[m fix: resolve ghost syntax artifacts via clean direct native node rewrite
+[33mf3ad609f[m fix: import React to handle JSX tokens inside vertical-image-stack
+[33mce1170ad[m fix: clean up hotlinked string structure on card eight
+[33m42a67c57[m fix: replace card 8 asset with verified African healthcare clinician image path
+[33m12cc35ad[m fix: adjust copy descriptors and enforce clean raw UTF-8 compliance
+[33mfcc4e21d[m fix: streamline branding copy descriptors inside primary hero viewport
+[33m49237604[m fix: sync architecture layout parameters for pristine visual presentation
+[33m88b173eb[m fix: remove hidden placeholder code block from vertical stack layout
+[33m22ba4886[m feat: implement correct 3D rolling wheel specialty stack engine with synchronized metadata
+[33mc4b00c3d[m motion: install high-fidelity typography word glides for capabilities panel
+[33m6e4f9a3d[m fix: pristine clean re-write of home page to resolve client component import sequence rules
+[33mf5b1817b[m fix: restore strict use client positioning to line 1 of landing viewport
+[33me20e2d8c[m fix: restore Every Specialty heading animation wrapper block to main page layout
+[33m98edfdd0[m fix: restore strict clean web-safe UTF-8 format on stack baseline
+[33m0e4286c4[m fix: resolve layout metrics alignment and deploy production configuration headers
+[33maf1eacaf[m fix: swap out broken maternal wellness image url with verified high-res maternal care graphic
+[33mc4cb3147[m build: deploy compiled layout with 3D medical card stacks and restored services
+[33m6e3c59e9[m feat: complete layout restoration containing full list data grids and 3D specialty layers
+[33m8c4e5b17[m feat: link vertical image stack module directly inside root application view
+[33m738934a9[m fix: import AnimatePresence explicitly to satisfy strict production type verify passes
+[33m17eecea0[m fix: enforce explicit unsplash hostname authorization via verified config rule mapping
+[33m04cf8b31[m feat: introduce specialty card deck with targeted black demographic imagery and blur title morph grids
+[33m61b12724[m feat: implement 100% mobile feature parity with full clinical descriptions, mobile matrix grids, and touch scroll tracking hooks
+[33m4295d91a[m fix: abstract mobile menu component to resolve isolated swc token evaluation block
+[33me92630a8[m fix: clean loose syntax tokens in toggle icon string constructor to unblock webpack
+[33m0812f3a2[m fix: resolve mobile submenu hook variable mismatch to fix strict type verification loops
+[33mdde8ec9d[m design: align dropdown matrix menu layers to brand signature pink hex scheme
+[33m54a976b1[m fix: resolve mobile menu state controller naming variables to unblock SWC minifier
+[33m729bd0f7[m feat: replace static headers with Radix UI dropdown matrix submenus
+[33m8ba0e293[m fix: ignore temporary next build output streams and sync morph background assets
+[33mbaa0c0d1[m fix: re-align spring hooks mapping array to resolve AST block evaluation crash
+[33m23f1cab2[m fix: resolve nested jsx trailing tokens to allow complete optimization pass
+[33m0f732e1f[m fix: enforce strict motion types across interactive component matrix
+[33m454d115e[m fix: resolve NextJS compilation failure by type casting springs and caching reference hooks
+[33m382bc27b[m fix: resolve import namespace clash by anchoring spring libraries to core framer-motion
+[33m836c599c[m fix: eliminate legacy canvas component imports to resolve duplicate identifier loop
+[33m60d28955[m feat: switch background canvas layer to cursor interactive 3D stacked panel matrix
+[33mbe776a49[m fix: restore explicit hero-scrub component loop framework
+[33m1684d657[m feat: replace frame-based hero scrub with high-performance 3D clinical matrix
+[33m96eed4f9[m fix: resolve module-not-found error by anchoring hero-scrub component
+[33mef477675[m style: extend global styles configuration to support canvas scrub variables
+[33m3c8cbf42[m assets: link actual clinician photos into public directory
+[33m05b60f98[m feat: inline clinical service matrix to consolidate showcase sections
+[33mfa8a3f79[m chore: optimize local seo metadata and inject brand pink variables
+[33m0ee4eae3[m describe what you changed
+[33mf4d9eb67[m describe what you changed
+[33ma78fec25[m describe what you changed
+[33m75e3e8fd[m Initial commit — Ulnar Medical website
