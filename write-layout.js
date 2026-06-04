@@ -3,388 +3,400 @@ const path = require('path');
 
 const filePath = path.join(
   'C:\\Users\\MS29\\OneDrive\\Desktop\\Antigravity IDE projects\\ulnar-medical',
-  'src', 'app', 'page.tsx'
+  'src', 'components', 'ui', 'argent-loop-infinite-slider.tsx'
 );
 
-const content = `'use client';
+const content = `"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import { ArrowUpRight } from 'lucide-react';
-import dynamic from 'next/dynamic';
-import { HeroSection } from '@/components/HeroSection';
-import { ContactFooter } from '@/components/ContactFooter';
-import { FloatingCTA } from '@/components/ui/floating-cta';
+import * as React from "react";
+import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
 
-const VerticalImageStack = dynamic(
-  () => import('@/components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
-  { ssr: false }
-);
-
-const InfiniteParallaxSlider = dynamic(
-  () => import('@/components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
-  { ssr: false }
-);
-
-const AboutSection = dynamic(
-  () => import('@/components/AboutSection').then((m) => ({ default: m.AboutSection })),
-  { ssr: false }
-);
-
-const CircularTestimonials = dynamic(
-  () => import('@/components/ui/circular-testimonials').then((m) => ({ default: m.CircularTestimonials })),
-  { ssr: false }
-);
-
-const BookingHub = dynamic(
-  () => import('@/components/sections/BookingHub').then((m) => ({ default: m.BookingHub })),
-  { ssr: false }
-);
-
-const MapEmbed = dynamic(
-  () => import('@/components/MapEmbed').then((m) => ({ default: m.MapEmbed })),
-  { ssr: false }
-);
-
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
-      <HeroSection />
-      <VerticalImageStack />
-      <InfiniteParallaxSlider />
-      <AboutSection />
-      <LocalServiceShowcase />
-      <CircularTestimonials />
-      <BookingHub />
-      <MapEmbed />
-      <ContactFooter />
-      <FloatingCTA />
-    </main>
-  );
-}
-
-interface Service {
-  id: number;
-  badge: string;
+interface ProjectData {
   title: string;
-  desc: string;
-  tag: string;
   image: string;
-  bullets?: string[];
+  category: string;
+  year: string;
+  description: string;
 }
 
-const services: Service[] = [
+const PROJECT_DATA: ProjectData[] = [
   {
-    id: 1,
-    badge: 'OBSTETRIC CARE',
-    title: '3D/4D Obstetric Ultrasound',
-    desc: 'High-definition real-time fetal viewing and vital developmental milestone tracking.',
-    tag: 'OB/GYN',
-    image: '/images/3D4DobUl.jpg',
+    title: "Dr. Elizabeth",
+    category: "Lead Consultant",
+    year: "EST. 2026",
+    description: "Expert OB/GYN Specialization",
+    image: "/images/leadC.jpg",
   },
   {
-    id: 2,
-    badge: 'GYNAECOLOGY',
-    title: 'Gynecological Consultations',
-    desc: 'Comprehensive reproductive health checks, pelvic pain investigations, and clinical reviews.',
-    tag: 'Specialist Care',
-    image: '/images/GandC.jpg',
+    title: "Clinical Co-Founder",
+    category: "Diagnostic Imaging Chief",
+    year: "EST. 2026",
+    description: "Advanced Radiology Management",
+    image: "/images/Aradiology.jpg",
   },
   {
-    id: 3,
-    badge: 'DIAGNOSTICS',
-    title: 'Full Pelvic Diagnostic Scan',
-    desc: 'Advanced ultrasound imaging for deep uterine and ovarian tissue structural analysis.',
-    tag: 'Diagnostic',
-    image: '/images/fpdc.jpg',
+    title: "Obstetric 3D/4D Suite",
+    category: "Ultrasonic Workspace",
+    year: "High-Fidelity",
+    description: "Real-time Fetal Growth Scans",
+    image: "/images/obgyn3.jpg",
   },
   {
-    id: 4,
-    badge: 'WELLNESS',
-    title: 'Antenatal Wellness Packages',
-    desc: 'Structured maternal health monitoring sequences tailored specifically per trimester.',
-    tag: 'Maternal Track',
-    image: '/images/awp.jpg',
+    title: "Reproductive Sanctuary",
+    category: "Clinical Consultation",
+    year: "Patient-Centered",
+    description: "Compassionate Women's Health Mapping",
+    image: "/images/patientc.jpg",
   },
   {
-    id: 5,
-    badge: 'MFM SPECIALIST CARE',
-    title: 'Maternal-Fetal Specialist Services',
-    desc: 'Expert maternal-fetal medicine consultations and high-fidelity imaging for high-risk pregnancies.',
-    tag: 'MFM',
-    image: '/images/mfss.jpg',
-    bullets: [
-      'Pre-conception consultation and structural risk screening',
-      'Advanced 2D/3D obstetric ultrasounds for high-risk tracking',
-      'Fetal interventional monitoring including amniocentesis',
-      'Detailed fetal anatomical surveys and anomaly scans',
-      'Targeted fetal echocardiography (Fetal Echo)',
-    ],
-  },
-  {
-    id: 6,
-    badge: 'RADIOLOGY & IMAGING',
-    title: 'Advanced Clinical Radiology',
-    desc: 'High-precision pelvic mapping and diagnostic imaging reporting by senior clinical imaging specialists.',
-    tag: 'Radiology',
-    image: '/images/acr.jpg',
-    bullets: [
-      'Comprehensive pelvic floor mapping profile scans',
-      'Transvaginal and follicular monitoring tracking arrays',
-      'Same-day rapid reporting dispatch pathways',
-    ],
+    title: "Triage Pathology Facility",
+    category: "Diagnostic Laboratory",
+    year: "Same-Day Results",
+    description: "Precision Biomarker Screening",
+    image: "/images/rapidtriage.jpg",
   },
 ];
 
-function LocalServiceShowcase() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
-  const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
-  const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
+const CLINICAL_WORD_PAIRS: [string, string][] = [
+  ["Modern OB/GYN", "Trusted Care"],
+  ["Precision Scans", "Absolute Certainty"],
+  ["3D/4D Ultrasound", "Maternal Sanctuary"],
+  ["Rapid Triage", "Same-Day Results"],
+];
 
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check, { passive: true });
-    return () => window.removeEventListener('resize', check);
+const CONFIG = {
+  SCROLL_SPEED: 0.75,
+  LERP_FACTOR: 0.12,
+  BUFFER_SIZE: 5,
+  MAX_VELOCITY: 150,
+  SNAP_DURATION: 700,
+  AUTOPLAY_MS: 3000,
+};
+
+const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
+
+const getProjectData = (index: number) => {
+  const i = ((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length;
+  return PROJECT_DATA[i];
+};
+
+const getProjectNumber = (index: number) =>
+  (((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length + 1)
+    .toString()
+    .padStart(2, "0");
+
+export function InfiniteParallaxSlider() {
+  const [visibleRange, setVisibleRange] = React.useState({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const isHovered     = React.useRef(false);
+  const prevBtnRef    = React.useRef<HTMLButtonElement>(null);
+  const nextBtnRef    = React.useRef<HTMLButtonElement>(null);
+  const btnTargetX    = React.useRef(0);
+  const btnCurrentX   = React.useRef(0);
+
+  const state = React.useRef({
+    currentY: 0, targetY: 0,
+    isDragging: false, isSnapping: false,
+    snapStart: { time: 0, y: 0, target: 0 },
+    lastScrollTime: Date.now(),
+    dragStart: { y: 0, scrollY: 0 },
+    projectHeight: 0, minimapHeight: 250,
+  });
+
+  const projectsRef   = React.useRef<Map<number, HTMLDivElement>>(new Map());
+  const minimapRef    = React.useRef<Map<number, HTMLDivElement>>(new Map());
+  const infoRef       = React.useRef<Map<number, HTMLDivElement>>(new Map());
+  const requestRef    = React.useRef<number>();
+  const autoplayRef   = React.useRef<ReturnType<typeof setInterval> | null>(null);
+  const renderedRange = React.useRef({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
+
+  const advanceSlide = React.useCallback(() => {
+    const s = state.current;
+    if (s.projectHeight === 0) return;
+    const nextIndex = Math.round(-s.targetY / s.projectHeight) + 1;
+    s.isSnapping = true;
+    s.snapStart = { time: Date.now(), y: s.targetY, target: -nextIndex * s.projectHeight };
+    s.lastScrollTime = Date.now();
   }, []);
 
-  useEffect(() => {
-    const lerp = (start: number, end: number, factor: number) =>
-      start + (end - start) * factor;
-    const animate = () => {
-      setSmoothPosition((prev) => ({
-        x: lerp(prev.x, mousePosition.x, 0.15),
-        y: lerp(prev.y, mousePosition.y, 0.15),
-      }));
-      animationRef.current = requestAnimationFrame(animate);
-    };
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, [mousePosition]);
+  const startAutoplay = React.useCallback(() => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+    autoplayRef.current = setInterval(advanceSlide, CONFIG.AUTOPLAY_MS);
+  }, [advanceSlide]);
 
-  useEffect(() => {
-    const updateRect = () => {
-      if (containerRef.current) {
-        setContainerRect(containerRef.current.getBoundingClientRect());
-      }
-    };
-    updateRect();
-    window.addEventListener('resize', updateRect, { passive: true });
-    window.addEventListener('scroll', updateRect, { passive: true });
-    return () => {
-      window.removeEventListener('resize', updateRect);
-      window.removeEventListener('scroll', updateRect);
-    };
+  const resetAutoplay = React.useCallback(() => { startAutoplay(); }, [startAutoplay]);
+
+  const handleEscapeUp = React.useCallback(() => {
+    isHovered.current = false;
+    const container = containerRef.current;
+    if (!container) return;
+    const prev = container.previousElementSibling as HTMLElement | null;
+    if (prev) prev.scrollIntoView({ behavior: "smooth" });
+    else window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      setMousePosition({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
+  const handleEscapeDown = React.useCallback(() => {
+    isHovered.current = false;
+    const container = containerRef.current;
+    if (!container) return;
+    const next = container.nextElementSibling as HTMLElement | null;
+    if (next) next.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const updateParallax = (img: HTMLImageElement | null, scroll: number, idx: number, height: number) => {
+    if (!img) return;
+    if (!img.dataset.pc) img.dataset.pc = "0";
+    let cur = parseFloat(img.dataset.pc);
+    const target = (-scroll - idx * height) * 0.25;
+    cur = lerp(cur, target, 0.1);
+    if (Math.abs(cur - target) > 0.01) {
+      img.style.transform = \`translateY(\${cur}px) scale(1.4)\`;
+      img.dataset.pc = cur.toString();
+    }
+  };
+
+  const snapToProject = () => {
+    const s = state.current;
+    const cur = Math.round(-s.targetY / s.projectHeight);
+    s.isSnapping = true;
+    s.snapStart = { time: Date.now(), y: s.targetY, target: -cur * s.projectHeight };
+  };
+
+  const updatePositions = () => {
+    const s = state.current;
+    const minimapY = (s.currentY * s.minimapHeight) / s.projectHeight;
+    projectsRef.current.forEach((el, i) => {
+      el.style.transform = \`translateY(\${i * s.projectHeight + s.currentY}px)\`;
+      updateParallax(el.querySelector("img"), s.currentY, i, s.projectHeight);
+    });
+    minimapRef.current.forEach((el, i) => {
+      el.style.transform = \`translateY(\${i * s.minimapHeight + minimapY}px)\`;
+    });
+    infoRef.current.forEach((el, i) => {
+      el.style.transform = \`translateY(\${i * s.minimapHeight + minimapY}px)\`;
+    });
+  };
+
+  const animationLoop = React.useCallback(() => {
+    const s = state.current;
+    const now = Date.now();
+    if (s.isSnapping) {
+      const prog = Math.min((now - s.snapStart.time) / CONFIG.SNAP_DURATION, 1);
+      const eased = 1 - Math.pow(1 - prog, 3);
+      s.targetY = s.snapStart.y + (s.snapStart.target - s.snapStart.y) * eased;
+      if (prog >= 1) s.isSnapping = false;
+    } else if (!s.isDragging && now - s.lastScrollTime > 100) {
+      const snap = -Math.round(-s.targetY / s.projectHeight) * s.projectHeight;
+      if (Math.abs(s.targetY - snap) > 1) snapToProject();
+    }
+    if (!s.isDragging) s.currentY += (s.targetY - s.currentY) * CONFIG.LERP_FACTOR;
+    updatePositions();
+    btnCurrentX.current = lerp(btnCurrentX.current, btnTargetX.current, 0.06);
+    const bx = btnCurrentX.current;
+    if (prevBtnRef.current) {
+      prevBtnRef.current.style.transform = \`translateX(calc(-50% + \${bx.toFixed(1)}px))\`;
+    }
+    if (nextBtnRef.current) {
+      nextBtnRef.current.style.transform = \`translateX(calc(-50% + \${(bx * 0.76).toFixed(1)}px))\`;
+    }
+    const ci  = Math.round(-s.targetY / s.projectHeight);
+    const min = ci - CONFIG.BUFFER_SIZE;
+    const max = ci + CONFIG.BUFFER_SIZE;
+    if (min !== renderedRange.current.min || max !== renderedRange.current.max) {
+      renderedRange.current = { min, max };
+      setVisibleRange({ min, max });
+    }
+    requestRef.current = requestAnimationFrame(animationLoop);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  React.useEffect(() => {
+    state.current.projectHeight = window.innerHeight;
+    const el = containerRef.current;
+    if (el) {
+      el.addEventListener("mouseenter", () => { isHovered.current = true; });
+      el.addEventListener("mouseleave", () => {
+        isHovered.current = false;
+        btnTargetX.current = 0;
       });
     }
-  };
+    startAutoplay();
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      const relX = e.clientX - rect.left - rect.width / 2;
+      const clampX = rect.width * 0.38;
+      btnTargetX.current = Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
+    };
+    const onWheel = (e: WheelEvent) => {
+      if (!isHovered.current) return;
+      e.preventDefault();
+      const s = state.current;
+      s.isSnapping = false;
+      s.lastScrollTime = Date.now();
+      const delta = Math.max(Math.min(e.deltaY * CONFIG.SCROLL_SPEED, CONFIG.MAX_VELOCITY), -CONFIG.MAX_VELOCITY);
+      s.targetY -= delta;
+      resetAutoplay();
+    };
+    const onTouchStart = (e: TouchEvent) => {
+      if (!el?.contains(e.target as Node)) return;
+      const s = state.current;
+      s.isDragging = true; s.isSnapping = false;
+      s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
+      s.lastScrollTime = Date.now();
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const s = state.current;
+      if (!s.isDragging) return;
+      s.targetY = s.dragStart.scrollY + (e.touches[0].clientY - s.dragStart.y) * 1.5;
+      s.lastScrollTime = Date.now();
+    };
+    const onTouchEnd = () => { state.current.isDragging = false; resetAutoplay(); };
+    const onResize = () => {
+      state.current.projectHeight = window.innerHeight;
+      if (el) el.style.height = \`\${window.innerHeight}px\`;
+    };
+    el?.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd);
+    window.addEventListener("resize", onResize);
+    onResize();
+    requestRef.current = requestAnimationFrame(animationLoop);
+    return () => {
+      el?.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("resize", onResize);
+      if (requestRef.current) cancelAnimationFrame(requestRef.current);
+      if (autoplayRef.current) clearInterval(autoplayRef.current);
+    };
+  }, [animationLoop, startAutoplay, resetAutoplay]);
 
-  const handleMouseEnter = (index: number) => {
-    if (!isMobile) {
-      setHoveredIndex(index);
-      setIsVisible(true);
-    }
-  };
-
-  const handleMouseLeave = () => {
-    if (!isMobile) {
-      setHoveredIndex(null);
-      setIsVisible(false);
-    }
-  };
-
-  const handleTap = (index: number) => {
-    if (isMobile) {
-      setActiveIndex((prev) => (prev === index ? null : index));
-    }
-  };
-
-  const activeDesktop = hoveredIndex;
-  const activeMobile = activeIndex;
+  const indices: number[] = [];
+  for (let i = visibleRange.min; i <= visibleRange.max; i++) indices.push(i);
 
   return (
-    <section
-      id="services"
-      className="relative bg-[#0d1b3e] py-24 px-6 md:px-14 border-b border-white/5"
+    <div
+      ref={containerRef}
+      className="parallax-container relative w-full overflow-hidden bg-[#091428] cursor-grab active:cursor-grabbing"
+      style={{ height: "100vh" }}
     >
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col items-start text-left mb-16">
-          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">
-            Clinical Capabilities
-          </span>
-          <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">
-            Specialized Diagnostic Services
-          </h2>
-          <p className="md:hidden font-mono text-[10px] text-white/25 tracking-widest uppercase mt-3">
-            Tap a service to reveal
+      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 z-20 pointer-events-none" />
+      <ul className="m-0 p-0 list-none w-full h-full relative">
+        {indices.map((i) => {
+          const data = getProjectData(i);
+          return (
+            <div
+              key={i}
+              className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
+              ref={(el) => { if (el) projectsRef.current.set(i, el); else projectsRef.current.delete(i); }}
+            >
+              <img
+                src={data.image}
+                alt={data.title}
+                className="w-full h-full object-cover brightness-[0.45] contrast-[1.05] will-change-transform"
+                style={{ transformOrigin: "center center" }}
+              />
+              <div
+                className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-24 z-10"
+                style={{ background: "linear-gradient(to top, rgba(8,15,30,0.9) 0%, transparent 55%)" }}
+              >
+                <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[#F4B9B9] mb-1">{data.category}</p>
+                <p className="font-mono text-[0.58rem] tracking-wider text-[#FFD43A]/70">{data.year}</p>
+              </div>
+            </div>
+          );
+        })}
+      </ul>
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 22 }}
+      >
+        <div className="pointer-events-auto cursor-pointer text-center px-6 sm:pr-[280px] md:pr-[360px]">
+          <FluidTextMorph
+            wordPairs={CLINICAL_WORD_PAIRS}
+            className="drop-shadow-[0_4px_32px_rgba(0,0,0,0.8)]"
+          />
+          <p className="font-mono text-[0.52rem] uppercase tracking-[0.25em] text-white/25 mt-3 pointer-events-none">
+            Hover to reveal · Click to cycle
           </p>
         </div>
-
-        <div
-          ref={containerRef}
-          onMouseMove={handleMouseMove}
-          className="relative"
-        >
-          <div
-            className="pointer-events-none fixed z-50 overflow-hidden rounded-2xl shadow-2xl hidden md:block"
-            style={{
-              left: containerRect?.left ?? 0,
-              top: containerRect?.top ?? 0,
-              transform: \`translate3d(\${smoothPosition.x + 24}px, \${smoothPosition.y - 120}px, 0)\`,
-              opacity: isVisible ? 1 : 0,
-              scale: isVisible ? '1' : '0.85',
-              transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            }}
-          >
-            <div className="relative w-[300px] h-[200px] bg-[#0d1b3e] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
-              {services.map((service, index) => (
-                <img
-                  key={service.id}
-                  src={service.image}
-                  alt={service.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out"
-                  style={{
-                    opacity: activeDesktop === index ? 1 : 0,
-                    transform: activeDesktop === index ? 'scale(1)' : 'scale(1.08)',
-                    filter: activeDesktop === index ? 'none' : 'blur(8px)',
-                  }}
-                />
-              ))}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 to-transparent" />
-              {activeDesktop !== null && (
-                <div className="absolute bottom-3 left-4">
-                  <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
-                    {services[activeDesktop]?.badge}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-0">
-            {services.map((service, index) => {
-              const isActiveRow = isMobile ? activeMobile === index : activeDesktop === index;
+      </div>
+      <button
+        ref={prevBtnRef}
+        onClick={handleEscapeUp}
+        aria-label="Previous section"
+        className="group absolute top-5 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
+        style={{ left: "50%" }}
+      >
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
+          className="transition-transform duration-300 group-hover:-translate-y-0.5">
+          <path d="M5.5 9.5V1.5M1.5 5.5l4-4 4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
+      </button>
+      <button
+        ref={nextBtnRef}
+        onClick={handleEscapeDown}
+        aria-label="Next section"
+        className="group absolute bottom-14 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
+        style={{ left: "50%" }}
+      >
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Next Section</span>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
+          className="transition-transform duration-300 group-hover:translate-y-0.5">
+          <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
+        <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
+          <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
+            {indices.map((i) => {
+              const data = getProjectData(i);
               return (
-                <div
-                  key={service.id}
-                  onMouseEnter={() => handleMouseEnter(index)}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={() => handleTap(index)}
-                  className="group relative cursor-pointer"
-                >
-                  <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
-                    <div
-                      className={\`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out \${
-                        isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                      }\`}
-                    />
-                    <div className="relative flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2 py-0.5 rounded border border-[#FFD43A]/15">
-                            {service.badge}
-                          </span>
-                        </div>
-                        <div className="inline-flex items-center gap-2">
-                          <h3 className="text-white font-display font-semibold text-xl md:text-2xl tracking-tight relative">
-                            <span className="relative">
-                              {service.title}
-                              <span
-                                className={\`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out \${
-                                  isActiveRow ? 'w-full' : 'w-0'
-                                }\`}
-                              />
-                            </span>
-                          </h3>
-                          <ArrowUpRight
-                            className={\`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out \${
-                              isActiveRow
-                                ? 'opacity-100 translate-x-0 translate-y-0'
-                                : 'opacity-0 -translate-x-2 translate-y-2'
-                            }\`}
-                          />
-                        </div>
-                        <p
-                          className={\`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out \${
-                            isActiveRow ? 'text-white/70' : 'text-white/40'
-                          }\`}
-                        >
-                          {service.desc}
-                        </p>
-                        <div
-                          className={\`md:hidden overflow-hidden transition-all duration-500 ease-out \${
-                            isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
-                          }\`}
-                        >
-                          <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
-                            <img
-                              src={service.image}
-                              alt={service.title}
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/70 to-transparent" />
-                            <div className="absolute bottom-3 left-4">
-                              <span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase">
-                                {service.badge}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        {service.bullets && isActiveRow && (
-                          <ul className="mt-3 space-y-1.5 border-t border-white/5 pt-3">
-                            {service.bullets.map((bullet, idx) => (
-                              <li key={idx} className="text-xs text-white/50 flex items-center gap-2">
-                                <span className="w-1 h-1 rounded-full bg-[#F4B9B9] flex-shrink-0" />
-                                {bullet}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                        <span
-                          className={\`text-xs font-mono tabular-nums transition-all duration-300 ease-out \${
-                            isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
-                          }\`}
-                        >
-                          0{service.id}
-                        </span>
-                        <span
-                          className={\`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out \${
-                            isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
-                          }\`}
-                        >
-                          {service.tag}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                <div key={i} className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
+                  ref={(el) => { if (el) minimapRef.current.set(i, el); else minimapRef.current.delete(i); }}>
+                  <img src={data.image} alt={data.title} className="w-full h-full object-cover" />
                 </div>
               );
             })}
-            <div className="border-t border-white/6" />
+          </div>
+          <div className="flex-1 relative overflow-hidden h-full">
+            {indices.map((i) => {
+              const data = getProjectData(i);
+              return (
+                <div key={i} className="absolute top-0 left-0 w-full h-full flex flex-col justify-between will-change-transform py-1 pl-3"
+                  ref={(el) => { if (el) infoRef.current.set(i, el); else infoRef.current.delete(i); }}>
+                  <div className="flex justify-between items-baseline border-b border-white/5 pb-1">
+                    <p className="font-mono text-xs font-bold text-[#FFD43A]">{getProjectNumber(i)}</p>
+                    <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px]">{data.title}</p>
+                  </div>
+                  <div className="flex justify-between font-mono text-[9px] uppercase text-[#F4B9B9] tracking-wider my-2">
+                    <p>{data.category}</p>
+                    <p>{data.year}</p>
+                  </div>
+                  <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">&ldquo;{data.description}&rdquo;</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
-    </section>
+      <div className="absolute left-4 md:left-12 bottom-6 z-30 font-mono text-[9px] uppercase text-white/30 tracking-[0.2em] flex items-center gap-2 pointer-events-none">
+        <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
+        <span className="hidden sm:inline">Scroll or swipe to navigate</span>
+        <span className="sm:hidden">Swipe to navigate</span>
+      </div>
+    </div>
   );
 }
+
+export default InfiniteParallaxSlider;
 `;
 
 fs.writeFileSync(filePath, content, { encoding: 'utf8' });
-console.log('page.tsx restored successfully with full LocalServiceShowcase and images');
+console.log('argent-loop-infinite-slider.tsx restored with full InfiniteParallaxSlider animation');
