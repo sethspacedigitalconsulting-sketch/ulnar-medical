@@ -63,7 +63,6 @@ const CONFIG = {
   MAX_VELOCITY: 150,
   SNAP_DURATION: 700,
   AUTOPLAY_MS: 3000,
-  // After this many downward scroll events, escape to next section
   ESCAPE_AFTER_SCROLLS: 6,
 };
 
@@ -81,8 +80,7 @@ const getProjectNumber = (index: number) =>
 
 export function InfiniteParallaxSlider() {
   const [visibleRange, setVisibleRange] = React.useState({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const isHovered     = React.useRef(false);
+  const containerRef  = React.useRef<HTMLDivElement>(null);
   const prevBtnRef    = React.useRef<HTMLButtonElement>(null);
   const nextBtnRef    = React.useRef<HTMLButtonElement>(null);
   const btnTargetX    = React.useRef(0);
@@ -106,10 +104,17 @@ export function InfiniteParallaxSlider() {
   const autoplayRef   = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const renderedRange = React.useRef({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
 
+  // Check if the parallax container is currently in the viewport
+  const isInViewport = React.useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top < window.innerHeight * 0.5 && rect.bottom > window.innerHeight * 0.5;
+  }, []);
+
   const escapeToNext = React.useCallback(() => {
     if (escaped.current) return;
     escaped.current = true;
-    isHovered.current = false;
     const container = containerRef.current;
     if (!container) return;
     const next = container.nextElementSibling as HTMLElement | null;
@@ -133,7 +138,6 @@ export function InfiniteParallaxSlider() {
   const resetAutoplay = React.useCallback(() => { startAutoplay(); }, [startAutoplay]);
 
   const handleEscapeUp = React.useCallback(() => {
-    isHovered.current = false;
     const container = containerRef.current;
     if (!container) return;
     const prev = container.previousElementSibling as HTMLElement | null;
@@ -215,19 +219,9 @@ export function InfiniteParallaxSlider() {
   React.useEffect(() => {
     state.current.projectHeight = window.innerHeight;
     const el = containerRef.current;
-    if (el) {
-      el.addEventListener("mouseenter", () => {
-        isHovered.current = true;
-        // Reset escape state when user re-enters the section
-        escaped.current = false;
-        downScrollCount.current = 0;
-      });
-      el.addEventListener("mouseleave", () => {
-        isHovered.current = false;
-        btnTargetX.current = 0;
-      });
-    }
+
     startAutoplay();
+
     const onMouseMove = (e: MouseEvent) => {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
@@ -235,19 +229,19 @@ export function InfiniteParallaxSlider() {
       const clampX = rect.width * 0.38;
       btnTargetX.current = Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
     };
+
     const onWheel = (e: WheelEvent) => {
-      if (!isHovered.current) return;
+      // Only intercept when section is centered in viewport
+      if (!isInViewport()) return;
       if (escaped.current) return;
 
       if (e.deltaY > 0) {
-        // Scrolling down
         downScrollCount.current += 1;
         if (downScrollCount.current > CONFIG.ESCAPE_AFTER_SCROLLS) {
           escapeToNext();
           return;
         }
       } else {
-        // Scrolling up resets the escape counter
         downScrollCount.current = Math.max(0, downScrollCount.current - 1);
       }
 
@@ -259,30 +253,35 @@ export function InfiniteParallaxSlider() {
       s.targetY -= delta;
       resetAutoplay();
     };
+
     const onTouchStart = (e: TouchEvent) => {
       if (!el?.contains(e.target as Node)) return;
+      if (!isInViewport()) return;
       const s = state.current;
       s.isDragging = true; s.isSnapping = false;
       s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
       s.lastScrollTime = Date.now();
     };
+
     const onTouchMove = (e: TouchEvent) => {
       const s = state.current;
       if (!s.isDragging) return;
       const deltaY = e.touches[0].clientY - s.dragStart.y;
-      // On mobile: if dragging up (negative deltaY) past threshold, escape
-      if (deltaY < -window.innerHeight * 0.6 && !escaped.current) {
+      if (deltaY < -window.innerHeight * 0.55 && !escaped.current) {
         escapeToNext();
         return;
       }
       s.targetY = s.dragStart.scrollY + deltaY * 1.5;
       s.lastScrollTime = Date.now();
     };
+
     const onTouchEnd = () => { state.current.isDragging = false; resetAutoplay(); };
+
     const onResize = () => {
       state.current.projectHeight = window.innerHeight;
       if (el) el.style.height = `${window.innerHeight}px`;
     };
+
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -291,6 +290,7 @@ export function InfiniteParallaxSlider() {
     window.addEventListener("resize", onResize);
     onResize();
     requestRef.current = requestAnimationFrame(animationLoop);
+
     return () => {
       el?.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("wheel", onWheel);
@@ -301,7 +301,7 @@ export function InfiniteParallaxSlider() {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       if (autoplayRef.current) clearInterval(autoplayRef.current);
     };
-  }, [animationLoop, startAutoplay, resetAutoplay, escapeToNext]);
+  }, [animationLoop, startAutoplay, resetAutoplay, escapeToNext, isInViewport]);
 
   const indices: number[] = [];
   for (let i = visibleRange.min; i <= visibleRange.max; i++) indices.push(i);
