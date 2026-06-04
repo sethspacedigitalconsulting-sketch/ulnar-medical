@@ -5,7 +5,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap");
 
 :root {
-  /* ── Original Brand Color Variables ── */
   --navy: #122954;
   --navy-deep: #080f1e;
   --navy-mid: #1a3a6e;
@@ -14,30 +13,25 @@
   --off-white: #f8f6f2;
   --grain-opacity: 0.028;
 
-  /* 🎨 Brand Pink Variables */
   --pink: #f5679d;
   --pink-soft: rgba(245, 103, 157, 0.08);
   --pink-mid: rgba(245, 103, 157, 0.15);
 
-  /* ── 🎥 HeroScrub Animation System Additions ── */
   --color-overlay: rgba(0, 0, 0, 0.5);
   --color-border: rgba(255, 255, 255, 0.05);
   --color-text: #f5f5f5;
   --color-text-muted: rgba(245, 245, 245, 0.7);
   --color-accent: #ff2c2c;
 
-  /* Typography Scale Alignment */
   --text-mega: clamp(7rem, 15vw, 12rem);
   --font-serif: "EB Garamond", serif;
 
-  /* Animation Timing Eases */
   --transition-fast: 0.2s ease;
   --transition-medium: 0.3s ease;
   --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
 
-  /* Structural Layout Overlays */
   --panel-padding: 5%;
   --space-12: 6rem;
   --space-10: 4rem;
@@ -63,7 +57,6 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Grain texture overlay (applied via pseudo on root) ── */
 body::before {
   content: "";
   position: fixed;
@@ -77,7 +70,6 @@ body::before {
   mix-blend-mode: overlay;
 }
 
-/* ── Typography Scale ── */
 .display-hero {
   font-family: var(--font-cormorant), Georgia, serif;
   font-weight: 700;
@@ -102,26 +94,20 @@ body::before {
   font-weight: 500;
 }
 
-/* ── ⚡ 120Hz Custom Scrollbar Performance Optimization ── */
 ::-webkit-scrollbar {
   width: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: var(--navy-deep);
 }
-
 ::-webkit-scrollbar-thumb {
   background: var(--pink);
-  /* Updated to Brand Pink for premium accent */
   border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold);
 }
 
-/* ── Floating label inputs ── */
 .floating-label-group {
   position: relative;
 }
@@ -146,7 +132,6 @@ body::before {
 .floating-label-group select:focus,
 .floating-label-group textarea:focus {
   border-color: var(--pink);
-  /* Focused indicators swap to brand pink accent */
   background: rgba(245, 103, 157, 0.02);
 }
 
@@ -162,19 +147,18 @@ body::before {
   font-family: var(--font-dm-sans), sans-serif;
 }
 
-.floating-label-group input:focus~label,
-.floating-label-group input:not(:placeholder-shown)~label,
-.floating-label-group select:focus~label,
-.floating-label-group select:not([value=""])~label,
-.floating-label-group textarea:focus~label,
-.floating-label-group textarea:not(:placeholder-shown)~label {
+.floating-label-group input:focus ~ label,
+.floating-label-group input:not(:placeholder-shown) ~ label,
+.floating-label-group select:focus ~ label,
+.floating-label-group select:not([value=""]) ~ label,
+.floating-label-group textarea:focus ~ label,
+.floating-label-group textarea:not(:placeholder-shown) ~ label {
   top: 10px;
   transform: translateY(0);
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--pink);
-  /* Label color accent shifts to pink when active */
 }
 
 .floating-label-group textarea {
@@ -182,23 +166,22 @@ body::before {
   resize: none;
 }
 
-.floating-label-group textarea~label {
+.floating-label-group textarea ~ label {
   top: 20px;
   transform: none;
 }
 
-.floating-label-group textarea:focus~label,
-.floating-label-group textarea:not(:placeholder-shown)~label {
+.floating-label-group textarea:focus ~ label,
+.floating-label-group textarea:not(:placeholder-shown) ~ label {
   top: 8px;
 }
 
-/* ── Date input: label is always in floated position ── */
 .floating-label-group input[type="date"] {
   color-scheme: dark;
   padding-top: 22px;
 }
 
-.floating-label-group input[type="date"]~label {
+.floating-label-group input[type="date"] ~ label {
   top: 10px;
   transform: translateY(0);
   font-size: 0.65rem;
@@ -207,12 +190,10 @@ body::before {
   color: var(--pink);
 }
 
-/* ── Underline animations ── */
 .gold-underline {
   position: relative;
   display: inline-block;
 }
-
 .gold-underline::after {
   content: "";
   position: absolute;
@@ -223,18 +204,15 @@ body::before {
   background: var(--gold);
   transition: width 0.6s cubic-bezier(0.77, 0, 0.175, 1);
 }
-
 .gold-underline:hover::after,
 .gold-underline.active::after {
   width: 100%;
 }
 
-/* Pink modern underline option for header updates */
 .pink-underline {
   position: relative;
   display: inline-block;
 }
-
 .pink-underline::after {
   content: "";
   position: absolute;
@@ -245,13 +223,11 @@ body::before {
   background: var(--pink);
   transition: width 0.6s cubic-bezier(0.77, 0, 0.175, 1);
 }
-
 .pink-underline:hover::after,
 .pink-underline.active::after {
   width: 100%;
 }
 
-/* ── GPU Performance and Layout Optimization Classes ── */
 .gpu-accelerated {
   transform: translateZ(0);
   will-change: transform;
@@ -262,12 +238,23 @@ body::before {
   contain-intrinsic-size: 1000px;
 }
 
-/* Alternating Background Section Stripe Wash */
+.parallax-container {
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style;
+}
+
+#services,
+#testimonials,
+#booking {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
+}
+
 section:nth-of-type(even) {
   background-color: var(--pink-soft) !important;
 }
 
-/* ── Utility ── */
 .bg-navy-gradient {
   background: linear-gradient(160deg, #080f1e 0%, #122954 55%, #0d1f3f 100%);
 }
@@ -282,7 +269,6 @@ section:nth-of-type(even) {
   }
 }
 
-/* ── Visme form embed overrides ── */
 .visme-card iframe {
   background-color: transparent !important;
   border-radius: 1.5rem !important;
@@ -291,10 +277,4 @@ section:nth-of-type(even) {
 
 .visme-card ::placeholder {
   color: rgba(255, 255, 255, 0.4) !important;
-}
-
-/* Ensure scrub canvases handle browser rendering scales natively */
-canvas {
-  will-change: transform;
-  transform: translateZ(0);
 }
