@@ -85,7 +85,9 @@ export function VerticalImageStack() {
   const lastNavigationTime = useRef<number>(0);
   const navigationCooldown = 450;
   const headingRef = useRef<HTMLDivElement>(null);
-  const headingInView = useInView(headingRef, { once: true, margin: "0px" });
+  
+  // ✅ FIX 1: Enforce lower viewport execution criteria (10% visibility) so it snaps on early edge-contact
+  const headingInView = useInView(headingRef, { once: true, amount: 0.1 });
 
   const navigate = useCallback((newDirection: number) => {
     const now = Date.now();
@@ -153,16 +155,14 @@ export function VerticalImageStack() {
     return Math.abs(diff) <= 2;
   };
 
-  const activeData = specialties[currentIndex];
-
   return (
     <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
       <div ref={headingRef} className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
         <motion.h2
           className="text-3xl md:text-5xl font-display font-bold text-white leading-tight"
-          initial={{ opacity: 0, y: 28 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={headingInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
         >
           Every Speciality - <span className="text-[#F4B9B9] italic">One destination</span>
         </motion.h2>
@@ -177,10 +177,13 @@ export function VerticalImageStack() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeData.id}
-                initial={{ opacity: 0, x: -30 }}
+                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 30 }}
-                transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
+                exit={{ opacity: 0, x: 20 }}
+                // ✅ FIX 2: Set sensitive viewport handling inside card texts to prevent scroll delays
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
               >
                 <span className="font-mono text-[10px] tracking-widest text-[#FFD43A] uppercase bg-[#FFD43A]/5 px-3 py-1 rounded-full border border-[#FFD43A]/15">
                   {activeData.badge}

@@ -1,6 +1,6 @@
 ﻿"use client";
-
 import * as React from "react";
+import { useInView, motion } from "framer-motion";
 import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
 
 interface ProjectData {
@@ -67,12 +67,10 @@ const CONFIG = {
 };
 
 const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
-
 const getProjectData = (index: number) => {
   const i = ((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length;
   return PROJECT_DATA[i];
 };
-
 const getProjectNumber = (index: number) =>
   (((Math.abs(index) % PROJECT_DATA.length) + PROJECT_DATA.length) % PROJECT_DATA.length + 1)
     .toString()
@@ -88,6 +86,9 @@ export function InfiniteParallaxSlider() {
   const downScrollCount = React.useRef(0);
   const escaped       = React.useRef(false);
 
+  // ✅ FIX: Lower viewport detection restriction to guarantee instant triggering on entry frame
+  const sliderInView  = useInView(containerRef, { once: true, amount: 0.1 });
+
   const state = React.useRef({
     currentY: 0, targetY: 0,
     isDragging: false, isSnapping: false,
@@ -96,7 +97,6 @@ export function InfiniteParallaxSlider() {
     dragStart: { y: 0, scrollY: 0 },
     projectHeight: 0, minimapHeight: 250,
   });
-
   const projectsRef   = React.useRef<Map<number, HTMLDivElement>>(new Map());
   const minimapRef    = React.useRef<Map<number, HTMLDivElement>>(new Map());
   const infoRef       = React.useRef<Map<number, HTMLDivElement>>(new Map());
@@ -196,7 +196,6 @@ export function InfiniteParallaxSlider() {
     }
     if (!s.isDragging) s.currentY += (s.targetY - s.currentY) * CONFIG.LERP_FACTOR;
     updatePositions();
-
     btnCurrentX.current = lerp(btnCurrentX.current, btnTargetX.current, 0.06);
     const bx = btnCurrentX.current;
     if (prevBtnRef.current) {
@@ -205,7 +204,6 @@ export function InfiniteParallaxSlider() {
     if (nextBtnRef.current) {
       nextBtnRef.current.style.transform = `translateX(calc(-50% + ${(bx * 0.76).toFixed(1)}px))`;
     }
-
     const ci  = Math.round(-s.targetY / s.projectHeight);
     const min = ci - CONFIG.BUFFER_SIZE;
     const max = ci + CONFIG.BUFFER_SIZE;
@@ -220,9 +218,7 @@ export function InfiniteParallaxSlider() {
   React.useEffect(() => {
     state.current.projectHeight = window.innerHeight;
     const el = containerRef.current;
-
     startAutoplay();
-
     const onMouseMove = (e: MouseEvent) => {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) return;
@@ -230,12 +226,10 @@ export function InfiniteParallaxSlider() {
       const clampX = rect.width * 0.38;
       btnTargetX.current = Math.max(-clampX, Math.min(clampX, relX)) * 0.44;
     };
-
     const onWheel = (e: WheelEvent) => {
       if (!isInViewport()) return;
       if (escaped.current) return;
-      if (navigator.maxTouchPoints > 0) return; // ✅ skip wheel hijack on touch/mobile devices
-
+      if (navigator.maxTouchPoints > 0) return; 
       if (e.deltaY > 0) {
         downScrollCount.current += 1;
         if (downScrollCount.current > CONFIG.ESCAPE_AFTER_SCROLLS) {
@@ -245,7 +239,6 @@ export function InfiniteParallaxSlider() {
       } else {
         downScrollCount.current = Math.max(0, downScrollCount.current - 1);
       }
-
       e.preventDefault();
       const s = state.current;
       s.isSnapping = false;
@@ -254,16 +247,13 @@ export function InfiniteParallaxSlider() {
       s.targetY -= delta;
       resetAutoplay();
     };
-
     const onTouchStart = (e: TouchEvent) => {
       if (!isInViewport()) return;
       const s = state.current;
-      s.isDragging = true;
-      s.isSnapping = false;
+      s.isDragging = true; s.isSnapping = false;
       s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
       s.lastScrollTime = Date.now();
     };
-
     const onTouchMove = (e: TouchEvent) => {
       const s = state.current;
       if (!s.isDragging) return;
@@ -275,17 +265,11 @@ export function InfiniteParallaxSlider() {
       s.targetY = s.dragStart.scrollY + deltaY * 1.5;
       s.lastScrollTime = Date.now();
     };
-
-    const onTouchEnd = () => {
-      state.current.isDragging = false;
-      resetAutoplay();
-    };
-
+    const onTouchEnd = () => { state.current.isDragging = false; resetAutoplay(); };
     const onResize = () => {
       state.current.projectHeight = window.innerHeight;
       if (el) el.style.height = `${window.innerHeight}px`;
     };
-
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
     el?.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -294,7 +278,6 @@ export function InfiniteParallaxSlider() {
     window.addEventListener("resize", onResize);
     onResize();
     requestRef.current = requestAnimationFrame(animationLoop);
-
     return () => {
       el?.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("wheel", onWheel);
@@ -311,10 +294,12 @@ export function InfiniteParallaxSlider() {
   for (let i = visibleRange.min; i <= visibleRange.max; i++) indices.push(i);
 
   return (
-    <div
+    <motion.div
       ref={containerRef}
       className="parallax-container relative w-full overflow-hidden bg-[#091428] cursor-grab active:cursor-grabbing"
       style={{ height: "100vh" }}
+      animate={sliderInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 z-20 pointer-events-none" />
       <ul className="m-0 p-0 list-none w-full h-full relative">
@@ -343,7 +328,6 @@ export function InfiniteParallaxSlider() {
           );
         })}
       </ul>
-
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 22 }}
@@ -358,7 +342,6 @@ export function InfiniteParallaxSlider() {
           </p>
         </div>
       </div>
-
       <button
         ref={prevBtnRef}
         onClick={handleEscapeUp}
@@ -372,7 +355,6 @@ export function InfiniteParallaxSlider() {
         </svg>
         <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
       </button>
-
       <button
         ref={nextBtnRef}
         onClick={handleEscapeDown}
@@ -386,7 +368,6 @@ export function InfiniteParallaxSlider() {
           <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
         </svg>
       </button>
-
       <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
         <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
           <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
@@ -421,14 +402,12 @@ export function InfiniteParallaxSlider() {
           </div>
         </div>
       </div>
-
       <div className="absolute left-4 md:left-12 bottom-6 z-30 font-mono text-[9px] uppercase text-white/30 tracking-[0.2em] flex items-center gap-2 pointer-events-none">
         <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
         <span className="hidden sm:inline">Scroll or swipe to navigate</span>
         <span className="sm:hidden">Swipe to navigate</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
-
 export default InfiniteParallaxSlider;
