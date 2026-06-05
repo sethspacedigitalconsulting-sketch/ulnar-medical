@@ -139,24 +139,30 @@ export function HeroSection() {
 
       <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} serviceLinks={serviceLinks} aboutLinks={aboutLinks} contactLinks={contactLinks} />
 
-      {/* ✅ CHANGE 1: Reduced mobile top/bottom padding so content fits on screen */}
       <motion.div className="relative z-20 px-6 md:px-14 pt-24 md:pt-40 pb-12 md:pb-32" style={{ y: textY, opacity, willChange: "transform" }}>
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
-            <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
+
+            {/* ✅ CHANGE 1: mb-10 → mb-6 to reduce gap on mobile */}
+            <motion.div className="flex items-center gap-3 mb-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
               <div className="h-px w-10 bg-[#FFD43A]" />
               <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
             </motion.div>
+
             <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
               Detailed <br /><span className="text-[#FFD43A] italic">Diagnostics</span>
             </h1>
+
+            {/* ✅ CHANGE 2: delay 0.9 → 0.3 so tagline appears quickly */}
             <AnimatedText
               text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary."
               as="p" splitBy="word"
               className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed"
-              style={{ fontSize: "1.05rem" }} delay={0.9}
+              style={{ fontSize: "1.05rem" }} delay={0.3}
             />
-            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.05 }}>
+
+            {/* ✅ CHANGE 3: delay 1.05 → 0.5 so CTA buttons appear quickly */}
+            <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 0.5 }}>
               <motion.button
                 style={{ x: springX, y: springY, willChange: "transform" }}
                 onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseLeaveCTA}
@@ -171,8 +177,9 @@ export function HeroSection() {
                 Chat on WhatsApp &#8599;
               </motion.a>
             </motion.div>
-            {/* ✅ CHANGE 2: Reduced mobile top margin on stats row so it fits on screen */}
-            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-6 md:mt-14 pt-6 md:pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
+
+            {/* ✅ CHANGE 4: delay 1.2 → 0.6 so stats row appears quickly */}
+            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-6 md:mt-14 pt-6 md:pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 0.6 }}>
               {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
                 <div key={label}>
                   <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">{value}</div>
@@ -180,6 +187,7 @@ export function HeroSection() {
                 </div>
               ))}
             </motion.div>
+
           </div>
           <motion.div className="hidden md:block flex-shrink-0" style={{ width: "38%" }} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, delay: 0.5 }}>
             <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10">
