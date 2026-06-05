@@ -38,6 +38,12 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
+  // ✅ FIX: Force scroll to top on every page load — prevents browser restoring old scroll position
+  useEffect(() => {
+    history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#080f1e] text-white select-none">
       <HeroSection />

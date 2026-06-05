@@ -7,7 +7,6 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { Logo } from "./Logo";
-import { AnimatedText } from "@/components/ui/animated-text";
 import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { MobileMenu } from "@/components/ui/mobile-menu";
@@ -143,7 +142,6 @@ export function HeroSection() {
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
 
-            {/* ✅ CHANGE 1: mb-10 → mb-6 to reduce gap on mobile */}
             <motion.div className="flex items-center gap-3 mb-6" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
               <div className="h-px w-10 bg-[#FFD43A]" />
               <span className="label-mono text-[rgba(248,246,242,0.55)]">Ngong Road · Nairobi · Est. 2021</span>
@@ -153,15 +151,17 @@ export function HeroSection() {
               Detailed <br /><span className="text-[#FFD43A] italic">Diagnostics</span>
             </h1>
 
-            {/* ✅ CHANGE 2: delay 0.9 → 0.3 so tagline appears quickly */}
-            <AnimatedText
-              text="Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary."
-              as="p" splitBy="word"
+            {/* ✅ CHANGE: Replaced slow word-by-word AnimatedText with instant motion.p — fully visible in 0.6s */}
+            <motion.p
               className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed"
-              style={{ fontSize: "1.05rem" }} delay={0.3}
-            />
+              style={{ fontSize: "1.05rem" }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3, ease: EASE_LUXURY }}
+            >
+              Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary.
+            </motion.p>
 
-            {/* ✅ CHANGE 3: delay 1.05 → 0.5 so CTA buttons appear quickly */}
             <motion.div className="flex flex-wrap items-center gap-4 mt-8" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 0.5 }}>
               <motion.button
                 style={{ x: springX, y: springY, willChange: "transform" }}
@@ -178,7 +178,6 @@ export function HeroSection() {
               </motion.a>
             </motion.div>
 
-            {/* ✅ CHANGE 4: delay 1.2 → 0.6 so stats row appears quickly */}
             <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-6 md:mt-14 pt-6 md:pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 0.6 }}>
               {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
                 <div key={label}>

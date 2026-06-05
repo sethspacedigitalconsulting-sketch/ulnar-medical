@@ -28,7 +28,7 @@ export function AnimatedText({
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref as React.RefObject<Element>, {
     once,
-    margin: "-50px",
+    margin: "0px",
   });
 
   const segments = splitBy === "char" ? text.split("") : text.split(" ");
