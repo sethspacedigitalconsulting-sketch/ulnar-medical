@@ -86,7 +86,7 @@ export function VerticalImageStack() {
   const navigationCooldown = 450;
   const headingRef = useRef<HTMLDivElement>(null);
   
-  // ✅ FIX 1: Enforce lower viewport execution criteria (10% visibility) so it snaps on early edge-contact
+  // High-sensitivity view tracking
   const headingInView = useInView(headingRef, { once: true, amount: 0.1 });
 
   const navigate = useCallback((newDirection: number) => {
@@ -155,6 +155,9 @@ export function VerticalImageStack() {
     return Math.abs(diff) <= 2;
   };
 
+  // ✅ FIXED: Restored variable pointer instantiation context
+  const activeData = specialties[currentIndex];
+
   return (
     <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
       <div ref={headingRef} className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
@@ -180,7 +183,6 @@ export function VerticalImageStack() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                // ✅ FIX 2: Set sensitive viewport handling inside card texts to prevent scroll delays
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true, amount: 0.1 }}
                 transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
