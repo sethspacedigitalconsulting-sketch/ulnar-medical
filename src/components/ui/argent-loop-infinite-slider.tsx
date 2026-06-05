@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
@@ -104,7 +104,6 @@ export function InfiniteParallaxSlider() {
   const autoplayRef   = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const renderedRange = React.useRef({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
 
-  // Check if the parallax container is currently in the viewport
   const isInViewport = React.useCallback(() => {
     const el = containerRef.current;
     if (!el) return false;
@@ -197,6 +196,7 @@ export function InfiniteParallaxSlider() {
     }
     if (!s.isDragging) s.currentY += (s.targetY - s.currentY) * CONFIG.LERP_FACTOR;
     updatePositions();
+
     btnCurrentX.current = lerp(btnCurrentX.current, btnTargetX.current, 0.06);
     const bx = btnCurrentX.current;
     if (prevBtnRef.current) {
@@ -205,6 +205,7 @@ export function InfiniteParallaxSlider() {
     if (nextBtnRef.current) {
       nextBtnRef.current.style.transform = `translateX(calc(-50% + ${(bx * 0.76).toFixed(1)}px))`;
     }
+
     const ci  = Math.round(-s.targetY / s.projectHeight);
     const min = ci - CONFIG.BUFFER_SIZE;
     const max = ci + CONFIG.BUFFER_SIZE;
@@ -231,7 +232,6 @@ export function InfiniteParallaxSlider() {
     };
 
     const onWheel = (e: WheelEvent) => {
-      // Only intercept when section is centered in viewport
       if (!isInViewport()) return;
       if (escaped.current) return;
 
@@ -254,11 +254,13 @@ export function InfiniteParallaxSlider() {
       resetAutoplay();
     };
 
+    // ✅ FIX: Touch listeners scoped to container element only — not window
+    // This prevents the slider from stealing page scroll on mobile
     const onTouchStart = (e: TouchEvent) => {
-      if (!el?.contains(e.target as Node)) return;
       if (!isInViewport()) return;
       const s = state.current;
-      s.isDragging = true; s.isSnapping = false;
+      s.isDragging = true;
+      s.isSnapping = false;
       s.dragStart = { y: e.touches[0].clientY, scrollY: s.targetY };
       s.lastScrollTime = Date.now();
     };
@@ -275,7 +277,10 @@ export function InfiniteParallaxSlider() {
       s.lastScrollTime = Date.now();
     };
 
-    const onTouchEnd = () => { state.current.isDragging = false; resetAutoplay(); };
+    const onTouchEnd = () => {
+      state.current.isDragging = false;
+      resetAutoplay();
+    };
 
     const onResize = () => {
       state.current.projectHeight = window.innerHeight;
@@ -284,9 +289,12 @@ export function InfiniteParallaxSlider() {
 
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
-    window.addEventListener("touchstart", onTouchStart, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-    window.addEventListener("touchend", onTouchEnd);
+
+    // ✅ FIX: was window.addEventListener — now scoped to el (container only)
+    el?.addEventListener("touchstart", onTouchStart, { passive: true });
+    el?.addEventListener("touchmove", onTouchMove, { passive: true });
+    el?.addEventListener("touchend", onTouchEnd);
+
     window.addEventListener("resize", onResize);
     onResize();
     requestRef.current = requestAnimationFrame(animationLoop);
@@ -294,9 +302,12 @@ export function InfiniteParallaxSlider() {
     return () => {
       el?.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
+
+      // ✅ FIX: cleanup from el not window
+      el?.removeEventListener("touchstart", onTouchStart);
+      el?.removeEventListener("touchmove", onTouchMove);
+      el?.removeEventListener("touchend", onTouchEnd);
+
       window.removeEventListener("resize", onResize);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       if (autoplayRef.current) clearInterval(autoplayRef.current);
@@ -339,6 +350,7 @@ export function InfiniteParallaxSlider() {
           );
         })}
       </ul>
+
       <div
         className="absolute inset-0 flex items-center justify-center pointer-events-none"
         style={{ zIndex: 22 }}
@@ -353,6 +365,7 @@ export function InfiniteParallaxSlider() {
           </p>
         </div>
       </div>
+
       <button
         ref={prevBtnRef}
         onClick={handleEscapeUp}
@@ -366,6 +379,7 @@ export function InfiniteParallaxSlider() {
         </svg>
         <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
       </button>
+
       <button
         ref={nextBtnRef}
         onClick={handleEscapeDown}
@@ -376,9 +390,10 @@ export function InfiniteParallaxSlider() {
         <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Next Section</span>
         <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
           className="transition-transform duration-300 group-hover:translate-y-0.5">
-          <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
         </svg>
       </button>
+
       <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
         <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
           <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
@@ -413,6 +428,7 @@ export function InfiniteParallaxSlider() {
           </div>
         </div>
       </div>
+
       <div className="absolute left-4 md:left-12 bottom-6 z-30 font-mono text-[9px] uppercase text-white/30 tracking-[0.2em] flex items-center gap-2 pointer-events-none">
         <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
         <span className="hidden sm:inline">Scroll or swipe to navigate</span>
