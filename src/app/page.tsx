@@ -39,11 +39,6 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
-  useEffect(() => {
-    history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <main className="min-h-screen bg-[#080f1e] text-white select-none">
       <HeroSection />
@@ -144,7 +139,7 @@ function LocalServiceShowcase() {
   const animationRef = useRef<number | null>(null);
   const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
   const headingRef = useRef<HTMLDivElement>(null);
-  const headingInView = useInView(headingRef, { once: true, margin: "0px" });
+  const headingInView = useInView(headingRef, { once: true, margin: '0px' });
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
