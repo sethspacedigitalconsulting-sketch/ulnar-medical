@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { HeroSection } from '@/components/HeroSection';
 import { ContactFooter } from '@/components/ContactFooter';
@@ -38,7 +39,6 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
-  // ✅ FIX: Force scroll to top on every page load — prevents browser restoring old scroll position
   useEffect(() => {
     history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
@@ -143,6 +143,8 @@ function LocalServiceShowcase() {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
   const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
+  const headingRef = useRef<HTMLDivElement>(null);
+  const headingInView = useInView(headingRef, { once: true, margin: "0px" });
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
@@ -221,13 +223,23 @@ function LocalServiceShowcase() {
       className="relative bg-[#0d1b3e] py-24 px-6 md:px-14 border-b border-white/5"
     >
       <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col items-start text-left mb-16">
-          <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">
+        <div ref={headingRef} className="flex flex-col items-start text-left mb-16">
+          <motion.span
+            className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3"
+            initial={{ opacity: 0, y: 16 }}
+            animate={headingInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.76, 0, 0.24, 1] }}
+          >
             Clinical Capabilities
-          </span>
-          <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">
+          </motion.span>
+          <motion.h2
+            className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white"
+            initial={{ opacity: 0, y: 28 }}
+            animate={headingInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.2, ease: [0.76, 0, 0.24, 1] }}
+          >
             Specialized Diagnostic Services
-          </h2>
+          </motion.h2>
           <p className="md:hidden font-mono text-[10px] text-white/25 tracking-widest uppercase mt-3">
             Tap a service to reveal
           </p>
@@ -287,8 +299,7 @@ function LocalServiceShowcase() {
                 >
                   <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
                     <div
-                      className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                        }`}
+                      className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                     />
                     <div className="relative flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
@@ -302,27 +313,21 @@ function LocalServiceShowcase() {
                             <span className="relative">
                               {service.title}
                               <span
-                                className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow ? 'w-full' : 'w-0'
-                                  }`}
+                                className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow ? 'w-full' : 'w-0'}`}
                               />
                             </span>
                           </h3>
                           <ArrowUpRight
-                            className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow
-                              ? 'opacity-100 translate-x-0 translate-y-0'
-                              : 'opacity-0 -translate-x-2 translate-y-2'
-                              }`}
+                            className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow ? 'opacity-100 translate-x-0 translate-y-0' : 'opacity-0 -translate-x-2 translate-y-2'}`}
                           />
                         </div>
                         <p
-                          className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${isActiveRow ? 'text-white/70' : 'text-white/40'
-                            }`}
+                          className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${isActiveRow ? 'text-white/70' : 'text-white/40'}`}
                         >
                           {service.desc}
                         </p>
                         <div
-                          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
-                            }`}
+                          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'}`}
                         >
                           <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
                             <img
@@ -351,14 +356,12 @@ function LocalServiceShowcase() {
                       </div>
                       <div className="flex flex-col items-end gap-1 flex-shrink-0">
                         <span
-                          className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
-                            }`}
+                          className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'}`}
                         >
                           0{service.id}
                         </span>
                         <span
-                          className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
-                            }`}
+                          className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'}`}
                         >
                           {service.tag}
                         </span>

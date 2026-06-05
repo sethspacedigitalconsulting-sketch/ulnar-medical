@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { motion, type PanInfo, AnimatePresence } from "framer-motion";
+import { motion, type PanInfo, AnimatePresence, useInView } from "framer-motion";
 import Image from "next/image";
 
 interface SpecialtyItem {
@@ -84,6 +84,8 @@ export function VerticalImageStack() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const lastNavigationTime = useRef<number>(0);
   const navigationCooldown = 450;
+  const headingRef = useRef<HTMLDivElement>(null);
+  const headingInView = useInView(headingRef, { once: true, margin: "0px" });
 
   const navigate = useCallback((newDirection: number) => {
     const now = Date.now();
@@ -155,10 +157,15 @@ export function VerticalImageStack() {
 
   return (
     <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
-        <h2 className="text-3xl md:text-5xl font-display font-bold text-white leading-tight">
+      <div ref={headingRef} className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
+        <motion.h2
+          className="text-3xl md:text-5xl font-display font-bold text-white leading-tight"
+          initial={{ opacity: 0, y: 28 }}
+          animate={headingInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+        >
           Every Speciality - <span className="text-[#F4B9B9] italic">One destination</span>
-        </h2>
+        </motion.h2>
       </div>
 
       <div
