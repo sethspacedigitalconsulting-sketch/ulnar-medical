@@ -234,6 +234,7 @@ export function InfiniteParallaxSlider() {
     const onWheel = (e: WheelEvent) => {
       if (!isInViewport()) return;
       if (escaped.current) return;
+      if (navigator.maxTouchPoints > 0) return; // ✅ skip wheel hijack on touch/mobile devices
 
       if (e.deltaY > 0) {
         downScrollCount.current += 1;
@@ -254,8 +255,6 @@ export function InfiniteParallaxSlider() {
       resetAutoplay();
     };
 
-    // ✅ FIX: Touch listeners scoped to container element only — not window
-    // This prevents the slider from stealing page scroll on mobile
     const onTouchStart = (e: TouchEvent) => {
       if (!isInViewport()) return;
       const s = state.current;
@@ -289,12 +288,9 @@ export function InfiniteParallaxSlider() {
 
     el?.addEventListener("mousemove", onMouseMove, { passive: true });
     window.addEventListener("wheel", onWheel, { passive: false });
-
-    // ✅ FIX: was window.addEventListener — now scoped to el (container only)
     el?.addEventListener("touchstart", onTouchStart, { passive: true });
     el?.addEventListener("touchmove", onTouchMove, { passive: true });
     el?.addEventListener("touchend", onTouchEnd);
-
     window.addEventListener("resize", onResize);
     onResize();
     requestRef.current = requestAnimationFrame(animationLoop);
@@ -302,12 +298,9 @@ export function InfiniteParallaxSlider() {
     return () => {
       el?.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("wheel", onWheel);
-
-      // ✅ FIX: cleanup from el not window
       el?.removeEventListener("touchstart", onTouchStart);
       el?.removeEventListener("touchmove", onTouchMove);
       el?.removeEventListener("touchend", onTouchEnd);
-
       window.removeEventListener("resize", onResize);
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       if (autoplayRef.current) clearInterval(autoplayRef.current);
