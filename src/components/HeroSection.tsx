@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useRef, useState } from "react";
 import dynamic from "next/dynamic";
@@ -139,7 +139,8 @@ export function HeroSection() {
 
       <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} serviceLinks={serviceLinks} aboutLinks={aboutLinks} contactLinks={contactLinks} />
 
-      <motion.div className="relative z-20 px-6 md:px-14 pt-36 md:pt-40 pb-32" style={{ y: textY, opacity, willChange: "transform" }}>
+      {/* ✅ CHANGE 1: Reduced mobile top/bottom padding so content fits on screen */}
+      <motion.div className="relative z-20 px-6 md:px-14 pt-24 md:pt-40 pb-12 md:pb-32" style={{ y: textY, opacity, willChange: "transform" }}>
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
             <motion.div className="flex items-center gap-3 mb-10" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.15, ease: EASE_LUXURY }}>
@@ -170,7 +171,8 @@ export function HeroSection() {
                 Chat on WhatsApp &#8599;
               </motion.a>
             </motion.div>
-            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-14 pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
+            {/* ✅ CHANGE 2: Reduced mobile top margin on stats row so it fits on screen */}
+            <motion.div className="flex flex-wrap gap-x-10 gap-y-4 mt-6 md:mt-14 pt-6 md:pt-10 border-t border-[rgba(255,255,255,0.07)]" variants={fadeUpVariants} initial="hidden" animate="visible" transition={{ delay: 1.2 }}>
               {[{ value: "3D/4D", label: "Obstetric Ultrasound" }, { value: "99%", label: "Diagnostic Accuracy" }, { value: "Same-Day", label: "Results Available" }].map(({ value, label }) => (
                 <div key={label}>
                   <div className="font-display font-semibold italic text-[#FFD43A] text-2xl">{value}</div>

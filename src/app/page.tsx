@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
@@ -39,7 +39,8 @@ const MapEmbed = dynamic(
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#080f1e] text-white overflow-hidden select-none">
+    {/* ✅ CHANGE: Removed overflow-hidden — was causing mobile paint/repaint issue */ }
+    < main className = "min-h-screen bg-[#080f1e] text-white select-none" >
       <HeroSection />
       <VerticalImageStack />
       <InfiniteParallaxSlider />
@@ -50,7 +51,7 @@ export default function Home() {
       <MapEmbed />
       <ContactFooter />
       <FloatingCTA />
-    </main>
+    </main >
   );
 }
 
@@ -281,9 +282,8 @@ function LocalServiceShowcase() {
                 >
                   <div className="relative py-6 border-t border-white/6 transition-all duration-300 ease-out">
                     <div
-                      className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${
-                        isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                      }`}
+                      className={`absolute inset-0 -mx-4 px-4 rounded-xl bg-[#F4B9B9]/5 transition-all duration-300 ease-out ${isActiveRow ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+                        }`}
                     />
                     <div className="relative flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
@@ -297,31 +297,27 @@ function LocalServiceShowcase() {
                             <span className="relative">
                               {service.title}
                               <span
-                                className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${
-                                  isActiveRow ? 'w-full' : 'w-0'
-                                }`}
+                                className={`absolute left-0 -bottom-0.5 h-px bg-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow ? 'w-full' : 'w-0'
+                                  }`}
                               />
                             </span>
                           </h3>
                           <ArrowUpRight
-                            className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${
-                              isActiveRow
+                            className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow
                                 ? 'opacity-100 translate-x-0 translate-y-0'
                                 : 'opacity-0 -translate-x-2 translate-y-2'
-                            }`}
+                              }`}
                           />
                         </div>
                         <p
-                          className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${
-                            isActiveRow ? 'text-white/70' : 'text-white/40'
-                          }`}
+                          className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${isActiveRow ? 'text-white/70' : 'text-white/40'
+                            }`}
                         >
                           {service.desc}
                         </p>
                         <div
-                          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${
-                            isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
-                          }`}
+                          className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${isActiveRow ? 'max-h-[220px] opacity-100 mt-4' : 'max-h-0 opacity-0 mt-0'
+                            }`}
                         >
                           <div className="relative w-full h-[180px] rounded-2xl overflow-hidden border border-[#F4B9B9]/20">
                             <img
@@ -350,16 +346,14 @@ function LocalServiceShowcase() {
                       </div>
                       <div className="flex flex-col items-end gap-1 flex-shrink-0">
                         <span
-                          className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${
-                            isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
-                          }`}
+                          className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${isActiveRow ? 'text-[#FFD43A]' : 'text-white/20'
+                            }`}
                         >
                           0{service.id}
                         </span>
                         <span
-                          className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${
-                            isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
-                          }`}
+                          className={`hidden sm:inline text-[9px] font-mono uppercase tracking-wider transition-all duration-300 ease-out ${isActiveRow ? 'text-[#F4B9B9]/70' : 'text-white/20'
+                            }`}
                         >
                           {service.tag}
                         </span>
