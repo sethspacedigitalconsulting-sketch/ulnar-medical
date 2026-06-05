@@ -39,8 +39,7 @@ const MapEmbed = dynamic(
 
 export default function Home() {
   return (
-    {/* ✅ CHANGE: Removed overflow-hidden — was causing mobile paint/repaint issue */ }
-    < main className = "min-h-screen bg-[#080f1e] text-white select-none" >
+    <main className="min-h-screen bg-[#080f1e] text-white select-none">
       <HeroSection />
       <VerticalImageStack />
       <InfiniteParallaxSlider />
@@ -51,7 +50,7 @@ export default function Home() {
       <MapEmbed />
       <ContactFooter />
       <FloatingCTA />
-    </main >
+    </main>
   );
 }
 
@@ -304,8 +303,8 @@ function LocalServiceShowcase() {
                           </h3>
                           <ArrowUpRight
                             className={`w-4 h-4 text-[#F4B9B9] transition-all duration-300 ease-out ${isActiveRow
-                                ? 'opacity-100 translate-x-0 translate-y-0'
-                                : 'opacity-0 -translate-x-2 translate-y-2'
+                              ? 'opacity-100 translate-x-0 translate-y-0'
+                              : 'opacity-0 -translate-x-2 translate-y-2'
                               }`}
                           />
                         </div>
