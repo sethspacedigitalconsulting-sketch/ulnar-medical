@@ -1,9 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { InteractiveClinicalOrbit } from "@/components/InteractiveClinicalOrbit";
+import { motion, useInView } from "framer-motion";
 import { AnimatedText } from "@/components/ui/animated-text";
 
 const ease = [0.76, 0, 0.24, 1];
@@ -46,7 +44,9 @@ function ImageTrail({
   fadeAnimation?: boolean;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const refs = useRef(items.map(() => useRef<HTMLImageElement>(null)));
+  const imgRefs = useRef<React.RefObject<HTMLImageElement>[]>(
+    items.map(() => ({ current: null }))
+  );
   const zCounter = useRef(1);
   const imageIndex = useRef(0);
   const lastPos = useRef({ x: 0, y: 0 });
@@ -77,8 +77,8 @@ function ImageTrail({
     const threshold = window.innerWidth / distance;
     if (getDistance(x, y) > threshold) {
       const idx = imageIndex.current;
-      const current = refs.current[idx % refs.current.length].current;
-      const prev = refs.current[(idx - maxNumberOfImages) % refs.current.length]?.current;
+      const current = imgRefs.current[idx % imgRefs.current.length]?.current;
+      const prev = imgRefs.current[(idx - maxNumberOfImages + imgRefs.current.length) % imgRefs.current.length]?.current;
       if (current) activate(current, x, y);
       if (prev) deactivate(prev);
       imageIndex.current++;
@@ -102,7 +102,7 @@ function ImageTrail({
       {items.map((src, i) => (
         <img
           key={i}
-          ref={refs.current[i]}
+          ref={(el) => { imgRefs.current[i] = { current: el }; }}
           src={src}
           alt={`specialist-${i}`}
           data-status="inactive"
@@ -121,8 +121,12 @@ function ImageTrail({
           <path d="M6 24 C6 42 42 42 42 24" stroke="#F4B9B9" strokeWidth="2" strokeLinecap="round" fill="none" />
           <circle cx="24" cy="24" r="3" fill="#FFD43A" />
         </svg>
-        <span className="font-mono text-[9px] tracking-widest text-white/20 uppercase hidden sm:block">Move cursor to reveal</span>
-        <span className="font-mono text-[9px] tracking-widest text-white/20 uppercase sm:hidden">Swipe to reveal</span>
+        <span className="font-mono text-[9px] tracking-widest text-white/20 uppercase hidden sm:block">
+          Move cursor to reveal
+        </span>
+        <span className="font-mono text-[9px] tracking-widest text-white/20 uppercase sm:hidden">
+          Swipe to reveal
+        </span>
       </div>
     </div>
   );
@@ -167,7 +171,9 @@ function SpecialistsSection() {
               <span className="font-mono text-[8px] text-[#FFD43A] tracking-wider uppercase bg-[#080f1e]/80 border border-[#FFD43A]/20 px-2 py-0.5 rounded-md inline-block mb-2 w-fit">
                 {s.badge}
               </span>
-              <h3 className="text-lg font-display font-bold text-white tracking-tight leading-tight mb-1">{s.name}</h3>
+              <h3 className="text-lg font-display font-bold text-white tracking-tight leading-tight mb-1">
+                {s.name}
+              </h3>
               <p className="text-white/50 text-xs leading-relaxed">{s.role}</p>
             </div>
           </motion.div>
@@ -178,7 +184,11 @@ function SpecialistsSection() {
           <div
             key={i}
             className="rounded-full"
-            style={{ width: i === 0 ? 24 : 6, height: 6, background: i === 0 ? "#FFD43A" : "rgba(255,255,255,0.2)" }}
+            style={{
+              width: i === 0 ? 24 : 6,
+              height: 6,
+              background: i === 0 ? "#FFD43A" : "rgba(255,255,255,0.2)",
+            }}
           />
         ))}
       </div>
@@ -188,7 +198,6 @@ function SpecialistsSection() {
 
 export function AboutSection() {
   const ref = useRef<HTMLElement>(null);
-  // ✅ FIX: margin "0px" instead of "-100px" — fires as soon as section edge hits viewport
   const inView = useInView(ref, { once: true, margin: "0px" });
 
   return (
