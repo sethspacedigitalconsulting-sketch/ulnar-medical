@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import { motion, type PanInfo, AnimatePresence, useInView } from "framer-motion";
+import { motion, type PanInfo, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
 interface SpecialtyItem {
@@ -84,10 +84,6 @@ export function VerticalImageStack() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const lastNavigationTime = useRef<number>(0);
   const navigationCooldown = 450;
-  const headingRef = useRef<HTMLDivElement>(null);
-  
-  // High-sensitivity view tracking
-  const headingInView = useInView(headingRef, { once: true, amount: 0.1 });
 
   const navigate = useCallback((newDirection: number) => {
     const now = Date.now();
@@ -155,16 +151,15 @@ export function VerticalImageStack() {
     return Math.abs(diff) <= 2;
   };
 
-  // ✅ FIXED: Restored variable pointer instantiation context
   const activeData = specialties[currentIndex];
 
   return (
     <section className="relative bg-[#080f1e] pt-24 pb-16 overflow-hidden">
-      <div ref={headingRef} className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
+      <div className="max-w-7xl mx-auto px-6 md:px-14 mb-16 text-left">
         <motion.h2
           className="text-3xl md:text-5xl font-display font-bold text-white leading-tight"
           initial={{ opacity: 0, y: 16 }}
-          animate={headingInView ? { opacity: 1, y: 0 } : {}}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
         >
           Every Speciality - <span className="text-[#F4B9B9] italic">One destination</span>
@@ -183,8 +178,6 @@ export function VerticalImageStack() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, amount: 0.1 }}
                 transition={{ duration: 0.35, ease: [0.76, 0, 0.24, 1] }}
               >
                 <span className="font-mono text-[10px] tracking-widest text-[#FFD43A] uppercase bg-[#FFD43A]/5 px-3 py-1 rounded-full border border-[#FFD43A]/15">

@@ -1,6 +1,6 @@
 ﻿"use client";
+
 import * as React from "react";
-import { useInView, motion } from "framer-motion";
 import { FluidTextMorph } from "@/components/ui/fluid-text-morph";
 
 interface ProjectData {
@@ -85,9 +85,6 @@ export function InfiniteParallaxSlider() {
   const btnCurrentX   = React.useRef(0);
   const downScrollCount = React.useRef(0);
   const escaped       = React.useRef(false);
-
-  // ✅ FIX: Lower viewport detection restriction to guarantee instant triggering on entry frame
-  const sliderInView  = useInView(containerRef, { once: true, amount: 0.1 });
 
   const state = React.useRef({
     currentY: 0, targetY: 0,
@@ -229,7 +226,7 @@ export function InfiniteParallaxSlider() {
     const onWheel = (e: WheelEvent) => {
       if (!isInViewport()) return;
       if (escaped.current) return;
-      if (navigator.maxTouchPoints > 0) return; 
+      if (navigator.maxTouchPoints > 0) return;
       if (e.deltaY > 0) {
         downScrollCount.current += 1;
         if (downScrollCount.current > CONFIG.ESCAPE_AFTER_SCROLLS) {
@@ -294,12 +291,10 @@ export function InfiniteParallaxSlider() {
   for (let i = visibleRange.min; i <= visibleRange.max; i++) indices.push(i);
 
   return (
-    <motion.div
+    <div
       ref={containerRef}
       className="parallax-container relative w-full overflow-hidden bg-[#091428] cursor-grab active:cursor-grabbing"
       style={{ height: "100vh" }}
-      animate={sliderInView ? { opacity: 1 } : { opacity: 0 }}
-      transition={{ duration: 0.5 }}
     >
       <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 z-20 pointer-events-none" />
       <ul className="m-0 p-0 list-none w-full h-full relative">
@@ -407,7 +402,8 @@ export function InfiniteParallaxSlider() {
         <span className="hidden sm:inline">Scroll or swipe to navigate</span>
         <span className="sm:hidden">Swipe to navigate</span>
       </div>
-    </motion.div>
+    </div>
   );
 }
+
 export default InfiniteParallaxSlider;
