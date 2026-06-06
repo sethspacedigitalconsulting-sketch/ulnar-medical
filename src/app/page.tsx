@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
@@ -41,8 +41,13 @@ export default function Home() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    // Lock hydration state once layout is client-safe
-    setIsHydrated(true);
+    // ✅ PERF FIX: Force a structural 2-second delay layout cushion window
+    // This gives the lazy-loaded dynamic assets plenty of headroom to parse cleanly
+    const layoutTimer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 2000);
+
+    return () => clearTimeout(layoutTimer);
   }, []);
 
   return (
