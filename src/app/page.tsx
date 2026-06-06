@@ -7,7 +7,6 @@ import { HeroSection } from '@/components/HeroSection';
 import { ContactFooter } from '@/components/ContactFooter';
 import { FloatingCTA } from '@/components/ui/floating-cta';
 
-// ✅ CRITICAL FIX: Add explicit viewport height loading blocks to reserve layout spaces
 const VerticalImageStack = dynamic(
   () => import('@/components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
   {
@@ -48,20 +47,23 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#080f1e] text-white select-none">
       <HeroSection />
-
-      {/* Structural layout rows preserve correct index order prior to dynamic injection */}
       <VerticalImageStack />
       <InfiniteParallaxSlider />
       <AboutSection />
-
-      <LocalServiceShowcase />
-      <CircularTestimonials />
-      <BookingHub />
-      <MapEmbed />
-      <ContactFooter />
+      {mounted && <LocalServiceShowcase />}
+      {mounted && <CircularTestimonials />}
+      {mounted && <BookingHub />}
+      {mounted && <MapEmbed />}
+      {mounted && <ContactFooter />}
       <FloatingCTA />
     </main>
   );
