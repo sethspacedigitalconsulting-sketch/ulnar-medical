@@ -1,4 +1,84 @@
-﻿interface ServiceItem {
+﻿'use client';
+
+import { useState, useRef, useEffect } from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import { HeroSection } from '@/components/HeroSection';
+import { ContactFooter } from '@/components/ContactFooter';
+import { FloatingCTA } from '@/components/ui/floating-cta';
+
+// ✅ Client-safe dynamic bundles
+const VerticalImageStack = dynamic(
+  () => import('@/components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
+  { ssr: false }
+);
+
+const InfiniteParallaxSlider = dynamic(
+  () => import('@/components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
+  { ssr: false }
+);
+
+const AboutSection = dynamic(
+  () => import('@/components/AboutSection').then((m) => ({ default: m.AboutSection })),
+  { ssr: false }
+);
+
+const CircularTestimonials = dynamic(
+  () => import('@/components/ui/circular-testimonials').then((m) => ({ default: m.CircularTestimonials })),
+  { ssr: false }
+);
+
+const BookingHub = dynamic(
+  () => import('@/components/sections/BookingHub').then((m) => ({ default: m.BookingHub })),
+  { ssr: false }
+);
+
+const MapEmbed = dynamic(
+  () => import('@/components/MapEmbed').then((m) => ({ default: m.MapEmbed })),
+  { ssr: false }
+);
+
+export default function Home() {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    // ✅ PERF BALANCE LOCK: Enforce the 2-second structural loading buffer window to prevent layout jumps
+    const layoutTimer = setTimeout(() => {
+      setIsHydrated(true);
+    }, 2000);
+
+    return () => clearTimeout(layoutTimer);
+  }, []);
+
+  return (
+    <main className="min-h-screen bg-[#080f1e] text-white select-none">
+      <HeroSection />
+
+      {/* ── MIDDLE SECTIONS ── */}
+      <VerticalImageStack />
+      <InfiniteParallaxSlider />
+      <AboutSection />
+
+      {/* ✅ CRITICAL MOB FIX: Prevent lower layouts from rendering until hydration is complete */}
+      {isHydrated ? (
+        <>
+          <LocalServiceShowcase />
+          <CircularTestimonials />
+          <BookingHub />
+          <MapEmbed />
+          <ContactFooter />
+        </>
+      ) : (
+        /* Structural spacer prevents lower modules from creeping under the hero on load */
+        <div className="h-[200vh] bg-[#080f1e] w-full" />
+      )}
+
+      <FloatingCTA />
+    </main>
+  );
+}
+
+interface ServiceItem {
   id: number;
   badge: string;
   title: string;
@@ -64,17 +144,15 @@ const services: ServiceItem[] = [
   }
 ];
 
-// ✅ FIXED: Removed 'export' keyword to satisfy Next.js page constraint boundaries
+// ✅ Internal file module - no named export to clash with page configurations
 function LocalServiceShowcase() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
     <section id="services" className="relative bg-[#0d1b3e] py-24 px-4 sm:px-6 md:px-14 border-b border-white/5">
-      {/* Ambient background wash */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a1628]/40 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header Layout */}
         <div className="flex flex-col items-start text-left mb-16 max-w-2xl">
           <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">
             Clinical Capabilities
@@ -90,7 +168,6 @@ function LocalServiceShowcase() {
           </p>
         </div>
 
-        {/* ── Branded 3D Image Accordion Panel Box Matrix ── */}
         <div className="w-full flex flex-col md:flex-row items-stretch justify-center gap-4 min-h-[520px] md:h-[500px] overflow-hidden py-2">
           {services.map((svc, idx) => {
             const isActive = idx === activeIndex;
@@ -108,7 +185,6 @@ function LocalServiceShowcase() {
                   }
                 `}
               >
-                {/* Visual Graphic Element Layer */}
                 <div className={`absolute inset-0 w-full h-full transition-all duration-700 ${isActive ? 'opacity-100 scale-100' : 'opacity-20 md:opacity-10 md:scale-105 group-hover:opacity-30'}`}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -117,11 +193,9 @@ function LocalServiceShowcase() {
                     className="w-full h-full object-cover transition-transform duration-1000"
                     loading="lazy"
                   />
-                  {/* Gradient mask blend track */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e] via-[#080f1e]/70 to-transparent pointer-events-none" />
                 </div>
 
-                {/* Left vertical display text indicator array (Visible on Desktop only when closed) */}
                 {!isActive && (
                   <div className="absolute inset-0 hidden md:flex items-center justify-center pointer-events-none">
                     <span className="font-display font-medium text-white/30 text-sm tracking-tight whitespace-nowrap -rotate-90 origin-center select-none uppercase">
@@ -130,7 +204,6 @@ function LocalServiceShowcase() {
                   </div>
                 )}
 
-                {/* Content Overlay Panel (Revealed text rows when row isActive) */}
                 <div
                   className={`
                     relative z-10 p-6 md:p-8 flex flex-col w-full transition-all duration-500
@@ -151,7 +224,6 @@ function LocalServiceShowcase() {
                     {svc.desc}
                   </p>
 
-                  {/* Bullet feature blocks for large layout scopes */}
                   {svc.bullets && (
                     <ul className="mt-4 space-y-1.5 border-t border-white/5 pt-4 max-w-md">
                       {svc.bullets.map((bullet, bIdx) => (
@@ -164,7 +236,6 @@ function LocalServiceShowcase() {
                   )}
                 </div>
 
-                {/* Closed bottom numeric indicator line for mobile section rows */}
                 {!isActive && (
                   <div className="absolute bottom-4 left-6 md:left-1/2 md:-translate-x-1/2 font-mono text-[10px] text-white/25 max-md:flex items-center gap-4 w-full px-1">
                     <span className="text-[#FFD43A] font-bold">0{svc.id}</span>
