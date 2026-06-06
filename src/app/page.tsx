@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { HeroSection } from '@/components/HeroSection';
-import { ContactFooter } from '@/components/ContactFooter';
+import ContactFooter from '@/components/ContactFooter';
 import { FloatingCTA } from '@/components/ui/floating-cta';
 
 // ✅ Client-safe dynamic bundles
