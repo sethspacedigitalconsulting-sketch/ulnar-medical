@@ -64,7 +64,8 @@ const services: ServiceItem[] = [
   }
 ];
 
-export function LocalServiceShowcase() {
+// ✅ FIXED: Removed 'export' keyword to satisfy Next.js page constraint boundaries
+function LocalServiceShowcase() {
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
