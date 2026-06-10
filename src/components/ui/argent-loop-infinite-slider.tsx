@@ -63,7 +63,7 @@ const CONFIG = {
   MAX_VELOCITY: 150,
   SNAP_DURATION: 700,
   AUTOPLAY_MS: 3000,
-  ESCAPE_AFTER_SCROLLS: 4, // Snappier exit flow transition matrix
+  ESCAPE_AFTER_SCROLLS: 4,
 };
 
 const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor;
@@ -101,12 +101,10 @@ export function InfiniteParallaxSlider() {
   const autoplayRef   = React.useRef<ReturnType<typeof setInterval> | null>(null);
   const renderedRange = React.useRef({ min: -CONFIG.BUFFER_SIZE, max: CONFIG.BUFFER_SIZE });
 
-  // ✅ FIXED: Enforce absolute truth evaluation check for layout frame entry states
   const isInViewport = React.useCallback(() => {
     if (typeof window === "undefined") return false;
     const el = containerRef.current;
     if (!el) return false;
-    const rect = el.getBoundingClientRect();
     return window.scrollY < window.innerHeight;
   }, []);
 
@@ -119,7 +117,6 @@ export function InfiniteParallaxSlider() {
     if (next) {
       next.scrollIntoView({ behavior: "smooth" });
     } else {
-      // Fallback fallback if layout trees are processing out-of-order bounds
       window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
     }
   }, []);
@@ -220,7 +217,6 @@ export function InfiniteParallaxSlider() {
     const el = containerRef.current;
     startAutoplay();
     
-    // Track global reset checks if users jump straight back up to top boundary markers
     const handleScrollReset = () => {
       if (window.scrollY === 0) {
         escaped.current = false;
@@ -307,4 +303,112 @@ export function InfiniteParallaxSlider() {
   return (
     <div
       ref={containerRef}
-      // ✅ UPDATED: Locked to layout index z-30 with native hardware-accelerated rendering
+      className="parallax-container relative w-full overflow-hidden bg-[#091428] cursor-grab active:cursor-grabbing z-30"
+      style={{ height: "100vh" }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/50 z-20 pointer-events-none" />
+      <ul className="m-0 p-0 list-none w-full h-full relative">
+        {indices.map((i) => {
+          const data = getProjectData(i);
+          return (
+            <div
+              key={i}
+              className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
+              ref={(el) => { if (el) projectsRef.current.set(i, el); else projectsRef.current.delete(i); }}
+            >
+              <img
+                src={data.image}
+                alt={data.title}
+                className="w-full h-full object-cover brightness-[0.45] contrast-[1.05] will-change-transform"
+                style={{ transformOrigin: "center center" }}
+              />
+              <div
+                className="absolute bottom-0 left-0 right-0 px-8 md:px-12 pb-24 z-10"
+                style={{ background: "linear-gradient(to top, rgba(8,15,30,0.9) 0%, transparent 55%)" }}
+              >
+                <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[#F4B9B9] mb-1">{data.category}</p>
+                <p className="font-mono text-[0.58rem] tracking-wider text-[#FFD43A]/70">{data.year}</p>
+              </div>
+            </div>
+          );
+        })}
+      </ul>
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{ zIndex: 22 }}
+      >
+        <div className="pointer-events-auto cursor-pointer text-center px-6 sm:pr-[280px] md:pr-[360px]">
+          <FluidTextMorph
+            wordPairs={CLINICAL_WORD_PAIRS}
+            className="drop-shadow-[0_4px_32px_rgba(0,0,0,0.8)]"
+          />
+          <p className="font-mono text-[0.52rem] uppercase tracking-[0.25em] text-white/25 mt-3 pointer-events-none">
+            Hover to reveal · Click to cycle
+          </p>
+        </div>
+      </div>
+      <button
+        ref={prevBtnRef}
+        onClick={handleEscapeUp}
+        aria-label="Previous section"
+        className="group absolute top-5 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
+        style={{ left: "50%" }}
+      >
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
+          className="transition-transform duration-300 group-hover:-translate-y-0.5">
+          <path d="M5.5 9.5V1.5M1.5 5.5l4-4 4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Previous Section</span>
+      </button>
+      <button
+        ref={nextBtnRef}
+        onClick={handleEscapeDown}
+        aria-label="Next section"
+        className="group absolute bottom-14 z-40 flex items-center gap-2 px-4 py-2 rounded-full border border-white/12 bg-black/25 backdrop-blur-md text-white/40 hover:text-[#FFD43A] hover:border-[#FFD43A]/45 hover:bg-[#FFD43A]/8 active:scale-95 transition-colors duration-300"
+        style={{ left: "50%" }}
+      >
+        <span className="font-mono text-[0.52rem] uppercase tracking-[0.18em]">Next Section</span>
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none"
+          className="transition-transform duration-300 group-hover:translate-y-0.5">
+          <path d="M5.5 1.5v8M1.5 5.5l4 4 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+        </svg>
+      </button>
+      <div className="hidden sm:flex minimap absolute right-6 md:right-12 top-1/2 -translate-y-1/2 w-[240px] md:w-[320px] h-[220px] bg-[#122954]/20 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden z-30 shadow-2xl shadow-black/80 p-3 gap-3">
+        <div className="minimap-wrapper relative flex w-full h-full overflow-hidden">
+          <div className="w-20 h-full relative overflow-hidden rounded-xl border border-white/5 bg-black/20 shrink-0">
+            {indices.map((i) => {
+              const data = getProjectData(i);
+              return (
+                <div key={i} className="absolute top-0 left-0 w-full h-full overflow-hidden will-change-transform"
+                  ref={(el) => { if (el) minimapRef.current.set(i, el); else minimapRef.current.delete(i); }}>
+                  <img src={data.image} alt={data.title} className="w-full h-full object-cover" />
+                </div>
+              );
+            })}
+          </div>
+          <div className="flex-1 relative overflow-hidden h-full">
+            {indices.map((i) => {
+              const data = getProjectData(i);
+              return (
+                <div key={i} className="absolute top-0 left-0 w-full h-full flex flex-col justify-between will-change-transform py-1 pl-3"
+                  ref={(el) => { if (el) infoRef.current.set(i, el); else infoRef.current.delete(i); }}>
+                  <div className="flex justify-between items-baseline border-b border-white/5 pb-1">
+                    <p className="font-mono text-xs font-bold text-[#FFD43A]">{getProjectNumber(i)}</p>
+                    <p className="font-serif font-bold text-white text-sm tracking-tight truncate max-w-[110px]">{data.title}</p>
+                  </div>
+                  <div className="flex justify-between font-mono text-[9px] uppercase text-[#F4B9B9] tracking-wider my-2">
+                    <p>{data.category}</p>
+                    <p>{data.year}</p>
+                  </div>
+                  <p className="font-sans text-[10px] text-gray-300 italic line-clamp-2">&ldquo;{data.description}&rdquo;</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default InfiniteParallaxSlider;
