@@ -28,7 +28,6 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// Submenu Content Matrix Arrays
 const diagnosticLinks: MenuLinkItem[] = [
   { title: "Maternal-Fetal Specialist Services", href: "/#services", description: "Pre-conception screening, 2D/3D obstetric tracking, fetal echoes, and anatomical surveys.", icon: Activity },
   { title: "Gynaecological Consultations", href: "/#services", description: "Comprehensive female reproductive reviews and specialist treatment procedures.", icon: Heart },
@@ -44,7 +43,6 @@ const aboutLinks: MenuLinkItem[] = [
   { title: "Clinical Sanctuary", href: "/#about", description: "Explore our premium patient care destination engineered on Ngong Road.", icon: Eye },
 ];
 
-// ✅ UPDATED: Added Dr. Cyprian Michieka alongside Dr. Elizabeth inside the data node array
 const specialistLinks: MenuLinkItem[] = [
   { title: "Dr. Elizabeth Odondi", href: "/#about", description: "Consultant Radiologist — Lead Diagnostic Imaging Specialist at Ulnar.", icon: UserCheck },
   { title: "Dr. Cyprian Michieka", href: "/#about", description: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
@@ -141,7 +139,6 @@ export function HeroSection() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              {/* ✅ UPDATED: The Dropdown wrapper automatically handles the new multi-specialist grid arrays cleanly */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Our Specialists</NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -203,7 +200,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-4 mt-8">
               <motion.button
                 style={{ x: springX, y: springY, willChange: "transform" }}
-                onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseLeaveCTA}
+                onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseMoveCTA}
                 onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
                 className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
@@ -259,3 +256,6 @@ function ListItem({ title, description, icon: Icon, href }: { title: string; des
     </NavigationMenuLink>
   );
 }
+
+// ✅ CRITICAL RE-EXPORT FALLBACK: Fixes internal subpage default import requirements completely
+export default HeroSection;
