@@ -1,18 +1,15 @@
 ﻿"use client";
 
-import React, { useRef, useMemo, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useTexture } from "@react-three/drei";
-import * as THREE from "three";
-import { ShieldCheck, Award, Heart, Star, Sparkles } from "lucide-react";
+import { ShieldCheck, Award, Heart, ArrowRight, Sparkles } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
+const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
-// ── SPECIALISTS BRAND DATA MATRICES ──
 interface Specialist {
   id: number;
   name: string;
@@ -20,6 +17,8 @@ interface Specialist {
   title: string;
   bio: string;
   image: string;
+  experience: string;
+  accuracy: string;
 }
 
 const CLINICAL_ROSTER: Specialist[] = [
@@ -29,7 +28,9 @@ const CLINICAL_ROSTER: Specialist[] = [
     role: "Lead Consultant Radiologist",
     title: "Chief of Diagnostic Imaging",
     bio: "Senior Consultant Radiologist specializing in high-fidelity pelvic mapping, ultrasound-guided interventional tracking arrays, and advanced diagnostic reporting frameworks.",
-    image: "/images/DrElizabeth.jpg"
+    image: "/images/DrElizabeth.jpg",
+    experience: "12+ Yrs",
+    accuracy: "99.8%"
   },
   {
     id: 2,
@@ -37,275 +38,16 @@ const CLINICAL_ROSTER: Specialist[] = [
     role: "Board-Certified OB/GYN Specialist",
     title: "Fellow in Maternal-Fetal Medicine",
     bio: "Elite maternal-fetal medical practitioner dedicated to pre-conception screening arrays, detailed 3D/4D anatomical anomaly tracking, and fetal echoes.",
-    image: "/images/clinician-2.jpg"
+    image: "/images/clinician-2.jpg",
+    experience: "15+ Yrs",
+    accuracy: "99.9%"
   }
 ];
 
-// ── THREE.JS CUSTOM SHADER DECLARATION ──
-const createClothMaterial = () => {
-  return new THREE.ShaderMaterial({
-    transparent: true,
-    uniforms: {
-      map: { value: null },
-      opacity: { value: 1.0 },
-      blurAmount: { value: 0.0 },
-      scrollForce: { value: 0.0 },
-      time: { value: 0.0 },
-      isHovered: { value: 0.0 },
-    },
-    vertexShader: `
-      uniform float scrollForce;
-      uniform float time;
-      uniform float isHovered;
-      varying vec2 vUv;
-      varying vec3 vNormal;
-      
-      void main() {
-        vUv = uv;
-        vNormal = normal;
-        
-        vec3 pos = position;
-        float curveIntensity = scrollForce * 0.3;
-        float distanceFromCenter = length(pos.xy);
-        float curve = distanceFromCenter * distanceFromCenter * curveIntensity;
-        
-        float ripple1 = sin(pos.x * 2.0 + scrollForce * 3.0) * 0.02;
-        float ripple2 = sin(pos.y * 2.5 + scrollForce * 2.0) * 0.015;
-        float clothEffect = (ripple1 + ripple2) * abs(curveIntensity) * 2.0;
-        
-        float flagWave = 0.0;
-        if (isHovered > 0.5) {
-          float wavePhase = pos.x * 3.0 + time * 8.0;
-          float waveAmplitude = sin(wavePhase) * 0.1;
-          float dampening = smoothstep(-0.5, 0.5, pos.x);
-          flagWave = waveAmplitude * dampening;
-          float secondaryWave = sin(pos.x * 5.0 + time * 12.0) * 0.03 * dampening;
-          flagWave += secondaryWave;
-        }
-        
-        pos.z -= (curve + clothEffect + flagWave);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-      }
-    `,
-    fragmentShader: `
-      uniform sampler2D map;
-      uniform float opacity;
-      uniform float blurAmount;
-      uniform float scrollForce;
-      varying vec2 vUv;
-      varying vec3 vNormal;
-      
-      void main() {
-        vec4 color = texture2D(map, vUv);
-        
-        if (blurAmount > 0.0) {
-          vec2 texelSize = 1.0 / vec2(textureSize(map, 0));
-          vec4 blurred = vec4(0.0);
-          float total = 0.0;
-          
-          for (float x = -2.0; x <= 2.0; x += 1.0) {
-            for (float y = -2.0; y <= 2.0; y += 1.0) {
-              vec2 offset = vec2(x, y) * texelSize * blurAmount;
-              float weight = 1.0 / (1.0 + length(vec2(x, y)));
-              blurred += texture2D(map, vUv + offset) * weight;
-              total += weight;
-            }
-          }
-          color = blurred / total;
-        }
-        
-        float curveHighlight = abs(scrollForce) * 0.05;
-        color.rgb += vec3(curveHighlight * 0.1);
-        gl_FragColor = vec4(color.rgb, color.a * opacity);
-      }
-    `,
-  });
-};
-
-interface PlaneData {
-  index: number;
-  z: number;
-  imageIndex: number;
-  x: number;
-  y: number;
-}
-
-function ImagePlane({
-  texture,
-  position,
-  scale,
-  material,
-}: {
-  texture: THREE.Texture;
-  position: [number, number, number];
-  scale: [number, number, number];
-  material: THREE.ShaderMaterial;
-}) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (material && texture) material.uniforms.map.value = texture;
-  }, [material, texture]);
-
-  useEffect(() => {
-    if (material && material.uniforms) material.uniforms.isHovered.value = isHovered ? 1.0 : 0.0;
-  }, [material, isHovered]);
-
-  return (
-    <mesh
-      ref={meshRef}
-      position={position}
-      scale={scale}
-      material={material}
-      onPointerEnter={() => setIsHovered(true)}
-      onPointerLeave={() => setIsHovered(false)}
-    >
-      <planeGeometry args={[1, 1, 32, 32]} />
-    </mesh>
-  );
-}
-
-function GalleryScene({
-  images,
-  onFocusedImageChange,
-}: {
-  images: string[];
-  onFocusedImageChange: (index: number) => void;
-}) {
-  const { size } = useThree();
-  const [scrollVelocity, setScrollVelocity] = useState(0);
-  const visibleCount = 8;
-  const depthRange = 50;
-
-  const textures = useTexture(images);
-  const materials = useMemo(() => Array.from({ length: visibleCount }, () => createClothMaterial()), []);
-
-  const spatialPositions = useMemo(() => {
-    const positions: { x: number; y: number }[] = [];
-    for (let i = 0; i < visibleCount; i++) {
-      const hAngle = (i * 2.618) % (Math.PI * 2);
-      const vAngle = (i * 1.618 + Math.PI / 3) % (Math.PI * 2);
-      const hRadius = (i % 3) * 1.1;
-      const vRadius = ((i + 1) % 4) * 0.7;
-      positions.push({
-        x: (Math.sin(hAngle) * hRadius * 8) / 3,
-        y: (Math.cos(vAngle) * vRadius * 8) / 4
-      });
-    }
-    return positions;
-  }, []);
-
-  const planesData = useRef<PlaneData[]>(
-    Array.from({ length: visibleCount }, (_, i) => ({
-      index: i,
-      z: ((depthRange / visibleCount) * i) % depthRange,
-      imageIndex: i % images.length,
-      x: spatialPositions[i]?.x ?? 0,
-      y: spatialPositions[i]?.y ?? 0,
-    }))
-  );
-
-  const handleWheel = useCallback((event: WheelEvent) => {
-    event.preventDefault();
-    setScrollVelocity((prev) => prev + event.deltaY * 0.008);
-  }, []);
-
-  useEffect(() => {
-    const canvas = document.querySelector("#specialist-canvas canvas");
-    if (canvas) {
-      canvas.addEventListener("wheel", handleWheel as any, { passive: false });
-      return () => canvas.removeEventListener("wheel", handleWheel as any);
-    }
-  }, [handleWheel]);
-
-  useFrame((state, delta) => {
-    // Continuous smooth autoplay loop
-    setScrollVelocity((prev) => (prev + 0.15 * delta) * 0.96);
-
-    const time = state.clock.getElapsedTime();
-    materials.forEach((mat) => {
-      if (mat.uniforms) {
-        mat.uniforms.time.value = time;
-        mat.uniforms.scrollForce.value = scrollVelocity;
-      }
-    });
-
-    let closestPlaneIdx = 0;
-    let minDistanceToFocus = Infinity;
-
-    planesData.current.forEach((plane, i) => {
-      let newZ = plane.z + scrollVelocity * delta * 12;
-
-      if (newZ >= depthRange) {
-        newZ -= depthRange;
-        plane.imageIndex = (plane.imageIndex + 1) % images.length;
-      } else if (newZ < 0) {
-        newZ += depthRange;
-        plane.imageIndex = (plane.imageIndex - 1 + images.length) % images.length;
-      }
-
-      plane.z = newZ;
-      const worldZ = plane.z - depthRange / 2;
-
-      // Track center focus node for profile text synchronization
-      const distanceToFocus = Math.abs(worldZ + 10);
-      if (distanceToFocus < minDistanceToFocus) {
-        minDistanceToFocus = distanceToFocus;
-        closestPlaneIdx = plane.imageIndex;
-      }
-
-      // Shader fading thresholds logic
-      const normPos = plane.z / depthRange;
-      let opacity = 1;
-      if (normPos < 0.15) opacity = normPos / 0.15;
-      else if (normPos > 0.85) opacity = 1 - (normPos - 0.85) / 0.15;
-
-      let blur = 0;
-      if (normPos < 0.1) blur = 4.0 * (1 - normPos / 0.1);
-      else if (normPos > 0.8) blur = 4.0 * ((normPos - 0.8) / 0.2);
-
-      if (materials[i].uniforms) {
-        materials[i].uniforms.opacity.value = THREE.MathUtils.clamp(opacity, 0, 1);
-        materials[i].uniforms.blurAmount.value = THREE.MathUtils.clamp(blur, 0, 4);
-      }
-    });
-
-    state.clock.getElapsedTime();
-    if (time % 0.5 < 0.02) {
-      onFocusedImageChange(closestPlaneIdx);
-    }
-  });
-
-  return (
-    <>
-      {planesData.current.map((plane, i) => {
-        const texture = textures[plane.imageIndex];
-        const material = materials[i];
-        if (!texture || !material) return null;
-
-        const worldZ = plane.z - depthRange / 2;
-        const scale: [number, number, number] = [2.2, 3.0, 1];
-
-        return (
-          <ImagePlane
-            key={plane.index}
-            texture={texture}
-            position={[plane.x, plane.y, worldZ]}
-            scale={scale}
-            material={material}
-          />
-        );
-      })}
-    </>
-  );
-}
-
-// ── MAIN CORE ABOUT SECTION CONTAINER MODULE ──
 export function AboutSection() {
   const containerRef = useRef<HTMLElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
-  const [focusedIdx, setFocusedIdx] = useState(0);
+  const [activeIdx, setActiveIdx] = useState(0);
 
   useGSAP(() => {
     const tl = gsap.timeline({
@@ -324,19 +66,21 @@ export function AboutSection() {
     );
   }, { scope: containerRef });
 
-  const activeDoc = CLINICAL_ROSTER[focusedIdx] || CLINICAL_ROSTER[0];
-  const galleryImages = useMemo(() => CLINICAL_ROSTER.map((d) => d.image), []);
+  const activeDoc = CLINICAL_ROSTER[activeIdx];
 
   return (
     <section 
       ref={containerRef} 
       id="about" 
-      className="relative bg-[#080f1e] py-28 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden min-h-screen flex items-center"
+      className="relative bg-[#080f1e] py-28 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden min-h-screen flex items-center w-full"
     >
+      {/* Background Ambient Fluid Design Accents */}
+      <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_bottom_left,rgba(255,212,58,0.04),transparent_50%)] pointer-events-none" />
+
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Left Side: Refined Typography & Descriptions */}
+          {/* Left Side Column: Copy Blocks & Descriptions */}
           <div ref={textContainerRef} className="lg:col-span-5 flex flex-col items-start text-left relative z-20">
             <div className="flex items-center gap-3 mb-4 group">
               <div className="h-px w-8 bg-[#F4B9B9] group-hover:w-12 transition-all duration-500" />
@@ -357,47 +101,93 @@ export function AboutSection() {
               </p>
             </div>
 
-            {/* Dynamic Real-time Roster Detail Display Card */}
-            <div className="w-full bg-[#0d1b3e]/40 border border-white/5 rounded-2xl p-5 backdrop-blur-md shadow-xl min-h-[140px]">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeDoc.id}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex flex-col text-left"
+            {/* Specialist Switching Array Controls */}
+            <div className="flex items-center gap-3 border border-white/5 p-1.5 rounded-full bg-[#0d1b3e]/30 backdrop-blur-md">
+              {CLINICAL_ROSTER.map((doc, idx) => (
+                <button
+                  key={doc.id}
+                  onClick={() => setActiveIdx(idx)}
+                  className={`px-6 py-2.5 rounded-full font-mono text-[10px] uppercase tracking-widest transition-all duration-500 ${idx === activeIdx ? 'bg-[#FFD43A] text-[#080f1e] font-bold shadow-xl' : 'text-white/40 hover:text-white/80 bg-transparent'}`}
                 >
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <Sparkles className="size-3.5 text-[#FFD43A]" />
-                    <span className="font-mono text-[9px] tracking-widest uppercase text-[#FFD43A]">{activeDoc.title}</span>
-                  </div>
-                  <h4 className="text-lg font-display font-bold text-white tracking-tight">{activeDoc.name}</h4>
-                  <p className="font-mono text-[11px] text-[#F4B9B9] mb-2">{activeDoc.role}</p>
-                  <p className="font-sans text-xs text-white/50 leading-relaxed italic">&ldquo;{activeDoc.bio}&rdquo;</p>
-                </motion.div>
-              </AnimatePresence>
+                  {doc.name.split(" ")[1]}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Right Side: ✅ NEW INTERACTIVE WEBGL CLOTH INFINITE FABRIC GALLERY */}
-          <div className="lg:col-span-7 w-full h-[520px] md:h-[600px] relative z-10 rounded-[2.5rem] bg-gradient-to-br from-[#0d1b3e]/30 to-black/40 border border-white/5 shadow-2xl overflow-hidden cursor-grab active:cursor-grabbing">
-            
-            <div id="specialist-canvas" className="w-full h-full absolute inset-0 z-10">
-              <Canvas camera={{ position: [0, 0, 0], fov: 55 }} gl={{ antialias: true, alpha: true }}>
-                <GalleryScene images={galleryImages} onFocusedImageChange={(idx) => setFocusedIdx(idx)} />
-              </Canvas>
-            </div>
+          {/* Right Side Column: Premium Cinematic Specialist Card Slider */}
+          <div className="lg:col-span-7 w-full relative z-10 flex flex-col items-center">
+            <div className="relative w-full max-w-2xl bg-gradient-to-br from-[#0d1b3e]/60 to-[#080f1e]/40 border border-white/10 rounded-[2.5rem] p-6 md:p-10 backdrop-blur-xl shadow-2xl overflow-hidden min-h-[480px] flex flex-col justify-between group">
+              
+              <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#F4B9B9]/5 to-transparent rounded-bl-full pointer-events-none" />
 
-            {/* Micro Interaction Hint Badges */}
-            <div className="absolute bottom-6 left-6 right-6 z-20 flex justify-between items-center pointer-events-none">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
-                <span className="text-[9px] font-mono tracking-wider text-white/50 uppercase">WebGL Hardware Acceleration Active</span>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeDoc.id}
+                  initial={{ opacity: 0, x: 20, scale: 0.98 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -20, scale: 0.98 }}
+                  transition={{ duration: 0.5, ease: EASE_LUXURY }}
+                  className="w-full flex flex-col md:flex-row gap-8 md:gap-10 items-start md:items-center text-left"
+                >
+                  {/* Portrait Card Image Frame Overlay */}
+                  <div className="relative w-40 h-52 md:w-48 md:h-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shrink-0">
+                    <img 
+                      src={activeDoc.image} 
+                      alt={activeDoc.name} 
+                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 via-transparent to-transparent pointer-events-none" />
+                  </div>
+
+                  {/* Specialist Meta Metrics Text */}
+                  <div className="flex-1 flex flex-col h-full justify-center">
+                    <div className="mb-2 flex items-center gap-2">
+                      <Sparkles className="size-3.5 text-[#FFD43A]" />
+                      <span className="font-mono text-[9px] tracking-widest text-[#FFD43A] uppercase bg-[#FFD43A]/5 px-2 py-0.5 rounded border border-[#FFD43A]/10">
+                        {activeDoc.title}
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl md:text-3xl font-display font-bold text-white tracking-tight mb-1">
+                      {activeDoc.name}
+                    </h3>
+                    <p className="font-mono text-xs text-[#F4B9B9] tracking-wider mb-4">
+                      {activeDoc.role}
+                    </p>
+                    
+                    <p className="font-sans font-light text-xs md:text-sm text-white/60 leading-relaxed italic">
+                      &ldquo;{activeDoc.bio}&rdquo;
+                    </p>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Counter Stats Tray Footer Summary */}
+              <div className="flex gap-10 border-t border-white/5 pt-6 mt-8 w-full items-center">
+                <div>
+                  <p className="font-display font-semibold text-[#FFD43A] text-xl md:text-2xl italic leading-none mb-1">
+                    {activeDoc.experience}
+                  </p>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-white/30">Clinical Track</p>
+                </div>
+                <div>
+                  <p className="font-display font-semibold text-[#FFD43A] text-xl md:text-2xl italic leading-none mb-1">
+                    {activeDoc.accuracy}
+                  </p>
+                  <p className="font-mono text-[9px] uppercase tracking-wider text-white/30">Accuracy Metric</p>
+                </div>
+                
+                <button 
+                  onClick={() => setActiveIdx((prev) => (prev + 1) % CLINICAL_ROSTER.length)}
+                  className="ml-auto flex items-center gap-2 font-mono text-[10px] text-[#F4B9B9] uppercase tracking-widest hover:text-[#FFD43A] transition-colors duration-300 group/btn"
+                >
+                  View Next 
+                  <ArrowRight className="size-3 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                </button>
               </div>
-              <span className="text-[9px] font-mono tracking-widest text-white/20 uppercase max-md:hidden">Scroll trackpad over canvas to shift warp force</span>
-            </div>
 
+            </div>
           </div>
 
         </div>
