@@ -12,20 +12,20 @@ import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { MobileMenu } from '@/components/ui/mobile-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuTrigger, NavigationMenuList } from '@/components/ui/navigation-menu';
 
-// Client-safe dynamic bundles
+// Client-safe dynamic bundles - loading safely with immediate, clean placeholders
 const VerticalImageStack = dynamic(
   () => import('../components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
-  { ssr: false }
+  { ssr: false, loading: () => <div className="h-[40vh] bg-[#080f1e]" /> }
 );
 
 const InfiniteParallaxSlider = dynamic(
   () => import('../components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
-  { ssr: false }
+  { ssr: false, loading: () => <div className="h-screen bg-[#080f1e]" /> }
 );
 
 const AboutSection = dynamic(
   () => import('../components/AboutSection').then((m) => ({ default: m.AboutSection })),
-  { ssr: false }
+  { ssr: false, loading: () => <div className="h-screen bg-[#080f1e]" /> }
 );
 
 const CircularTestimonials = dynamic(
@@ -44,44 +44,37 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
-  const [isHydrated, setIsHydrated] = useState(false);
-
+  // Mount the layout shell instantly to guarantee fixed, unshifting height parameters from step one
   useEffect(() => {
-    const layoutTimer = setTimeout(() => {
-      setIsHydrated(true);
-    }, 2000);
-    return () => clearTimeout(layoutTimer);
+    // Inject clean native behavior parameter rules across modern engine viewports
+    document.documentElement.style.scrollBehavior = "smooth";
+    return () => {
+      document.documentElement.style.scrollBehavior = "";
+    };
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#080f1e] text-white select-none relative">
+    <main className="min-h-screen bg-[#080f1e] text-white select-none relative w-full overflow-x-hidden">
       {/* Global Navigation Layer */}
       <GlobalNavbar />
       
-      {/* True Homepage Landing Deck: Text morphing slider matches root path priorities instantly */}
+      {/* Page 1 (Top Fold Entry Deck) */}
       <section id="home" className="w-full h-screen relative">
         <InfiniteParallaxSlider />
       </section>
       
-      {/* Detailed Diagnostics Section Container Layout directly under fold */}
+      {/* Page 2 (Transition Segment & Main Elements) */}
       <section id="diagnostics" className="w-full min-h-screen relative">
         <HeroSection />
       </section>
       
       <VerticalImageStack />
       <AboutSection />
-
-      {isHydrated ? (
-        <>
-          <LocalServiceShowcase />
-          <CircularTestimonials />
-          <BookingHub />
-          <MapEmbed />
-          <ContactFooter />
-        </>
-      ) : (
-        <div className="h-[200vh] bg-[#080f1e] w-full" />
-      )}
+      <LocalServiceShowcase />
+      <CircularTestimonials />
+      <BookingHub />
+      <MapEmbed />
+      <ContactFooter />
 
       <FloatingCTA />
     </main>
@@ -97,27 +90,26 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// ✅ UPDATED ROSTER: Perfectly aligned to match your exact 5-point services taxonomy structure
 const dynamicServiceLinks: MenuLinkItem[] = [
-  { title: "maternal fetal specialists services", href: "/#services", description: "Expert consultations and high-fidelity diagnostic tracking.", icon: Activity },
-  { title: "Antenatal care services", href: "/#services", description: "Structured medical monitoring safely tracking your milestones.", icon: Sparkles },
-  { title: "Postnatal care services", href: "/#services", description: "Comprehensive infant checks and maternal recovery support.", icon: Baby },
-  { title: "Gynaecological consultations and procedures", href: "/#services", description: "Comprehensive reproductive reviews and targeted medical treatments.", icon: Heart },
-  { title: "Radiological imaging services", href: "/#services", description: "High-precision ultrasound, HSG, MCU, and senior specialist reporting.", icon: ShieldAlert }
+  { title: "maternal fetal specialists services", href: "#services", description: "Expert consultations and high-fidelity diagnostic tracking.", icon: Activity },
+  { title: "Antenatal care services", href: "#services", description: "Structured medical monitoring safely tracking your milestones.", icon: Sparkles },
+  { title: "Postnatal care services", href: "#services", description: "Comprehensive infant checks and maternal recovery support.", icon: Baby },
+  { title: "Gynaecological consultations and procedures", href: "#services", description: "Comprehensive reproductive reviews and targeted medical treatments.", icon: Heart },
+  { title: "Radiological imaging services", href: "#services", description: "High-precision ultrasound, HSG, MCU, and senior specialist reporting.", icon: ShieldAlert }
 ];
 
 const aboutLinks: MenuLinkItem[] = [
-  { title: "Clinical Sanctuary", href: "/#about", description: "Explore our premium patient care destination engineered on Ngong Road.", icon: Eye },
+  { title: "Clinical Sanctuary", href: "#about", description: "Explore our premium patient care destination engineered on Ngong Road.", icon: Eye },
 ];
 
 const specialistLinks: MenuLinkItem[] = [
-  { title: "Dr. Elizabeth Odondi", href: "/#about", description: "Consultant Radiologist — Lead Diagnostic Imaging Specialist at Ulnar.", icon: UserCheck },
-  { title: "Dr. Cyprian Michieka", href: "/#about", description: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
+  { title: "Dr. Elizabeth Odondi", href: "#about", description: "Consultant Radiologist — Lead Diagnostic Imaging Specialist at Ulnar.", icon: UserCheck },
+  { title: "Dr. Cyprian Michieka", href: "#about", description: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
 ];
 
 const contactLinks: MenuLinkItem[] = [
-  { title: "Nairobi Office Footprint", href: "/#contact", description: "Find our physical branch footprint at premium medical suites on Ngong Road.", icon: MapPin },
-  { title: "+254 724 273 996 / +254 724 429 489", href: "/#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
+  { title: "Nairobi Office Footprint", href: "#contact", description: "Find our physical branch footprint at premium medical suites on Ngong Road.", icon: MapPin },
+  { title: "+254 724 273 996 / +254 724 429 489", href: "#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
 ];
 
 function GlobalNavbar() {
@@ -128,6 +120,20 @@ function GlobalNavbar() {
     else { document.body.style.overflow = ""; }
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
+
+  // Handle smooth manual calculation anchor updates across the viewports
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, targetId: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    const element = document.getElementById(targetId.replace('#', ''));
+    if (element) {
+      const offsetPosition = element.getBoundingClientRect().top + window.scrollY - 80; // offset for the fixed navbar height
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
     <nav
@@ -141,37 +147,56 @@ function GlobalNavbar() {
           <NavigationMenuList className="gap-1">
             
             <NavigationMenuItem>
-              <NavigationMenuLink href="/#home" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
+              <a href="#home" onClick={(e) => handleAnchorClick(e, 'home')} className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
                 Homepage
-              </NavigationMenuLink>
+              </a>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuLink href="/#diagnostics" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
+              <a href="#diagnostics" onClick={(e) => handleAnchorClick(e, 'diagnostics')} className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
                 Detailed Diagnostics
-              </NavigationMenuLink>
+              </a>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
               <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">About Us</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
-                  {aboutLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  {aboutLinks.map((item) => (
+                    <a key={item.title} href={item.href} onClick={(e) => handleAnchorClick(e, item.href)} className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group text-left">
+                      <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] transition-all">
+                        <item.icon className="size-4" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{item.title}</span>
+                        <span className="text-white/40 text-xs leading-normal block mt-0.5">{item.description}</span>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* ✅ UPDATED DIRECT ROUTING PASS: Clicking "Services" on the taskbar takes you instantly to the webpage section */}
             <NavigationMenuItem>
               <NavigationMenuTrigger 
-                onClick={() => window.location.href = '/#services'} 
+                onClick={(e) => handleAnchorClick(e, 'services')} 
                 className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9] cursor-pointer"
               >
                 Services
               </NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[480px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl max-h-[400px] overflow-y-auto">
-                  {dynamicServiceLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  {dynamicServiceLinks.map((item) => (
+                    <a key={item.title} href={item.href} onClick={(e) => handleAnchorClick(e, item.href)} className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group text-left">
+                      <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] transition-all">
+                        <item.icon className="size-4" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors capitalize">{item.title}</span>
+                        <span className="text-white/40 text-xs leading-normal block mt-0.5">{item.description}</span>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -180,7 +205,17 @@ function GlobalNavbar() {
               <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Our Specialists</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[500px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
-                  {specialistLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  {specialistLinks.map((item) => (
+                    <a key={item.title} href={item.href} onClick={(e) => handleAnchorClick(e, item.href)} className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group text-left">
+                      <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] transition-all">
+                        <item.icon className="size-4" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{item.title}</span>
+                        <span className="text-white/40 text-xs leading-normal block mt-0.5">{item.description}</span>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -189,7 +224,17 @@ function GlobalNavbar() {
               <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Contact Us</NavigationMenuTrigger>
               <NavigationMenuContent>
                 <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
-                  {contactLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  {contactLinks.map((item) => (
+                    <a key={item.title} href={item.href} onClick={(e) => handleAnchorClick(e, item.href)} className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group text-left">
+                      <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] transition-all">
+                        <item.icon className="size-4" />
+                      </div>
+                      <div>
+                        <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{item.title}</span>
+                        <span className="text-white/40 text-xs leading-normal block mt-0.5">{item.description}</span>
+                      </div>
+                    </a>
+                  ))}
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -198,7 +243,7 @@ function GlobalNavbar() {
         </NavigationMenu>
 
         <div className="hidden items-center gap-4 md:flex">
-          <a href="/#booking" className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider">
+          <a href="#booking" onClick={(e) => handleAnchorClick(e, 'booking')} className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider">
             Book Now <span className="text-sm leading-none">&#8599;</span>
           </a>
         </div>
@@ -216,22 +261,6 @@ function GlobalNavbar() {
         contactLinks={contactLinks} 
       />
     </nav>
-  );
-}
-
-function ListItem({ title, description, icon: Icon, href }: { title: string; description: string; icon: React.ComponentType<{ className?: string }>; href: string }) {
-  return (
-    <NavigationMenuLink asChild>
-      <a href={href} className="flex flex-row gap-3 items-start justify-start p-2.5 rounded-lg hover:bg-white/5 transition-all group select-none text-left">
-        <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white/80 group-hover:text-[#F4B9B9] group-hover:border-[#F4B9B9]/40 transition-all shadow-sm">
-          <Icon className="size-4" />
-        </div>
-        <div className="flex flex-col items-start justify-center min-w-0">
-          <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors capitalize">{title}</span>
-          <span className="text-white/40 text-xs leading-normal mt-0.5">{description}</span>
-        </div>
-      </a>
-    </NavigationMenuLink>
   );
 }
 
