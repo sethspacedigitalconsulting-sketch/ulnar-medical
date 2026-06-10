@@ -28,7 +28,7 @@ export function HeroSection() {
         <HeroScrub />
       </div>
 
-      {/* ✅ HOVER SIDEBAR CTAs: Floats permanently at the right edge of the screen across sections */}
+      {/* HOVER SIDEBAR CTAs: Floats permanently at the right edge of the screen across sections */}
       <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-4 pointer-events-auto">
         <motion.button
           onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
@@ -61,15 +61,15 @@ export function HeroSection() {
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
 
-            {/* ✅ UPDATED: Brand marker now prominently states Maternal-fetal Specialist Care */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-px w-10 bg-[#F4B9B9]" />
-              <span className="label-mono text-[#F4B9B9] text-xs uppercase tracking-widest font-semibold">
+            {/* ✅ ENLARGED: Expanded text size variables to create clear visual hierarchy */}
+            <div className="flex items-center gap-4 mb-4">
+              <div className="h-px w-14 bg-[#F4B9B9]" />
+              <span className="font-display text-lg md:text-xl font-medium tracking-wide text-[#F4B9B9] capitalize">
                 Maternal-fetal Specialist Care
               </span>
             </div>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-8">
               <div className="h-px w-6 bg-[#FFD43A]/40" />
               <span className="label-mono text-[rgba(248,246,242,0.55)] text-xs">Ngong Road · Nairobi · Est. 2021</span>
             </div>
@@ -83,7 +83,6 @@ export function HeroSection() {
               Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary.
             </p>
 
-            {/* ✅ REMOVED INLINE BUTTON ROW: Clean layout transition spacing */}
             <div className="h-4" />
 
             <div className="flex flex-wrap gap-x-10 gap-y-4 mt-6 md:mt-10 pt-6 md:pt-10 border-t border-[rgba(255,255,255,0.07)]">
