@@ -6,15 +6,15 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { ShieldCheck, Award, Heart, Activity } from "lucide-react";
+import { ShieldCheck, Award, Heart } from "lucide-react";
 
+// ✅ FIXED IMPORT PATHWAY: Switched to relative directory tracking to resolve the module trace blocker
 const AboutScrub = dynamic(
-  () => import("@/components/ui/about-scrub").then((m) => ({ default: m.AboutScrub })),
+  () => import("../components/ui/about-scrub").then((m) => ({ default: m.AboutScrub })),
   { ssr: false }
 );
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
-const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
 export function AboutSection() {
   const containerRef = useRef<HTMLElement>(null);
@@ -29,7 +29,6 @@ export function AboutSection() {
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
 
   useGSAP(() => {
-    // Master GSAP ScrollTrigger timeline matching your original structural pass
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
@@ -42,7 +41,7 @@ export function AboutSection() {
     tl.fromTo(
       textContainerRef.current?.children || [],
       { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 1, ease: "power4.out", stale: true, exhibitors: true, stagger: 0.15 }
+      { opacity: 1, y: 0, duration: 1, ease: "power4.out", stagger: 0.15 }
     );
 
     tl.fromTo(
@@ -77,7 +76,6 @@ export function AboutSection() {
       id="about" 
       className="relative bg-[#080f1e] py-28 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden min-h-screen flex items-center"
     >
-      {/* Dynamic Parallax Kinetic Background Particle Layer */}
       <motion.div className="absolute inset-0 z-0 opacity-15 pointer-events-none" style={{ y: bgY }}>
         <AboutScrub />
       </motion.div>
@@ -85,7 +83,6 @@ export function AboutSection() {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Left Side: Typography Text Strings Container */}
           <div ref={textContainerRef} className="lg:col-span-5 flex flex-col items-start text-left relative z-10">
             <div className="flex items-center gap-3 mb-4 group">
               <div className="h-px w-8 bg-[#F4B9B9] group-hover:w-12 transition-all duration-500" />
@@ -102,14 +99,12 @@ export function AboutSection() {
                 Ulnar Medical & Diagnostic Centre is a premier specialist facility committed to redefining clinical accuracy and premium patient care. Located in Nairobi, our clinic bridges the gap between advanced medical diagnostic infrastructure and compassionate, expert specialty treatment.
               </p>
               
-              {/* ✅ RESTORED TEXT CONTAINER: The sentence returns with full spacing, minus the chosen wording phrase */}
               <p>
                 We recognize that modern healthcare demands customized, precision approaches. By combining advanced 3D/4D ultrasonic tracking systems with an elite clinical environment, we deliver tailored screening diagnostics and specialist consultations that meet international benchmarks right here on Ngong Road.
               </p>
             </div>
           </div>
 
-          {/* Right Side: Credentials Animation Grid */}
           <div ref={cardsContainerRef} className="lg:col-span-7 flex flex-col gap-5 md:gap-6 w-full relative z-10">
             {coreValues.map((value, idx) => {
               const Icon = value.icon;
