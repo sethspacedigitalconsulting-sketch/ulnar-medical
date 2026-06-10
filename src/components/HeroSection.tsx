@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { MobileMenu } from "@/components/ui/mobile-menu";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuTrigger, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, UserCheck, Baby } from "lucide-react";
+import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, UserCheck, Baby, Users } from "lucide-react";
 
 const HeroScrub = dynamic(
   () => import("@/components/ui/hero-scrub").then((m) => ({ default: m.HeroScrub })),
@@ -28,7 +28,7 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// ✅ Updated Submenu Maps matching your exact clinical parameters
+// Submenu Content Matrix Arrays
 const diagnosticLinks: MenuLinkItem[] = [
   { title: "Maternal-Fetal Specialist Services", href: "/#services", description: "Pre-conception screening, 2D/3D obstetric tracking, fetal echoes, and anatomical surveys.", icon: Activity },
   { title: "Gynaecological Consultations", href: "/#services", description: "Comprehensive female reproductive reviews and specialist treatment procedures.", icon: Heart },
@@ -44,8 +44,10 @@ const aboutLinks: MenuLinkItem[] = [
   { title: "Clinical Sanctuary", href: "/#about", description: "Explore our premium patient care destination engineered on Ngong Road.", icon: Eye },
 ];
 
+// ✅ UPDATED: Added Dr. Cyprian Michieka alongside Dr. Elizabeth inside the data node array
 const specialistLinks: MenuLinkItem[] = [
-  { title: "Expert Clinicians", href: "/#about", description: "Meet Dr. Elizabeth Odondi and senior consultants behind every diagnosis.", icon: UserCheck },
+  { title: "Dr. Elizabeth Odondi", href: "/#about", description: "Consultant Radiologist — Lead Diagnostic Imaging Specialist at Ulnar.", icon: UserCheck },
+  { title: "Dr. Cyprian Michieka", href: "/#about", description: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
 ];
 
 const contactLinks: MenuLinkItem[] = [
@@ -103,7 +105,6 @@ export function HeroSection() {
         <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
           <Logo animated size={42} />
           
-          {/* ✅ Cross-Page Root Links Integration */}
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="gap-1">
               
@@ -140,10 +141,11 @@ export function HeroSection() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
+              {/* ✅ UPDATED: The Dropdown wrapper automatically handles the new multi-specialist grid arrays cleanly */}
               <NavigationMenuItem>
                 <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Our Specialists</NavigationMenuTrigger>
                 <NavigationMenuContent>
-                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
+                  <div className="grid w-[500px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {specialistLinks.map((item) => (<ListItem key={item.title} {...item} />))}
                   </div>
                 </NavigationMenuContent>
