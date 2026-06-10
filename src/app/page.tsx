@@ -4,10 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { HeroSection } from '../components/HeroSection';
+import { GlobalNavbar } from '../components/GlobalNavbar';
 import { ContactFooter } from '../components/ContactFooter';
 import { FloatingCTA } from '../components/ui/floating-cta';
 
-// ✅ Client-safe dynamic bundles
+// Client-safe dynamic bundles
 const VerticalImageStack = dynamic(
   () => import('../components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
   { ssr: false }
@@ -49,13 +50,20 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#080f1e] text-white select-none">
+    <main className="min-h-screen bg-[#080f1e] text-white select-none relative">
+      {/* ✅ GLOBAL NAVIGATION LAYER: Floats flawlessly over all sections */}
+      <GlobalNavbar />
       
-      {/* ✅ Cinematic Parallax text-switching header loop loads first */}
-      <InfiniteParallaxSlider />
+      {/* ✅ TRUE HOMEPAGE ROUTE NODE: Section handles id="home" so the site reads it as page one */}
+      <section id="home" className="w-full h-screen relative">
+        <InfiniteParallaxSlider />
+      </section>
       
       {/* ── SECONDARY LINK METRICS FLOW ── */}
-      <HeroSection />
+      <section id="diagnostics" className="w-full min-h-screen relative">
+        <HeroSection />
+      </section>
+      
       <VerticalImageStack />
       <AboutSection />
 
