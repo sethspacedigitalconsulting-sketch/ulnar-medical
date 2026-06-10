@@ -60,8 +60,11 @@ export function HeroSection() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { scrollY } = useScroll();
-  const textY = useTransform(scrollY, [0, 700], [0, -110]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
+  const textY = useTransform(scrollY, [0, 700], [0, -40]); // Subtler parallax tracking
+  
+  // ✅ FIXED: Unlinked scrollY tracking from the opacity channel so it stays completely solid (1)
+  const opacity = 1;
+
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const springX = useSpring(mx, { stiffness: 200, damping: 18 });
@@ -90,7 +93,7 @@ export function HeroSection() {
   };
 
   return (
-    <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden">
+    <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden flex items-center">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hidden md:block">
         <HeroScrub />
       </div>
@@ -180,7 +183,7 @@ export function HeroSection() {
         contactLinks={contactLinks} 
       />
 
-      <motion.div className="relative z-20 px-6 md:px-14 pt-24 md:pt-40 pb-12 md:pb-32" style={{ y: textY, opacity, willChange: "transform" }}>
+      <motion.div className="relative z-20 px-6 md:px-14 w-full" style={{ y: textY, opacity, willChange: "transform" }}>
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
 
@@ -200,7 +203,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-center gap-4 mt-8">
               <motion.button
                 style={{ x: springX, y: springY, willChange: "transform" }}
-                onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseMoveCTA}
+                onMouseMove={handleMouseMoveCTA} onMouseLeave={handleMouseLeaveCTA}
                 onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
                 className="relative overflow-hidden px-8 py-4 rounded-full bg-[#FFD43A] text-[#080f1e] font-body font-semibold tracking-wide text-sm group"
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
@@ -257,5 +260,4 @@ function ListItem({ title, description, icon: Icon, href }: { title: string; des
   );
 }
 
-// ✅ CRITICAL RE-EXPORT FALLBACK: Fixes internal subpage default import requirements completely
 export default HeroSection;
