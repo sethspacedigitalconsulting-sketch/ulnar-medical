@@ -133,12 +133,9 @@ export function InfiniteParallaxSlider() {
 
   const resetAutoplay = React.useCallback(() => { startAutoplay(); }, [startAutoplay]);
 
+  // ✅ UPDATED: Since this is now at the absolute top of the page, escape up forces zero layout snap
   const handleEscapeUp = React.useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const prev = container.previousElementSibling as HTMLElement | null;
-    if (prev) prev.scrollIntoView({ behavior: "smooth" });
-    else window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const handleEscapeDown = React.useCallback(() => {
@@ -396,11 +393,6 @@ export function InfiniteParallaxSlider() {
             })}
           </div>
         </div>
-      </div>
-      <div className="absolute left-4 md:left-12 bottom-6 z-30 font-mono text-[9px] uppercase text-white/30 tracking-[0.2em] flex items-center gap-2 pointer-events-none">
-        <div className="w-1.5 h-1.5 rounded-full bg-[#FFD43A] animate-pulse" />
-        <span className="hidden sm:inline">Scroll or swipe to navigate</span>
-        <span className="sm:hidden">Swipe to navigate</span>
       </div>
     </div>
   );
