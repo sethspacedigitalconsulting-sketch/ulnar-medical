@@ -114,7 +114,7 @@ const aboutLinks: MenuLinkItem[] = [
 
 const specialistLinks: MenuLinkItem[] = [
   { title: "Dr. Elizabeth Odondi", href: "/#about", description: "Consultant Radiologist — Lead Diagnostic Imaging Specialist at Ulnar.", icon: UserCheck },
-  { title: "Dr. Cyprian Michieka", href: "/#about", description: "Board-certified OB/GYN Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
+  { title: "Dr. Cyprian Michieka", href: "/#about", description: "Board-certified OB/GYY Specialist & Fellow in Maternal-Fetal Medicine.", icon: Users },
 ];
 
 const contactLinks: MenuLinkItem[] = [
@@ -282,13 +282,9 @@ const services: ServiceItem[] = [
     id: 5,
     badge: 'RADIOLOGY & IMAGING',
     title: 'Radiological Imaging Services',
-    desc: 'High-precision pelvic mapping and diagnostic imaging reporting handled directly by senior specialists.',
-    image: '/images/acr.jpg',
-    bullets: [
-      'Reporting of X-rays, HSG, CT-Scans, and MRI',
-      'Ultrasound guided interventional procedures',
-      'Same-day rapid reporting pathways'
-    ]
+    // ✅ REMOVED BULLETS & UPDATED DESCRIPTION: Injected your explicit radiological core items directly here
+    desc: 'ultrasound services, HSG, MCU, general radiography, Interventional radiological procedures, CT/MRI reporting.',
+    image: '/images/acr.jpg'
   }
 ];
 
@@ -301,7 +297,10 @@ function LocalServiceShowcase() {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col items-start text-left mb-16 max-w-2xl">
           <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">Clinical Capabilities</span>
-          <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">Specialized Diagnostic Services</h2>
+          
+          {/* ✅ RENAMED Main Section Header */}
+          <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white">Diagnostic Services</h2>
+          
           <p className="font-sans text-xs text-[#FFD43A] tracking-wider uppercase font-medium mt-3 md:hidden animate-pulse">👉 Tap clinical cards to expand info lines</p>
         </div>
 
@@ -334,7 +333,7 @@ function LocalServiceShowcase() {
                         <li key={bIdx} className="text-xs text-white/50 flex items-center gap-2">
                           <span className="w-1 h-1 rounded-full bg-[#F4B9B9] shrink-0" />
                           <span className="truncate">{bullet}</span>
-                        </li>
+                        </div>
                       ))}
                     </ul>
                   )}
