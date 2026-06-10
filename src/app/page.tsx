@@ -97,15 +97,13 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const diagnosticLinks: MenuLinkItem[] = [
-  { title: "Maternal-Fetal Specialist Services", href: "/#services", description: "Pre-conception screening, 2D/3D obstetric tracking, fetal echoes, and anatomical surveys.", icon: Activity },
-  { title: "Gynaecological Consultations", href: "/#services", description: "Comprehensive female reproductive reviews and specialist treatment procedures.", icon: Heart },
-];
-
-const serviceLinks: MenuLinkItem[] = [
-  { title: "Antenatal Care Services", href: "/#services", description: "Structured maternal monitoring and wellness tracking safely mapping out each trimester.", icon: Sparkles },
-  { title: "Postnatal Care Services", href: "/#services", description: "Elite recovery tracking, newborn metrics support, and postpartum wellness sequences.", icon: Baby },
-  { title: "Radiological Imaging Services", href: "/#services", description: "Reporting of X-rays, HSG, CT, and MRI arrays alongside ultrasound-guided procedures.", icon: ShieldAlert },
+// ✅ UPDATED ROSTER: Perfectly aligned to match your exact 5-point services taxonomy structure
+const dynamicServiceLinks: MenuLinkItem[] = [
+  { title: "maternal fetal specialists services", href: "/#services", description: "Expert consultations and high-fidelity diagnostic tracking.", icon: Activity },
+  { title: "Antenatal care services", href: "/#services", description: "Structured medical monitoring safely tracking your milestones.", icon: Sparkles },
+  { title: "Postnatal care services", href: "/#services", description: "Comprehensive infant checks and maternal recovery support.", icon: Baby },
+  { title: "Gynaecological consultations and procedures", href: "/#services", description: "Comprehensive reproductive reviews and targeted medical treatments.", icon: Heart },
+  { title: "Radiological imaging services", href: "/#services", description: "High-precision ultrasound, HSG, MCU, and senior specialist reporting.", icon: ShieldAlert }
 ];
 
 const aboutLinks: MenuLinkItem[] = [
@@ -163,11 +161,17 @@ function GlobalNavbar() {
               </NavigationMenuContent>
             </NavigationMenuItem>
 
+            {/* ✅ UPDATED DIRECT ROUTING PASS: Clicking "Services" on the taskbar takes you instantly to the webpage section */}
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Services</NavigationMenuTrigger>
+              <NavigationMenuTrigger 
+                onClick={() => window.location.href = '/#services'} 
+                className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9] cursor-pointer"
+              >
+                Services
+              </NavigationMenuTrigger>
               <NavigationMenuContent>
-                <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
-                  {serviceLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                <div className="grid w-[480px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl max-h-[400px] overflow-y-auto">
+                  {dynamicServiceLinks.map((item) => (<ListItem key={item.title} {...item} />))}
                 </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -207,7 +211,7 @@ function GlobalNavbar() {
       <MobileMenu 
         open={mobileMenuOpen} 
         setMobileMenuOpen={setMobileMenuOpen} 
-        serviceLinks={[...diagnosticLinks, ...serviceLinks]} 
+        serviceLinks={dynamicServiceLinks} 
         aboutLinks={[...aboutLinks, ...specialistLinks]} 
         contactLinks={contactLinks} 
       />
@@ -223,7 +227,7 @@ function ListItem({ title, description, icon: Icon, href }: { title: string; des
           <Icon className="size-4" />
         </div>
         <div className="flex flex-col items-start justify-center min-w-0">
-          <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors">{title}</span>
+          <span className="font-medium text-sm text-white/90 group-hover:text-[#F4B9B9] transition-colors capitalize">{title}</span>
           <span className="text-white/40 text-xs leading-normal mt-0.5">{description}</span>
         </div>
       </a>
@@ -246,7 +250,7 @@ const services: ServiceItem[] = [
   {
     id: 1,
     badge: 'MATERNAL-FETAL SPECIALIST CARE',
-    title: 'Maternal-Fetal Specialist Services',
+    title: 'maternal fetal specialists services',
     desc: 'Expert maternal-fetal medicine consultations and high-fidelity tracking delivered with advanced precision.',
     image: '/images/mfss.jpg',
     bullets: [
@@ -260,28 +264,28 @@ const services: ServiceItem[] = [
   {
     id: 2,
     badge: 'OBSTETRIC CARE',
-    title: 'Antenatal Care Services',
+    title: 'Antenatal care services',
     desc: 'Structured medical monitoring pathways and tracking sequences tailored specifically per trimester.',
     image: '/images/awp.jpg',
   },
   {
     id: 3,
     badge: 'POST-NATAL TRIAD',
-    title: 'Postnatal Care Services',
+    title: 'Postnatal care services',
     desc: 'Comprehensive infant milestone metrics checking and maternal recovery tracking arrays.',
     image: '/images/3D4DobUl.jpg',
   },
   {
     id: 4,
     badge: 'GYNAECOLOGY',
-    title: 'Gynaecological Consultations and Procedures',
+    title: 'Gynaecological consultations and procedures',
     desc: 'Comprehensive reproductive checking, pelvic tracking surveys, and medical procedures.',
     image: '/images/GandC.jpg',
   },
   {
     id: 5,
     badge: 'RADIOLOGY & IMAGING',
-    title: 'Radiological Imaging Services',
+    title: 'Radiological imaging services',
     desc: 'ultrasound services, HSG, MCU, general radiography, Interventional radiological procedures, CT/MRI reporting.',
     image: '/images/acr.jpg'
   }
@@ -321,7 +325,7 @@ function LocalServiceShowcase() {
                 )}
                 <div className={`relative z-10 p-6 md:p-8 flex flex-col w-full transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-4 max-md:hidden'}`}>
                   <div className="mb-3 w-fit"><span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2.5 py-1 rounded-md border border-[#FFD43A]/15"> {svc.badge}</span></div>
-                  <h3 className="text-xl md:text-2xl font-display font-bold text-white tracking-tight mb-2">{svc.title}</h3>
+                  <h3 className="text-xl md:text-2xl font-display font-bold text-white tracking-tight mb-2 capitalize">{svc.title}</h3>
                   <p className="text-white/70 font-body font-light text-xs md:text-sm leading-relaxed max-w-md">{svc.desc}</p>
                   {svc.bullets && (
                     <ul className="mt-4 space-y-1.5 border-t border-white/5 pt-4 max-w-md">
@@ -337,7 +341,7 @@ function LocalServiceShowcase() {
                 {!isActive && (
                   <div className="absolute bottom-4 left-6 font-mono text-[10px] text-white/25 max-md:flex items-center gap-4 w-full px-1">
                     <span className="text-[#FFD43A] font-bold">0{svc.id}</span>
-                    <span className="text-white/60 truncate md:hidden text-[11px] font-sans font-medium">{svc.title}</span>
+                    <span className="text-white/60 truncate md:hidden text-[11px] font-sans font-medium capitalize">{svc.title}</span>
                   </div>
                 )}
               </div>
