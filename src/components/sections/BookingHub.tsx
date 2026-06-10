@@ -32,7 +32,7 @@ const springScale = {
 
 /* ── Data ────────────────────────────────────────────────────── */
 const TRUST = [
-  { stat: "< 2 hrs",  label: "Confirmation via WhatsApp" },
+  { stat: "< 2 hrs",   label: "Confirmation via WhatsApp" },
   { stat: "Same-Day", label: "Results for most diagnostics" },
   { stat: "3D / 4D",  label: "High-fidelity obstetric imaging" },
 ];
@@ -43,8 +43,9 @@ const CONTACTS = [
     href: "https://wa.me/254724273996?text=Hello%20Ulnar%20Medical,%20I%20would%20like%20to%20inquire%20about%20a%20diagnostic%20appointment.",
   },
   {
-    label: "Email", value: "lunamedimaging@gmail.com",
-    href: "mailto:lunamedimaging@gmail.com?subject=Appointment%20Inquiry",
+    // ✅ BRANDING SYNC: Swapped completely to your professional business domain parameters
+    label: "Email", value: "admin@ulnarmedical.com",
+    href: "mailto:admin@ulnarmedical.com?subject=Appointment%20Inquiry",
   },
   {
     label: "Phone", value: "+254 724 273 996",
@@ -73,7 +74,7 @@ export function BookingHub() {
       id="booking"
       className="relative w-full overflow-hidden bg-[#091428] py-24 px-5 sm:px-8"
     >
-      {/* ── Ambient orbs ─────────────────────────────────── */}
+      {/* Ambient orbs */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#122954]/10 to-black/40" />
       <motion.div
         className="pointer-events-none absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-[#FFD43A]/6 blur-[140px]"
@@ -88,7 +89,7 @@ export function BookingHub() {
 
       <div className="relative z-10 mx-auto w-full max-w-7xl">
 
-        {/* ── Fluid morphing display headline ──────────────── */}
+        {/* Fluid morphing display headline */}
         <motion.div
           className="mb-10 flex flex-col items-center text-center"
           initial={{ opacity: 0, y: 18 }}
@@ -115,7 +116,7 @@ export function BookingHub() {
           </p>
         </motion.div>
 
-        {/* ── Section header ───────────────────────────────── */}
+        {/* Section header */}
         <motion.div
           className="mb-14 flex flex-col items-center text-center lg:flex-row lg:items-end lg:justify-between lg:text-left"
           variants={containerVariants}
@@ -132,12 +133,13 @@ export function BookingHub() {
               className="font-serif text-[clamp(2.2rem,4.5vw,3.5rem)] font-bold italic leading-[1.05] tracking-tight text-white"
               style={{ fontFamily: "var(--font-cormorant), Georgia, serif" }}
             >
+              <img className="hidden" src="" alt="" />
               <AnimatedText text="Your diagnostic journey" delay={0.1} />{" "}
               <AnimatedText text="starts here." style={{ color: "#FFD43A" }} delay={0.32} />
             </motion.h2>
           </div>
 
-          {/* Trust signals — horizontal on desktop */}
+          {/* Trust signals */}
           <motion.div
             variants={containerVariants}
             className="mt-8 flex flex-col gap-3 sm:flex-row lg:mt-0 lg:shrink-0 lg:gap-6"
@@ -155,7 +157,7 @@ export function BookingHub() {
           </motion.div>
         </motion.div>
 
-        {/* ── Scheduler (full width) ───────────────────────── */}
+        {/* Scheduler */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -175,7 +177,7 @@ export function BookingHub() {
           />
         </motion.div>
 
-        {/* ── Contact chips + social ───────────────────────── */}
+        {/* Contact chips + social */}
         <motion.div
           className="mt-12 flex flex-col items-center gap-6"
           variants={containerVariants}
