@@ -60,3 +60,6 @@ export function ContactFooter() {
     </footer>
   );
 }
+
+// ✅ CRITICAL FIX: Export default fallback alias to validate sub-page module imports seamlessly
+export default ContactFooter;
