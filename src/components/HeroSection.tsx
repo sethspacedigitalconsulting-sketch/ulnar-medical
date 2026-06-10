@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { MobileMenu } from "@/components/ui/mobile-menu";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuTrigger, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, FileText } from "lucide-react";
+import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, FileText, UserCheck, PhoneCall, Home } from "lucide-react";
 
 const HeroScrub = dynamic(
   () => import("@/components/ui/hero-scrub").then((m) => ({ default: m.HeroScrub })),
@@ -28,16 +28,23 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-const serviceLinks: MenuLinkItem[] = [
+// ✅ Structured Navbar Mapping Categories
+const diagnosticLinks: MenuLinkItem[] = [
   { title: "Obstetric Ultrasound", href: "#services", description: "Advanced high-fidelity 3D/4D obstetric imaging tracking fetus health cycles.", icon: Activity },
   { title: "Gynecological Scans", href: "#services", description: "Deep anatomical screenings diagnosing structural health and cysts accurately.", icon: Heart },
+];
+
+const serviceLinks: MenuLinkItem[] = [
   { title: "Fertility Evaluation", href: "#services", description: "Comprehensive follicle diagnostic tracking and pelvic blood flow mapping.", icon: Sparkles },
   { title: "Early Screening", href: "#services", description: "First-trimester structural anomaly checking and anomaly risk assessment.", icon: ShieldAlert },
 ];
 
 const aboutLinks: MenuLinkItem[] = [
   { title: "Clinical Sanctuary", href: "#about", description: "Explore our premium patient care destination engineered for ultimate relaxation.", icon: Eye },
-  { title: "Expert Clinicians", href: "#about", description: "Meet our board-certified radiologists specializing in complex diagnostic execution.", icon: FileText },
+];
+
+const specialistLinks: MenuLinkItem[] = [
+  { title: "Expert Clinicians", href: "#about", description: "Meet our board-certified consultants specializing in complex diagnostic execution.", icon: UserCheck },
 ];
 
 const contactLinks: MenuLinkItem[] = [
@@ -76,6 +83,11 @@ export function HeroSection() {
     gsap.to(navInnerRef.current, { y: -4, duration: 4, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1.4 });
   }, { scope: navRef });
 
+  const fadeUpVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE_LUXURY } },
+  };
+
   return (
     <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hidden md:block">
@@ -89,46 +101,85 @@ export function HeroSection() {
       >
         <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
           <Logo animated size={42} />
+          
+          {/* ✅ UPDATED: 6-Item Executive Navigation Menu Matrix */}
           <NavigationMenu className="hidden md:flex">
-            <NavigationMenuList className="gap-2">
+            <NavigationMenuList className="gap-1">
+              
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Services</NavigationMenuTrigger>
+                <NavigationMenuLink href="#" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
+                  Homepage
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Detailed Diagnostics</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid w-[580px] grid-cols-2 gap-3 p-4 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
-                    {serviceLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                    {diagnosticLinks.map((item) => (<ListItem key={item.title} {...item} />))}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">About</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">About Us</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {aboutLinks.map((item) => (<ListItem key={item.title} {...item} />))}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Contact</NavigationMenuTrigger>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Services</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
+                    {serviceLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Our Specialists</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
+                    {specialistLinks.map((item) => (<ListItem key={item.title} {...item} />))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="hover:text-[#F4B9B9] data-[state=open]:text-[#F4B9B9]">Contact Us</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="grid w-[400px] grid-cols-1 gap-2 p-3 bg-[#080f1e]/95 border border-[#F4B9B9]/30 rounded-xl shadow-2xl backdrop-blur-xl">
                     {contactLinks.map((item) => (<ListItem key={item.title} {...item} />))}
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
             </NavigationMenuList>
           </NavigationMenu>
+
           <div className="hidden items-center gap-4 md:flex">
             <a href="#booking" className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider">
               Book Now <span className="text-sm leading-none">&#8599;</span>
             </a>
           </div>
+
           <Button size="icon" variant="outline" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden border-white/10 text-white bg-transparent">
             <MenuToggleIcon open={mobileMenuOpen} className="size-5" duration={300} />
           </Button>
         </div>
       </nav>
 
-      <MobileMenu open={mobileMenuOpen} setMobileMenuOpen={setMobileMenuOpen} serviceLinks={serviceLinks} aboutLinks={aboutLinks} contactLinks={contactLinks} />
+      {/* ✅ Mobile Fallback Menu Sync */}
+      <MobileMenu 
+        open={mobileMenuOpen} 
+        setMobileMenuOpen={setMobileMenuOpen} 
+        serviceLinks={[...diagnosticLinks, ...serviceLinks]} 
+        aboutLinks={[...aboutLinks, ...specialistLinks]} 
+        contactLinks={contactLinks} 
+      />
 
       <motion.div className="relative z-20 px-6 md:px-14 pt-24 md:pt-40 pb-12 md:pb-32" style={{ y: textY, opacity, willChange: "transform" }}>
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
