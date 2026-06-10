@@ -61,8 +61,6 @@ export function HeroSection() {
 
   const { scrollY } = useScroll();
   const textY = useTransform(scrollY, [0, 700], [0, -40]); // Subtler parallax tracking
-  
-  // ✅ FIXED: Unlinked scrollY tracking from the opacity channel so it stays completely solid (1)
   const opacity = 1;
 
   const mx = useMotionValue(0);
@@ -87,13 +85,9 @@ export function HeroSection() {
     gsap.to(navInnerRef.current, { y: -4, duration: 4, ease: "sine.inOut", repeat: -1, yoyo: true, delay: 1.4 });
   }, { scope: navRef });
 
-  const fadeUpVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: EASE_LUXURY } },
-  };
-
   return (
-    <section ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden flex items-center">
+    // ✅ FIXED id="home": Set structural page node coordinates for cross-view navigation tracking
+    <section id="home" ref={containerRef} className="relative min-h-screen text-white bg-[#0d1b3e] overflow-hidden flex items-center">
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none hidden md:block">
         <HeroScrub />
       </div>
@@ -110,7 +104,7 @@ export function HeroSection() {
             <NavigationMenuList className="gap-1">
               
               <NavigationMenuItem>
-                <NavigationMenuLink href="/" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
+                <NavigationMenuLink href="/#home" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
                   Homepage
                 </NavigationMenuLink>
               </NavigationMenuItem>
