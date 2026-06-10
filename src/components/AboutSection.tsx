@@ -8,9 +8,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ShieldCheck, Award, Heart } from "lucide-react";
 
-// ✅ FIXED IMPORT PATHWAY: Switched to relative directory tracking to resolve the module trace blocker
+// ✅ FIXED PATH: Pointing exactly to the local subfolder component directory file bounds
 const AboutScrub = dynamic(
-  () => import("../components/ui/about-scrub").then((m) => ({ default: m.AboutScrub })),
+  () => import("./ui/about-scrub").then((m) => ({ default: m.AboutScrub })),
   { ssr: false }
 );
 
