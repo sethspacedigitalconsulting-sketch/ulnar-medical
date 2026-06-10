@@ -3,37 +3,38 @@
 import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { HeroSection } from '@/components/HeroSection';
-import { ContactFooter } from '@/components/ContactFooter';
-import { FloatingCTA } from '@/components/ui/floating-cta';
+import { HeroSection } from '../components/HeroSection';
+import { ContactFooter } from '../components/ContactFooter';
+import { FloatingCTA } from '../components/ui/floating-cta';
 
+// ✅ Client-safe dynamic bundles
 const VerticalImageStack = dynamic(
-  () => import('@/components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
+  () => import('../components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
   { ssr: false }
 );
 
 const InfiniteParallaxSlider = dynamic(
-  () => import('@/components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
+  () => import('../components/ui/argent-loop-infinite-slider').then((m) => ({ default: m.InfiniteParallaxSlider })),
   { ssr: false }
 );
 
 const AboutSection = dynamic(
-  () => import('@/components/AboutSection').then((m) => ({ default: m.AboutSection })),
+  () => import('../components/AboutSection').then((m) => ({ default: m.AboutSection })),
   { ssr: false }
 );
 
 const CircularTestimonials = dynamic(
-  () => import('@/components/ui/circular-testimonials').then((m) => ({ default: m.CircularTestimonials })),
+  () => import('../components/ui/circular-testimonials').then((m) => ({ default: m.CircularTestimonials })),
   { ssr: false }
 );
 
 const BookingHub = dynamic(
-  () => import('@/components/sections/BookingHub').then((m) => ({ default: m.BookingHub })),
+  () => import('../components/sections/BookingHub').then((m) => ({ default: m.BookingHub })),
   { ssr: false }
 );
 
 const MapEmbed = dynamic(
-  () => import('@/components/MapEmbed').then((m) => ({ default: m.MapEmbed })),
+  () => import('../components/MapEmbed').then((m) => ({ default: m.MapEmbed })),
   { ssr: false }
 );
 
@@ -49,9 +50,13 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#080f1e] text-white select-none">
+      
+      {/* ✅ Cinematic Parallax text-switching header loop loads first */}
+      <InfiniteParallaxSlider />
+      
+      {/* ── SECONDARY LINK METRICS FLOW ── */}
       <HeroSection />
       <VerticalImageStack />
-      <InfiniteParallaxSlider />
       <AboutSection />
 
       {isHydrated ? (
@@ -80,7 +85,6 @@ interface ServiceItem {
   bullets?: string[];
 }
 
-// ✅ Restructured exactly into your 5 targeted medical pillars
 const services: ServiceItem[] = [
   {
     id: 1,
@@ -164,7 +168,7 @@ function LocalServiceShowcase() {
                   </div>
                 )}
                 <div className={`relative z-10 p-6 md:p-8 flex flex-col w-full transition-all duration-500 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 pointer-events-none translate-y-4 max-md:hidden'}`}>
-                  <div className="mb-3 w-fit"><span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2.5 py-1 rounded-md border border-[#FFD43A]/15">{svc.badge}</span></div>
+                  <div className="mb-3 w-fit"><span className="font-mono text-[9px] text-[#FFD43A] tracking-widest uppercase bg-[#FFD43A]/5 px-2.5 py-1 rounded-md border border-[#FFD43A]/15"> {svc.badge}</span></div>
                   <h3 className="text-xl md:text-2xl font-display font-bold text-white tracking-tight mb-2">{svc.title}</h3>
                   <p className="text-white/70 font-body font-light text-xs md:text-sm leading-relaxed max-w-md">{svc.desc}</p>
                   {svc.bullets && (
