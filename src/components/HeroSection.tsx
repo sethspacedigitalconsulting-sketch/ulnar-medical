@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { MobileMenu } from "@/components/ui/mobile-menu";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuTrigger, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, FileText, UserCheck, PhoneCall, Home } from "lucide-react";
+import { Activity, Heart, Eye, Sparkles, ShieldAlert, MapPin, Clock, UserCheck, Baby } from "lucide-react";
 
 const HeroScrub = dynamic(
   () => import("@/components/ui/hero-scrub").then((m) => ({ default: m.HeroScrub })),
@@ -28,28 +28,29 @@ interface MenuLinkItem {
   icon: React.ComponentType<{ className?: string }>;
 }
 
-// ✅ Structured Navbar Mapping Categories
+// ✅ Updated Submenu Maps matching your exact clinical parameters
 const diagnosticLinks: MenuLinkItem[] = [
-  { title: "Obstetric Ultrasound", href: "#services", description: "Advanced high-fidelity 3D/4D obstetric imaging tracking fetus health cycles.", icon: Activity },
-  { title: "Gynecological Scans", href: "#services", description: "Deep anatomical screenings diagnosing structural health and cysts accurately.", icon: Heart },
+  { title: "Maternal-Fetal Specialist Services", href: "/#services", description: "Pre-conception screening, 2D/3D obstetric tracking, fetal echoes, and anatomical surveys.", icon: Activity },
+  { title: "Gynaecological Consultations", href: "/#services", description: "Comprehensive female reproductive reviews and specialist treatment procedures.", icon: Heart },
 ];
 
 const serviceLinks: MenuLinkItem[] = [
-  { title: "Fertility Evaluation", href: "#services", description: "Comprehensive follicle diagnostic tracking and pelvic blood flow mapping.", icon: Sparkles },
-  { title: "Early Screening", href: "#services", description: "First-trimester structural anomaly checking and anomaly risk assessment.", icon: ShieldAlert },
+  { title: "Antenatal Care Services", href: "/#services", description: "Structured maternal monitoring and wellness tracking safely mapping out each trimester.", icon: Sparkles },
+  { title: "Postnatal Care Services", href: "/#services", description: "Elite recovery tracking, newborn metrics support, and postpartum wellness sequences.", icon: Baby },
+  { title: "Radiological Imaging Services", href: "/#services", description: "Reporting of X-rays, HSG, CT, and MRI arrays alongside ultrasound-guided procedures.", icon: ShieldAlert },
 ];
 
 const aboutLinks: MenuLinkItem[] = [
-  { title: "Clinical Sanctuary", href: "#about", description: "Explore our premium patient care destination engineered for ultimate relaxation.", icon: Eye },
+  { title: "Clinical Sanctuary", href: "/#about", description: "Explore our premium patient care destination engineered on Ngong Road.", icon: Eye },
 ];
 
 const specialistLinks: MenuLinkItem[] = [
-  { title: "Expert Clinicians", href: "#about", description: "Meet our board-certified consultants specializing in complex diagnostic execution.", icon: UserCheck },
+  { title: "Expert Clinicians", href: "/#about", description: "Meet Dr. Elizabeth Odondi and senior consultants behind every diagnosis.", icon: UserCheck },
 ];
 
 const contactLinks: MenuLinkItem[] = [
-  { title: "Ngong Road Office", href: "#contact", description: "Find our physical branch footprint at premium medical suites in Nairobi.", icon: MapPin },
-  { title: "Operating Metrics", href: "#contact", description: "Mon - Sat: 8:00 AM - 6:00 PM. Same-day diagnostics generation window.", icon: Clock },
+  { title: "Nairobi Office Footprint", href: "/#contact", description: "Find our physical branch footprint at premium medical suites on Ngong Road.", icon: MapPin },
+  { title: "+254 724 273 996 / +254 724 429 489", href: "/#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
 ];
 
 export function HeroSection() {
@@ -102,12 +103,12 @@ export function HeroSection() {
         <div ref={navInnerRef} className="flex items-center justify-between px-6 md:px-14 h-20">
           <Logo animated size={42} />
           
-          {/* ✅ UPDATED: 6-Item Executive Navigation Menu Matrix */}
+          {/* ✅ Cross-Page Root Links Integration */}
           <NavigationMenu className="hidden md:flex">
             <NavigationMenuList className="gap-1">
               
               <NavigationMenuItem>
-                <NavigationMenuLink href="#" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
+                <NavigationMenuLink href="/" className="group inline-flex h-9 w-max items-center justify-center rounded-md px-3 py-2 text-sm font-medium transition-colors text-white/70 hover:text-[#FFD43A]">
                   Homepage
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -161,7 +162,7 @@ export function HeroSection() {
           </NavigationMenu>
 
           <div className="hidden items-center gap-4 md:flex">
-            <a href="#booking" className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider">
+            <a href="/#booking" className="flex items-center gap-2 px-6 h-11 rounded-full border border-[rgba(255,212,58,0.4)] text-[#FFD43A] label-mono hover:bg-[rgba(255,212,58,0.08)] transition-all duration-300 text-xs tracking-wider">
               Book Now <span className="text-sm leading-none">&#8599;</span>
             </a>
           </div>
@@ -172,7 +173,6 @@ export function HeroSection() {
         </div>
       </nav>
 
-      {/* ✅ Mobile Fallback Menu Sync */}
       <MobileMenu 
         open={mobileMenuOpen} 
         setMobileMenuOpen={setMobileMenuOpen} 
@@ -194,10 +194,7 @@ export function HeroSection() {
               Detailed <br /><span className="text-[#FFD43A] italic">Diagnostics</span>
             </h1>
 
-            <p
-              className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed"
-              style={{ fontSize: "1.05rem" }}
-            >
+            <p className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed" style={{ fontSize: "1.05rem" }}>
               Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary.
             </p>
 
@@ -211,7 +208,7 @@ export function HeroSection() {
               >
                 <span className="relative z-10 flex items-center gap-2">Book Diagnostic Scan <span>&#8594;</span></span>
               </motion.button>
-              <motion.a href="https://wa.me/254724273996?text=Hello" target="_blank" rel="noopener noreferrer"
+              <motion.a href="https://wa.me/254724273996?text=Hello%20Ulnar%20Medical%2C%20I%20would%20like%20to%20book%20a%20clinical%20appointment." target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-2.5 px-6 py-4 rounded-full border border-[rgba(244,185,185,0.3)] text-[#F4B9B9] font-body text-sm hover:border-[#F4B9B9] transition-all group">
                 Chat on WhatsApp &#8599;
               </motion.a>

@@ -1,122 +1,62 @@
 ﻿"use client";
-import { motion } from "framer-motion";
-import Link from "next/link";
 
-const footerLinks = {
-  "DIAGNOSTIC SPECIALTIES": [
-    { label: "Obstetric 3D/4D Ultrasound", href: "/services" },
-    { label: "Gynecological Consultations", href: "/services" },
-    { label: "Diagnostic Lab Screening", href: "/services" },
-    { label: "Antenatal Wellness Packages", href: "/services" },
-  ],
-  "PATIENT SUPPORT": [
-    { label: "Book Appointment", href: "/#booking" },
-    { label: "Wellness Packages & Pricing", href: "/services" },
-    { label: "Patient Success Stories", href: "/#testimonials" },
-    { label: "Medical Triage Enquiries", href: "/#about" },
-  ],
-  "CLINIC DIRECTORY": [
-    { label: "Our Ngong Road Centre", href: "/about" },
-    { label: "Meet the Specialists", href: "/about" },
-    { label: "Referring Practitioners", href: "/about" },
-    { label: "Clinical Partnerships", href: "/about" },
-  ],
-  "LEGAL": [
-    { label: "Patient Privacy Charter", href: "/privacy" },
-    { label: "Diagnostic Testing Protocols", href: "/terms" },
-    { label: "Terms of Clinical Service", href: "/terms" },
-    { label: "Emergency Support", href: "tel:+254724273996" },
-  ],
-};
+import React from "react";
+import { Mail, Phone, MapPin, Shield } from "lucide-react";
 
-export default function ContactFooter() {
+export function ContactFooter() {
   return (
-    <footer className="bg-[#070b1a] text-white pt-20 pb-10 px-6 md:px-16">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-10 border-b border-white/10 pb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px" }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-3"
-        >
-          <div className="w-12 h-12 rounded-full border-2 border-[#d4a843] flex items-center justify-center">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="4" fill="#d4a843" />
-              <circle cx="12" cy="12" r="9" stroke="#d4a843" strokeWidth="1.5" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-lg font-bold leading-tight">
-              Ulnar <span className="text-[#d4a843] italic">Medical</span>
-            </div>
-            <div className="text-[10px] tracking-[0.2em] text-white/50 uppercase">Diagnostic Centre</div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "0px" }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-right"
-        >
-          <p className="text-xs tracking-[0.2em] text-white/40 uppercase mb-2">DIRECT CLINIC LINE</p>
-          <a href="tel:+254724273996" className="block text-[#d4a843] text-2xl font-bold hover:text-white transition-colors">
-            +254 724 273 996
-          </a>
-          <a href="tel:+254724429489" className="block text-[#d4a843] text-2xl font-bold hover:text-white transition-colors mt-1">
-            +254 724 429 489
-          </a>
-          <a href="mailto:lunamedimaging@gmail.com" className="block text-white/50 text-sm mt-2 hover:text-white transition-colors">
-            lunamedimaging@gmail.com
-          </a>
-        </motion.div>
-      </div>
-
-      <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 mt-12">
-        {Object.entries(footerLinks).map(([category, links], colIdx) => (
-          <motion.div
-            key={category}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "0px" }}
-            transition={{ duration: 0.5, delay: colIdx * 0.08 }}
-          >
-            <h4 className="text-[10px] tracking-[0.2em] text-white/40 uppercase mb-4">{category}</h4>
-            <ul className="space-y-3">
-              {links.map((link) => (
-                <li key={link.label}>
-                  {link.href.startsWith("tel:") ? (
-                    <a href={link.href} className="text-sm text-white/70 hover:text-[#d4a843] transition-colors">
-                      {link.label}
-                    </a>
-                  ) : (
-                    <Link href={link.href} className="text-sm text-white/70 hover:text-[#d4a843] transition-colors">
-                      {link.label}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-        ))}
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "0px" }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="max-w-7xl mx-auto mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/30"
-      >
-        <p>© {new Date().getFullYear()} Ulnar Medical & Diagnostic Centre. All rights reserved.</p>
-        <div className="flex gap-6">
-          <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-          <Link href="/faqs" className="hover:text-white transition-colors">FAQs</Link>
+    <footer id="contact" className="relative bg-[#080f1e] text-white/60 text-sm border-t border-white/5 py-16 px-6 md:px-14">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
+        
+        {/* Col 1: Brand Info */}
+        <div className="space-y-4 text-left">
+          <h4 className="font-display font-bold text-white text-lg tracking-tight">Ulnar Medical</h4>
+          <p className="text-xs font-light leading-relaxed max-w-xs text-white/40">
+            Certified Diagnostic Centre delivering precision women's healthcare, 3D/4D ultrasound imaging, and same-day laboratory triage parameters.
+          </p>
         </div>
-      </motion.div>
+
+        {/* Col 2: Contact Matrix */}
+        <div className="space-y-3 text-left">
+          <h5 className="font-mono text-[10px] text-[#FFD43A] tracking-widest uppercase font-bold">Direct Routing</h5>
+          <div className="flex items-center gap-2.5 text-xs text-white/80">
+            <Phone className="w-3.5 h-3.5 text-[#F4B9B9]" />
+            <a href="tel:+254724273996" className="hover:text-[#FFD43A] transition-colors">+254 724 273 996</a>
+          </div>
+          <div className="flex items-center gap-2.5 text-xs text-white/80">
+            <Phone className="w-3.5 h-3.5 text-[#F4B9B9]" />
+            <a href="tel:+254724429489" className="hover:text-[#FFD43A] transition-colors">+254 724 429 489</a>
+          </div>
+          <div className="flex items-center gap-2.5 text-xs text-white/80 pt-1">
+            <Mail className="w-3.5 h-3.5 text-[#F4B9B9]" />
+            <a href="mailto:admin@ulnarmedical.com" className="hover:text-[#FFD43A] transition-colors">admin@ulnarmedical.com</a>
+          </div>
+        </div>
+
+        {/* Col 3: Location Channels */}
+        <div className="space-y-3 text-left">
+          <h5 className="font-mono text-[10px] text-[#FFD43A] tracking-widest uppercase font-bold">Physical Coordinates</h5>
+          <div className="flex items-start gap-2.5 text-xs text-white/80 leading-relaxed">
+            <MapPin className="w-3.5 h-3.5 text-[#F4B9B9] shrink-0 mt-0.5" />
+            <span>Ngong Road Medical Suites,<br />Nairobi, Kenya</span>
+          </div>
+        </div>
+
+        {/* Col 4: Accreditation */}
+        <div className="space-y-3 text-left">
+          <h5 className="font-mono text-[10px] text-[#FFD43A] tracking-widest uppercase font-bold">Accreditation</h5>
+          <div className="flex items-center gap-2.5 text-xs text-white/40">
+            <Shield className="w-3.5 h-3.5 text-[#FFD43A]" />
+            <span>KMPDC Certified Facility</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div className="max-w-7xl mx-auto border-t border-white/5 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-[10px] font-mono tracking-wider uppercase text-white/20 gap-4">
+        <span>© 2026 Ulnar Medical and Diagnostic Centre. All Rights Reserved.</span>
+        <span>Space AI Automated Systems</span>
+      </div>
     </footer>
   );
 }
