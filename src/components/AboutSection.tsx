@@ -1,9 +1,58 @@
 ﻿"use client";
 
-import React from "react";
-import { ShieldCheck, Award, Heart } from "lucide-react";
+import React, { useRef } from "react";
+import dynamic from "next/dynamic";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { ShieldCheck, Award, Heart, Activity } from "lucide-react";
+
+const AboutScrub = dynamic(
+  () => import("@/components/ui/about-scrub").then((m) => ({ default: m.AboutScrub })),
+  { ssr: false }
+);
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+const EASE_LUXURY = [0.76, 0, 0.24, 1] as const;
 
 export function AboutSection() {
+  const containerRef = useRef<HTMLElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+  const cardsContainerRef = useRef<HTMLDivElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+
+  useGSAP(() => {
+    // Master GSAP ScrollTrigger timeline matching your original structural pass
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        toggleActions: "play none none reverse",
+      },
+    });
+
+    tl.fromTo(
+      textContainerRef.current?.children || [],
+      { opacity: 0, y: 40 },
+      { opacity: 1, y: 0, duration: 1, ease: "power4.out", stale: true, exhibitors: true, stagger: 0.15 }
+    );
+
+    tl.fromTo(
+      cardsContainerRef.current?.children || [],
+      { opacity: 0, x: 50, scale: 0.96 },
+      { opacity: 1, x: 0, scale: 1, duration: 0.8, ease: "power3.out", stagger: 0.12 },
+      "-=0.6"
+    );
+  }, { scope: containerRef });
+
   const coreValues = [
     {
       icon: ShieldCheck,
@@ -23,45 +72,58 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="about" className="relative bg-[#080f1e] py-24 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden">
-      <div className="max-w-7xl mx-auto relative z-10">
-        
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+    <section 
+      ref={containerRef} 
+      id="about" 
+      className="relative bg-[#080f1e] py-28 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden min-h-screen flex items-center"
+    >
+      {/* Dynamic Parallax Kinetic Background Particle Layer */}
+      <motion.div className="absolute inset-0 z-0 opacity-15 pointer-events-none" style={{ y: bgY }}>
+        <AboutScrub />
+      </motion.div>
+
+      <div className="max-w-7xl mx-auto relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Left Column: Heading & Mission Text */}
-          <div className="lg:col-span-5 flex flex-col items-start text-left">
-            <span className="font-mono text-xs text-[#F4B9B9] tracking-widest uppercase mb-3">Our Core Foundation</span>
-            <h2 className="text-3xl md:text-5xl font-display font-bold tracking-tight text-white mb-6">
-              Engineering Excellence in <span className="text-[#FFD43A] italic">Women's Healthcare</span>
+          {/* Left Side: Typography Text Strings Container */}
+          <div ref={textContainerRef} className="lg:col-span-5 flex flex-col items-start text-left relative z-10">
+            <div className="flex items-center gap-3 mb-4 group">
+              <div className="h-px w-8 bg-[#F4B9B9] group-hover:w-12 transition-all duration-500" />
+              <span className="font-mono text-xs text-[#F4B9B9] tracking-[0.2em] uppercase font-medium">Our Core Foundation</span>
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-display font-bold tracking-tight text-white mb-8 leading-[1.15]">
+              Engineering Excellence in <br />
+              <span className="text-[#FFD43A] italic font-semibold">Women's Healthcare</span>
             </h2>
             
-            <div className="space-y-5 font-body font-light text-[rgba(248,246,242,0.65)] leading-relaxed text-sm md:text-base">
+            <div className="space-y-6 font-body font-light text-[rgba(248,246,242,0.65)] leading-relaxed text-sm md:text-base max-w-xl">
               <p>
                 Ulnar Medical & Diagnostic Centre is a premier specialist facility committed to redefining clinical accuracy and premium patient care. Located in Nairobi, our clinic bridges the gap between advanced medical diagnostic infrastructure and compassionate, expert specialty treatment.
               </p>
               
-              {/* ✅ UPDATED: The phrase "women of African descent" has been cleanly removed from this paragraph */}
+              {/* ✅ RESTORED TEXT CONTAINER: The sentence returns with full spacing, minus the chosen wording phrase */}
               <p>
                 We recognize that modern healthcare demands customized, precision approaches. By combining advanced 3D/4D ultrasonic tracking systems with an elite clinical environment, we deliver tailored screening diagnostics and specialist consultations that meet international benchmarks right here on Ngong Road.
               </p>
             </div>
           </div>
 
-          {/* Right Column: Values Grid */}
-          <div className="lg:col-span-7 grid grid-cols-1 gap-4 md:gap-6">
+          {/* Right Side: Credentials Animation Grid */}
+          <div ref={cardsContainerRef} className="lg:col-span-7 flex flex-col gap-5 md:gap-6 w-full relative z-10">
             {coreValues.map((value, idx) => {
               const Icon = value.icon;
               return (
                 <div 
                   key={idx}
-                  className="flex flex-col sm:flex-row gap-4 p-6 rounded-2xl bg-[#0d1b3e]/40 border border white/5 backdrop-blur-sm hover:border-[#F4B9B9]/20 transition-all duration-300 text-left"
+                  className="flex flex-col sm:flex-row gap-5 p-6 rounded-2xl bg-gradient-to-br from-[#0d1b3e]/60 to-[#080f1e]/40 border border-white/5 backdrop-blur-md hover:border-[#F4B9B9]/20 hover:bg-[#0d1b3e]/80 transition-all duration-500 text-left shadow-xl group"
                 >
-                  <div className="flex aspect-square size-12 items-center justify-center rounded-xl bg-[#FFD43A]/10 text-[#FFD43A] shrink-0">
-                    <Icon className="size-5" />
+                  <div className="flex aspect-square size-12 items-center justify-center rounded-xl bg-[#FFD43A]/10 text-[#FFD43A] group-hover:bg-[#FFD43A] group-hover:text-[#080f1e] transition-all duration-500 shrink-0 shadow-inner">
+                    <Icon className="size-5 transition-transform duration-500 group-hover:scale-110" />
                   </div>
-                  <div className="flex flex-col justify-center">
-                    <h3 className="font-display font-semibold text-lg text-white mb-1">{value.title}</h3>
-                    <p className="font-body font-light text-xs md:text-sm text-[rgba(248,246,242,0.5)] leading-relaxed">{value.desc}</p>
+                  <div className="flex flex-col justify-center min-w-0">
+                    <h3 className="font-display font-semibold text-lg text-white mb-1.5 tracking-tight group-hover:text-[#FFD43A] transition-colors">{value.title}</h3>
+                    <p className="font-body font-light text-xs md:text-sm text-[rgba(248,246,242,0.5)] group-hover:text-[rgba(248,246,242,0.7)] transition-colors leading-relaxed">{value.desc}</p>
                   </div>
                 </div>
               );
@@ -69,7 +131,6 @@ export function AboutSection() {
           </div>
 
         </div>
-
       </div>
     </section>
   );
