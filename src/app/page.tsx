@@ -12,7 +12,7 @@ import { MenuToggleIcon } from '@/components/ui/menu-toggle-icon';
 import { MobileMenu } from '@/components/ui/mobile-menu';
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuTrigger, NavigationMenuList } from '@/components/ui/navigation-menu';
 
-// Client-safe dynamic bundles - loading safely with immediate, clean placeholders
+// Client-safe dynamic bundles
 const VerticalImageStack = dynamic(
   () => import('../components/ui/vertical-image-stack').then((m) => ({ default: m.VerticalImageStack })),
   { ssr: false, loading: () => <div className="h-[40vh] bg-[#080f1e]" /> }
@@ -44,37 +44,53 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
-  // Mount the layout shell instantly to guarantee fixed, unshifting height parameters from step one
-  useEffect(() => {
-    // Inject clean native behavior parameter rules across modern engine viewports
-    document.documentElement.style.scrollBehavior = "smooth";
-    return () => {
-      document.documentElement.style.scrollBehavior = "";
-    };
-  }, []);
-
   return (
-    <main className="min-h-screen bg-[#080f1e] text-white select-none relative w-full overflow-x-hidden">
+    <main 
+      className="h-screen bg-[#080f1e] text-white select-none relative w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
+    >
+      {/* Global CSS Style Overrides to resolve Bug 1 (Parallax Ghost ScrollHeight) */}
+      <style jsx global>{`
+        #home ul.list-none {
+          overflow: hidden !important;
+        }
+      `}</style>
+
       {/* Global Navigation Layer */}
       <GlobalNavbar />
       
-      {/* Page 1 (Top Fold Entry Deck) */}
-      <section id="home" className="w-full h-screen relative">
+      {/* 💥 BUG 2 FIX: Added snap-start to Page 1 */}
+      <section id="home" className="w-full h-screen relative shrink-0 snap-start">
         <InfiniteParallaxSlider />
       </section>
       
-      {/* Page 2 (Transition Segment & Main Elements) */}
-      <section id="diagnostics" className="w-full min-h-screen relative">
+      {/* 💥 BUG 2 FIX: Added snap-start to Page 2 */}
+      {/* 💥 BUG 3 FIX: Handled overflow clipping via adding bottom padding context parameters to support inner layouts */}
+      <section id="diagnostics" className="w-full h-screen relative shrink-0 snap-start pb-12 overflow-y-visible">
         <HeroSection />
       </section>
       
-      <VerticalImageStack />
-      <AboutSection />
-      <LocalServiceShowcase />
-      <CircularTestimonials />
-      <BookingHub />
-      <MapEmbed />
-      <ContactFooter />
+      {/* Auxiliary Scroll Sections */}
+      <div className="snap-start w-full">
+        <VerticalImageStack />
+      </div>
+      <div className="snap-start w-full">
+        <AboutSection />
+      </div>
+      <div className="snap-start w-full">
+        <LocalServiceShowcase />
+      </div>
+      <div className="snap-start w-full">
+        <CircularTestimonials />
+      </div>
+      <div className="snap-start w-full">
+        <BookingHub />
+      </div>
+      <div className="snap-start w-full">
+        <MapEmbed />
+      </div>
+      <div className="snap-start w-full">
+        <ContactFooter />
+      </div>
 
       <FloatingCTA />
     </main>
@@ -121,13 +137,12 @@ function GlobalNavbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
-  // Handle smooth manual calculation anchor updates across the viewports
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, targetId: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     const element = document.getElementById(targetId.replace('#', ''));
     if (element) {
-      const offsetPosition = element.getBoundingClientRect().top + window.scrollY - 80; // offset for the fixed navbar height
+      const offsetPosition = element.getBoundingClientRect().top + window.scrollY - 80;
       window.scrollTo({
         top: offsetPosition,
         behavior: "smooth"
