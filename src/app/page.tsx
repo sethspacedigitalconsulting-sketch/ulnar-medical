@@ -58,37 +58,43 @@ export default function Home() {
       {/* Global Navigation Layer */}
       <GlobalNavbar />
       
-      {/* 💥 BUG 2 FIX: Added snap-start to Page 1 */}
+      {/* Page 1 (Top Fold Entry Parallax Deck) */}
       <section id="home" className="w-full h-screen relative shrink-0 snap-start">
         <InfiniteParallaxSlider />
       </section>
       
-      {/* 💥 BUG 2 FIX: Added snap-start to Page 2 */}
-      {/* 💥 BUG 3 FIX: Handled overflow clipping via adding bottom padding context parameters to support inner layouts */}
+      {/* Page 2 (Detailed Clinical Diagnostics Viewport) */}
       <section id="diagnostics" className="w-full h-screen relative shrink-0 snap-start pb-12 overflow-y-visible">
         <HeroSection />
       </section>
       
-      {/* Auxiliary Scroll Sections */}
-      <div className="snap-start w-full">
+      {/* Auxiliary Interface Layout Sections */}
+      <div className="w-full shrink-0">
         <VerticalImageStack />
       </div>
-      <div className="snap-start w-full">
+
+      {/* ✅ UNIFIED VIEWPORT TRIGGER: Rendering your full, two-column split layout within its own clean scroll container layer */}
+      <div className="snap-start w-full shrink-0 min-h-screen relative z-10">
         <AboutSection />
       </div>
-      <div className="snap-start w-full">
+
+      <div className="snap-start w-full shrink-0">
         <LocalServiceShowcase />
       </div>
-      <div className="snap-start w-full">
+
+      <div className="snap-start w-full shrink-0">
         <CircularTestimonials />
       </div>
-      <div className="snap-start w-full">
+
+      <div className="snap-start w-full shrink-0">
         <BookingHub />
       </div>
-      <div className="snap-start w-full">
+
+      <div className="snap-start w-full shrink-0">
         <MapEmbed />
       </div>
-      <div className="snap-start w-full">
+
+      <div className="snap-start w-full shrink-0">
         <ContactFooter />
       </div>
 
