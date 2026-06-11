@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShieldCheck, Award, Heart, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -49,10 +49,12 @@ export function AboutSection() {
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
 
+  // ✅ PROBLEM 3 FIX: Configure GSAP ScrollTrigger to track scroll inputs inside the main element container
   useGSAP(() => {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
+        scroller: "main", // ← Directs the scroll engine to monitor internal container scroll positions
         start: "top 80%",
         end: "bottom 20%",
         toggleActions: "play none none reverse",
@@ -74,14 +76,12 @@ export function AboutSection() {
       id="about" 
       className="relative bg-[#080f1e] py-28 px-4 sm:px-6 md:px-14 border-b border-white/5 overflow-hidden min-h-screen flex items-center w-full"
     >
-      {/* Background Ambient Fluid Design Accents */}
       <div className="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_bottom_left,rgba(255,212,58,0.04),transparent_50%)] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10 w-full">
-        {/* ✅ RESTORED TWO-COLUMN GRID: Left Column (About Copy) + Right Column (Specialists) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* ── LEFT COLUMN: RESTORED ABOUT US COPY BLOCKS ── */}
+          {/* Left Column: Clinical Copy Block Text Layers */}
           <div ref={textContainerRef} className="lg:col-span-5 flex flex-col items-start text-left relative z-20">
             <div className="flex items-center gap-3 mb-4 group">
               <div className="h-px w-8 bg-[#F4B9B9] group-hover:w-12 transition-all duration-500" />
@@ -102,7 +102,6 @@ export function AboutSection() {
               </p>
             </div>
 
-            {/* Specialist Quick-Switch Button Menu */}
             <div className="flex items-center gap-3 border border-white/5 p-1.5 rounded-full bg-[#0d1b3e]/30 backdrop-blur-md">
               {CLINICAL_ROSTER.map((doc, idx) => (
                 <button
@@ -116,7 +115,7 @@ export function AboutSection() {
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: MEDICAL SPECIALISTS ANIMATED CAROUSEL SLIDER ── */}
+          {/* Right Column: Specialists Profiles Animated Card Carousel */}
           <div className="lg:col-span-7 w-full relative z-10 flex flex-col items-center">
             <div className="relative w-full max-w-2xl bg-gradient-to-br from-[#0d1b3e]/60 to-[#080f1e]/40 border border-white/10 rounded-[2.5rem] p-6 md:p-10 backdrop-blur-xl shadow-2xl overflow-hidden min-h-[480px] flex flex-col justify-between group">
               
@@ -131,7 +130,6 @@ export function AboutSection() {
                   transition={{ duration: 0.5, ease: EASE_LUXURY }}
                   className="w-full flex flex-col md:flex-row gap-8 md:gap-10 items-start md:items-center text-left"
                 >
-                  {/* Doctor Card Profile Image Frame */}
                   <div className="relative w-40 h-52 md:w-48 md:h-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl shrink-0">
                     <img 
                       src={activeDoc.image} 
@@ -141,7 +139,6 @@ export function AboutSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-[#080f1e]/80 via-transparent to-transparent pointer-events-none" />
                   </div>
 
-                  {/* Doctor Profile Text & Credentials Description */}
                   <div className="flex-1 flex flex-col h-full justify-center">
                     <div className="mb-2 flex items-center gap-2">
                       <Sparkles className="size-3.5 text-[#FFD43A]" />
@@ -164,7 +161,6 @@ export function AboutSection() {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Real-time Numeric Track Stats Footer Tray */}
               <div className="flex gap-10 border-t border-white/5 pt-6 mt-8 w-full items-center">
                 <div>
                   <p className="font-display font-semibold text-[#FFD43A] text-xl md:text-2xl italic leading-none mb-1">

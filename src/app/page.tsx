@@ -68,12 +68,12 @@ export default function Home() {
         <HeroSection />
       </section>
       
-      {/* Auxiliary Interface Layout Sections */}
-      <div className="w-full shrink-0">
+      {/* ✅ PROBLEM 2 FIX: Added snap-start shrink-0 to prevent the scroll engine from skipping this section */}
+      <div className="snap-start w-full shrink-0">
         <VerticalImageStack />
       </div>
 
-      {/* ✅ UNIFIED VIEWPORT TRIGGER: Rendering your full, two-column split layout within its own clean scroll container layer */}
+      {/* About & Specialists Section */}
       <div className="snap-start w-full shrink-0 min-h-screen relative z-10">
         <AboutSection />
       </div>
@@ -131,7 +131,7 @@ const specialistLinks: MenuLinkItem[] = [
 
 const contactLinks: MenuLinkItem[] = [
   { title: "Nairobi Office Footprint", href: "#contact", description: "Find our physical branch footprint at premium medical suites on Ngong Road.", icon: MapPin },
-  { title: "+254 724 273 996 / +254 724 429 489", href: "#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
+  { title: "+254 724 273 996 / +254 724 429 489", href: "/#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
 ];
 
 function GlobalNavbar() {
