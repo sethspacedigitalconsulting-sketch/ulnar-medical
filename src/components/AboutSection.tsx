@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { gsap } from "gsap";
@@ -48,13 +48,24 @@ export function AboutSection() {
   const containerRef = useRef<HTMLElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [activeIdx, setActiveIdx] = useState(0);
+  const [scrollerEl, setScrollerEl] = useState<HTMLElement | null>(null);
 
-  // ✅ PROBLEM 3 FIX: Configure GSAP ScrollTrigger to track scroll inputs inside the main element container
+  // ✅ SAFE POST-MOUNT LOOKUP: Wait until the element is fully mounted before querying the DOM
+  useEffect(() => {
+    const mainContainer = document.querySelector('main');
+    if (mainContainer) {
+      setScrollerEl(mainContainer);
+    }
+  }, []);
+
+  // ✅ GSAP LIFECYCLE GUARD: Only initialize animations once the scroller element is verified
   useGSAP(() => {
+    if (!scrollerEl || !containerRef.current) return;
+
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
-        scroller: "main", // ← Directs the scroll engine to monitor internal container scroll positions
+        scroller: scrollerEl, // Uses the safe, verified element reference
         start: "top 80%",
         end: "bottom 20%",
         toggleActions: "play none none reverse",
@@ -66,7 +77,7 @@ export function AboutSection() {
       { opacity: 0, y: 40 },
       { opacity: 1, y: 0, duration: 1, ease: "power4.out", stagger: 0.15 }
     );
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [scrollerEl] });
 
   const activeDoc = CLINICAL_ROSTER[activeIdx];
 
@@ -81,7 +92,7 @@ export function AboutSection() {
       <div className="max-w-7xl mx-auto relative z-10 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
-          {/* Left Column: Clinical Copy Block Text Layers */}
+          {/* Left Column: Copy Details */}
           <div ref={textContainerRef} className="lg:col-span-5 flex flex-col items-start text-left relative z-20">
             <div className="flex items-center gap-3 mb-4 group">
               <div className="h-px w-8 bg-[#F4B9B9] group-hover:w-12 transition-all duration-500" />
@@ -115,7 +126,7 @@ export function AboutSection() {
             </div>
           </div>
 
-          {/* Right Column: Specialists Profiles Animated Card Carousel */}
+          {/* Right Column: Specialists Sliding Cards Carousel */}
           <div className="lg:col-span-7 w-full relative z-10 flex flex-col items-center">
             <div className="relative w-full max-w-2xl bg-gradient-to-br from-[#0d1b3e]/60 to-[#080f1e]/40 border border-white/10 rounded-[2.5rem] p-6 md:p-10 backdrop-blur-xl shadow-2xl overflow-hidden min-h-[480px] flex flex-col justify-between group">
               

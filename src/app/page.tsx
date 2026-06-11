@@ -44,8 +44,23 @@ const MapEmbed = dynamic(
 );
 
 export default function Home() {
+  const mainRef = useRef<HTMLElement>(null);
+
+  // ✅ ERROR 1 & 2 FIX: Wait for mounting to finish before passing scroller parameters
+  useEffect(() => {
+    const mainEl = mainRef.current;
+    if (!mainEl) return;
+
+    // Direct dynamic imports of GSAP parameters safely inside our effect context
+    import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
+      ScrollTrigger.defaults({ scroller: mainEl });
+      ScrollTrigger.refresh();
+    });
+  }, []);
+
   return (
     <main 
+      ref={mainRef}
       className="h-screen bg-[#080f1e] text-white select-none relative w-full overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth"
     >
       {/* Global CSS Style Overrides to resolve Bug 1 (Parallax Ghost ScrollHeight) */}
@@ -56,7 +71,7 @@ export default function Home() {
       `}</style>
 
       {/* Global Navigation Layer */}
-      <GlobalNavbar />
+      <GlobalNavbar mainContainerRef={mainRef} />
       
       {/* Page 1 (Top Fold Entry Parallax Deck) */}
       <section id="home" className="w-full h-screen relative shrink-0 snap-start">
@@ -68,13 +83,13 @@ export default function Home() {
         <HeroSection />
       </section>
       
-      {/* ✅ PROBLEM 2 FIX: Added snap-start shrink-0 to prevent the scroll engine from skipping this section */}
+      {/* ✅ PROBLEM 2 FIX: Fixed un-snapped container layout wrapper */}
       <div className="snap-start w-full shrink-0">
         <VerticalImageStack />
       </div>
 
       {/* About & Specialists Section */}
-      <div className="snap-start w-full shrink-0 min-h-screen relative z-10">
+      <div id="about" className="snap-start w-full shrink-0 min-h-screen relative z-10">
         <AboutSection />
       </div>
 
@@ -134,7 +149,7 @@ const contactLinks: MenuLinkItem[] = [
   { title: "+254 724 273 996 / +254 724 429 489", href: "/#contact", description: "Direct clinic routing lines. Admin desk email dispatch pipelines.", icon: Clock },
 ];
 
-function GlobalNavbar() {
+function GlobalNavbar({ mainContainerRef }: { mainContainerRef: React.RefObject<HTMLElement | null> }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -143,13 +158,17 @@ function GlobalNavbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileMenuOpen]);
 
+  // ✅ NAV ROUTING FIX: Calculate scroll jumps internally inside the main viewport container
   const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>, targetId: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    
+    const container = mainContainerRef.current;
     const element = document.getElementById(targetId.replace('#', ''));
-    if (element) {
-      const offsetPosition = element.getBoundingClientRect().top + window.scrollY - 80;
-      window.scrollTo({
+    
+    if (container && element) {
+      const offsetPosition = element.offsetTop - 80;
+      container.scrollTo({
         top: offsetPosition,
         behavior: "smooth"
       });
