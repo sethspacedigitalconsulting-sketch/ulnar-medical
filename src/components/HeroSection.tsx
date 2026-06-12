@@ -61,23 +61,23 @@ export function HeroSection() {
         <div className="flex flex-col md:flex-row items-start md:items-center gap-10 md:gap-16">
           <div className="flex-1 min-w-0 flex flex-col">
 
-            {/* ✅ ENLARGED: Expanded text size variables to create clear visual hierarchy */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="h-px w-14 bg-[#F4B9B9]" />
-              <span className="font-display text-lg md:text-xl font-medium tracking-wide text-[#F4B9B9] capitalize">
-                Maternal-fetal Specialist Care
+            {/* ✅ TOP ANCHOR ROW: Matches your exact text parameters and maintains original styling */}
+            <div className="flex items-center gap-3 mb-6">
+              <span className="label-mono text-[rgba(248,246,242,0.55)] text-xs uppercase tracking-[0.22em]">
+                NGONG ROAD  .  NAIROBI . EST . 2021
               </span>
             </div>
 
-            <div className="flex items-center gap-3 mb-8">
-              <div className="h-px w-6 bg-[#FFD43A]/40" />
-              <span className="label-mono text-[rgba(248,246,242,0.55)] text-xs">Ngong Road · Nairobi · Est. 2021</span>
+            {/* ── UNIFIED PRIMARY HEADINGS STACK ── */}
+            {/* ✅ Both headers are now cleanly stacked using the exact styling and font sizes of the Detailed Diagnostics header */}
+            <div className="flex flex-col gap-2 text-left">
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
+                Maternal-Fetal Specialist Care
+              </h1>
+              <h1 className="text-5xl md:text-7xl font-display font-bold text-[#FFD43A] italic leading-none tracking-tight">
+                Detailed Diagnostics
+              </h1>
             </div>
-
-            {/* Main Diagnostics Header Block */}
-            <h1 className="text-5xl md:text-7xl font-display font-bold text-white leading-none tracking-tight">
-              Detailed <br /><span className="text-[#FFD43A] italic">Diagnostics</span>
-            </h1>
 
             <p className="mt-8 max-w-xl font-body font-light text-[rgba(248,246,242,0.6)] leading-relaxed mb-6" style={{ fontSize: "1.05rem" }}>
               Providing highly accurate ultrasound, compassionate OB/GYN care, and specialized diagnostic imaging in a patient-centered sanctuary.
