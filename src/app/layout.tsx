@@ -11,6 +11,12 @@ export const metadata: Metadata = {
     template: '%s | Ulnar Medical Nairobi',
   },
   description: 'Ulnar Medical & Diagnostic Centre on Ngong Road, Nairobi offers expert OB/GYN consultations, 3D/4D obstetric ultrasound, maternal-fetal medicine, fetal anomaly scans, amniocentesis, HSG scans, radiology reporting, and same-day diagnostic lab results in Kenya.',
+  // ✅ BRANDING SYNC: Injected explicit url-encoded layout tracking paths directly to your logo location
+  icons: {
+    icon: '/images/Ulnamed%20logo.png',
+    shortcut: '/images/Ulnamed%20logo.png',
+    apple: '/images/Ulnamed%20logo.png',
+  },
   keywords: ['Ulnar Medical Nairobi','OB/GYN Nairobi','obstetrician Nairobi','gynecologist Nairobi','ultrasound clinic Nairobi','obstetric ultrasound Nairobi','3D ultrasound Nairobi','4D ultrasound Nairobi','pregnancy ultrasound Nairobi','fetal scan Nairobi Kenya','pelvic ultrasound Nairobi','maternal fetal medicine Nairobi','MFM specialist Nairobi','high risk pregnancy specialist Nairobi','fetal anomaly scan Nairobi','fetal echo Nairobi','amniocentesis Kenya','HSG scan Nairobi','radiology reporting Nairobi','antenatal care Nairobi','same day results Nairobi','Ngong Road clinic Nairobi','diagnostic centre Nairobi Kenya'].join(', '),
   openGraph: {
     title: 'Ulnar Medical & Diagnostic Centre - OB/GYN, 3D/4D Ultrasound & Maternal-Fetal Medicine, Nairobi',
